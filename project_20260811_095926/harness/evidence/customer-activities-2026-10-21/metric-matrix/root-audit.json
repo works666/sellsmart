@@ -1,0 +1,13 @@
+{
+  "auditedAt": "2026-10-21T02:50:41.2617242Z",
+  "cases": 18,
+  "eachStateMatchesInput": true,
+  "responsesMatchDecisions": true,
+  "distinctCases": 18,
+  "actualModel": "jev-1.13.0",
+  "successful": 18,
+  "allow": 18,
+  "reject": 0,
+  "needMore": 0,
+  "productOrConfigMutation": false
+}

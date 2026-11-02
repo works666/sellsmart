@@ -1,0 +1,8 @@
+{
+  "runId": "attempt-2-full-network",
+  "status": "blocked_before_execution",
+  "plannedCases": 27,
+  "requestsStarted": 0,
+  "createdAt": "2026-10-12T09:16:00.3545812Z",
+  "reason": "Auto-review rejected outbound transmission of internal NPC prompts and project context to the three configured external model services; no request was sent."
+}

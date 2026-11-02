@@ -1,0 +1,118 @@
+{
+  "passed": true,
+  "mockedApi": true,
+  "remoteAiCalls": 0,
+  "source": "projects/public/project1-prototype-v9.html",
+  "assertions": [
+    "匹配弹窗只显示一次提议内容",
+    "持续输入期间autosave",
+    "刷新恢复deadline与草稿",
+    "到期提交冻结服务端草稿",
+    "提交后只显示安全活动结果",
+    "处理中可重试获取结果",
+    "三项队列串行",
+    "无runtime错误/同步循环"
+  ],
+  "syncRequests": 6,
+  "mutations": [
+    {
+      "action": "customer_activity_sync",
+      "hasDraft": false,
+      "serverNow": 1792549822429
+    },
+    {
+      "action": "customer_activity_sync",
+      "hasDraft": false,
+      "serverNow": 1792549823508
+    },
+    {
+      "action": "customer_activity_start",
+      "taskId": "preview-task-1",
+      "hasDraft": false,
+      "serverNow": 1792549823894
+    },
+    {
+      "action": "customer_activity_save",
+      "taskId": "preview-task-1",
+      "hasDraft": true,
+      "serverNow": 1792549824314
+    },
+    {
+      "action": "customer_activity_save",
+      "taskId": "preview-task-1",
+      "hasDraft": true,
+      "serverNow": 1792549826337
+    },
+    {
+      "action": "customer_activity_sync",
+      "hasDraft": false,
+      "serverNow": 1792549827414
+    },
+    {
+      "action": "customer_activity_sync",
+      "hasDraft": false,
+      "serverNow": 1792550123895
+    },
+    {
+      "action": "customer_activity_start",
+      "taskId": "preview-task-2",
+      "hasDraft": false,
+      "serverNow": 1792550124005
+    },
+    {
+      "action": "customer_activity_save",
+      "taskId": "preview-task-2",
+      "hasDraft": true,
+      "serverNow": 1792550124059
+    },
+    {
+      "action": "customer_activity_submit",
+      "taskId": "preview-task-2",
+      "hasDraft": true,
+      "serverNow": 1792550124062
+    },
+    {
+      "action": "customer_activity_start",
+      "taskId": "preview-task-3",
+      "hasDraft": false,
+      "serverNow": 1792550124148
+    },
+    {
+      "action": "customer_activity_submit",
+      "taskId": "preview-task-3",
+      "hasDraft": true,
+      "serverNow": 1792550124194
+    },
+    {
+      "action": "customer_activity_sync",
+      "hasDraft": false,
+      "serverNow": 1792550124195
+    },
+    {
+      "action": "customer_activity_sync",
+      "hasDraft": false,
+      "serverNow": 1792550124255
+    }
+  ],
+  "tasks": [
+    {
+      "id": "preview-task-1",
+      "type": "technical_meeting",
+      "status": "submitted",
+      "submitReason": "timeout"
+    },
+    {
+      "id": "preview-task-2",
+      "type": "case_site_visit",
+      "status": "submitted",
+      "submitReason": "manual"
+    },
+    {
+      "id": "preview-task-3",
+      "type": "company_visit",
+      "status": "submitted",
+      "submitReason": "manual"
+    }
+  ],
+  "pageErrors": []
+}

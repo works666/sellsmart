@@ -1,0 +1,253 @@
+{
+  "checkedAt": "2026-10-21T03:33:21.860Z",
+  "persisted": true,
+  "updatedAt": "2026-10-21T03:33:01.701+00:00",
+  "config": {
+    "revision": 3,
+    "mode": "numeric",
+    "thresholds": {
+      "technical_meeting": {
+        "organization": {
+          "minimumPleasantness": 20,
+          "paths": [
+            {
+              "id": "a",
+              "label": "技术负责人和实施负责人均支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-002"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-004"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 8,
+                  "pleasantnessMin": 55
+                }
+              ]
+            },
+            {
+              "id": "b",
+              "label": "项目牵头人与技术负责人均支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-001"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 15,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-002"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 8,
+                  "pleasantnessMin": 55
+                }
+              ]
+            },
+            {
+              "id": "c",
+              "label": "团队整体支持且关键负责人之一支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-001",
+                    "P1-002",
+                    "P1-003",
+                    "P1-004",
+                    "P1-005"
+                  ],
+                  "minCount": 3,
+                  "supportMin": 8,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-002",
+                    "P1-004"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 8,
+                  "pleasantnessMin": 55
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "case_site_visit": {
+        "organization": {
+          "minimumPleasantness": 20,
+          "paths": [
+            {
+              "id": "a",
+              "label": "技术负责人和实施负责人均支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-002"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 15,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-004"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                }
+              ]
+            },
+            {
+              "id": "b",
+              "label": "项目牵头人与技术负责人均支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-001"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 18,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-002"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                }
+              ]
+            },
+            {
+              "id": "c",
+              "label": "团队整体支持且关键负责人之一支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-001",
+                    "P1-002",
+                    "P1-003",
+                    "P1-004",
+                    "P1-005"
+                  ],
+                  "minCount": 3,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-002",
+                    "P1-004"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "company_visit": {
+        "organization": {
+          "minimumPleasantness": 20,
+          "paths": [
+            {
+              "id": "a",
+              "label": "项目牵头人与商务负责人均支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-001"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 18,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-003"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                }
+              ]
+            },
+            {
+              "id": "b",
+              "label": "技术、商务和综合负责人均支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-002"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 15,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-003"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-005"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 8,
+                  "pleasantnessMin": 55
+                }
+              ]
+            },
+            {
+              "id": "c",
+              "label": "团队整体支持且项目或商务负责人之一支持",
+              "conditions": [
+                {
+                  "npcIds": [
+                    "P1-001",
+                    "P1-002",
+                    "P1-003",
+                    "P1-004",
+                    "P1-005"
+                  ],
+                  "minCount": 3,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                },
+                {
+                  "npcIds": [
+                    "P1-001",
+                    "P1-003"
+                  ],
+                  "minCount": 1,
+                  "supportMin": 12,
+                  "pleasantnessMin": 55
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

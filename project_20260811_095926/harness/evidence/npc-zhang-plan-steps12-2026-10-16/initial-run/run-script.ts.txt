@@ -1,0 +1,561 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import { getAiProviderConfig, type AiProvider, type ChatMessage } from '../project_20260811_095926/projects/src/lib/ai/client';
+import { wrapCustomerPromptWithContentJson, CUSTOMER_PLAIN_TEXT_OUTPUT_PROTOCOL } from '../project_20260811_095926/projects/src/lib/ai/prompts/customer';
+import { serializeUntrustedPromptData } from '../project_20260811_095926/projects/src/lib/ai/prompt-data';
+import { composeNpcRolePrompt } from '../project_20260811_095926/projects/src/lib/designer/prompt-config';
+import { PROJECT_ONE_FIVE_PERSON_NPCS } from '../project_20260811_095926/projects/src/lib/designer/project-one-five-person';
+import { npcSpeakerIdentityInstruction, hasNpcSpeakerIdentityViolation } from '../project_20260811_095926/projects/src/lib/ai/npc-speaker-identity';
+
+type Tier = 'low' | 'medium' | 'high';
+type Provider = Extract<AiProvider, 'deepseek' | 'doubao' | 'qwen'>;
+type Json = Record<string, unknown>;
+type PromptConfig = {
+  liveCustomerPrompt: string;
+  supportTierThresholds: { mediumMin: number; highMin: number };
+  npcRolePrompts: Record<string, string | { base: string; low: string; medium: string; high: string }>;
+  channelModifiers: Record<string, string>;
+  npcChannelExceptions: Record<string, Record<string, string>>;
+};
+type PlanRow = {
+  id: string; npc: string; tierLabel: '低' | '中' | '高'; channelLabel: string; mode: string;
+  focus: string; turn: number; input: string; expected: string; risk: string; sourceRow: number;
+};
+type TestCase = PlanRow & {
+  caseId: string; phase: 'single' | 'multi'; sequenceId: string | null; conversationKey: string;
+  tier: Tier; support: number; channel: string; channelId: string;
+  encounterFacts: string[]; allowEmpty: boolean;
+};
+type Prepared = TestCase & {
+  messages: ChatMessage[]; systemPromptSha256: string; messagesSha256: string;
+  priorHistory: Array<{ turn: number; sourceId: string; input: string; assistantContentPlaceholder: string }>;
+};
+type ProviderPrepared = Prepared & { provider: Provider };
+type ProviderConfig = { provider: Provider; configuredModel: string; requestedModel: string; effectiveModel: string; origin: string; configuredTimeoutMs: number };
+type Attempt = Json & {
+  provider: Provider; caseId: string; attempt: number; outputStatus: string; valid: boolean;
+  content: string | null; httpStatus: number | null; finishReason: string | null;
+  returnedModel: string | null; latencyMs: number;
+};
+type Parsed = { status: string; valid: boolean; content: string | null; returnedModel: string | null; finishReason: string | null; usage: unknown; reasoningContentChars: number | null; rawContent: unknown };
+
+const providers: Provider[] = ['deepseek', 'doubao', 'qwen'];
+const allowedHosts: Record<Provider, string> = {
+  deepseek: 'api.deepseek.com', doubao: 'ark.cn-beijing.volces.com', qwen: 'dashscope.aliyuncs.com',
+};
+const npc = PROJECT_ONE_FIVE_PERSON_NPCS['P1-001'];
+const scriptDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
+const projectRoot = path.join(scriptDir, '..', 'project_20260811_095926');
+const evidenceDir = path.join(projectRoot, 'harness/evidence/npc-zhang-plan-steps12-2026-10-16');
+const planPath = path.join(evidenceDir, 'plan-extracted.json');
+const snapshotPath = path.join(evidenceDir, 'snapshot.json');
+const revision9Path = path.join(projectRoot, 'harness/evidence/designer-excel-import-2026-10-16/real-save-after.json');
+const cataloguePath = path.join(projectRoot, 'harness/evidence/npc-zhang-latest-2026-10-16/models-catalogue.json');
+const require = createRequire(path.join(projectRoot, 'projects/package.json'));
+const dotenv = require('dotenv') as { config: (options: { path: string; quiet?: boolean; override?: boolean }) => unknown };
+dotenv.config({ path: path.join(projectRoot, 'projects/.env.local'), quiet: true, override: false });
+const execute = process.argv.includes('--execute');
+const runIdArg = process.argv.find((arg) => arg.startsWith('--run-id='));
+const runId = runIdArg?.slice('--run-id='.length) ?? '';
+const maxAttempts = 3;
+const deepseekWaitLimitMs = 180_000;
+
+function hash(value: string): string { return crypto.createHash('sha256').update(value, 'utf8').digest('hex'); }
+function chars(value: string): number { return Array.from(value).length; }
+function writeJson(target: string, value: unknown): void { fs.writeFileSync(target, JSON.stringify(value, null, 2) + '\n', 'utf8'); }
+function obj(value: unknown, label: string): Json {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${label}_SHAPE`);
+  return value as Json;
+}
+function field(value: Json, key: string): string {
+  if (typeof value[key] !== 'string') throw new Error(`${key.toUpperCase()}_MISSING`);
+  return value[key] as string;
+}
+function loadJson(target: string): Json { return obj(JSON.parse(fs.readFileSync(target, 'utf8').replace(/^\uFEFF/, '')), path.basename(target)); }
+function profileText(profile: PromptConfig['npcRolePrompts'][string], section: Tier | 'base'): string {
+  if (typeof profile === 'string') return section === 'base' ? profile : '';
+  if (!profile || typeof profile[section] !== 'string') throw new Error(`ZHANG_PROFILE_${section}_MISSING`);
+  return profile[section] as string;
+}
+function fingerprintConfig(config: PromptConfig) {
+  const profile = config.npcRolePrompts['P1-001'];
+  if (!profile) throw new Error('ZHANG_PROFILE_MISSING');
+  const values = {
+    base: profileText(profile, 'base'), low: profileText(profile, 'low'),
+    medium: profileText(profile, 'medium'), high: profileText(profile, 'high'),
+    visit: [config.channelModifiers.visit, config.npcChannelExceptions['P1-001']?.visit].filter(Boolean).join('\n'),
+  };
+  return Object.fromEntries(Object.entries(values).map(([key, value]) => [key, { sha256: hash(value), chars: chars(value) }])) as Record<string, { sha256: string; chars: number }>;
+}
+function supportFor(label: PlanRow['tierLabel']): { tier: Tier; support: number } {
+  return label === '低' ? { tier: 'low', support: 20 } : label === '中' ? { tier: 'medium', support: 50 } : { tier: 'high', support: 80 };
+}
+function channelFor(label: string): { id: string; label: string; encounterFacts: string[]; allowEmpty: boolean } {
+  const channels: Record<string, { id: string; label: string; encounterFacts: string[]; allowEmpty: boolean }> = {
+    '拜访': { id: 'visit', label: '拜访', encounterFacts: ['当前是当面交流，双方已开始接触。', '没有具体预约状态、时间或议题资料；不得推断已预约。'], allowEmpty: false },
+    '电话': { id: 'work_phone', label: '电话', encounterFacts: ['电话已经接通，双方正在通话。', '没有提供具体会议或其他日程安排，不得编造。'], allowEmpty: false },
+    '工作微信申请': { id: 'wechat_request', label: '工作微信申请', encounterFacts: ['当前仅测试工作微信申请的回复文案。', '申请尚未被接受，也没有建立微信聊天渠道。', '本模型仅决定是否生成回复文字，不决定申请是否通过。'], allowEmpty: true },
+    '直接登门': { id: 'direct_visit', label: '直接登门', encounterFacts: ['来访者明确没有预约，已直接到办公室询问能否接待。', '不代表张建国已经同意见面或接待。', '没有提供具体后续安排，不得编造。'], allowEmpty: false },
+    '约好拜访': { id: 'scheduled_visit', label: '约好拜访', encounterFacts: ['双方已经约好拜访。', '没有提供具体预约时间、议题或其他接待安排，不得编造。'], allowEmpty: false },
+  };
+  const channel = channels[label];
+  if (!channel) throw new Error(`UNMAPPED_CHANNEL:${label}`);
+  return channel;
+}
+function caseFromRow(row: PlanRow, phase: 'single' | 'multi', sequenceId: string | null): TestCase {
+  if (row.npc !== '张建国') throw new Error(`UNEXPECTED_NPC:${row.id}`);
+  const { tier, support } = supportFor(row.tierLabel);
+  const channel = channelFor(row.channelLabel);
+  return {
+    ...row, caseId: `${phase}:${sequenceId ? `${sequenceId}:` : ''}${row.id}`,
+    phase, sequenceId, conversationKey: phase === 'multi' ? `multi:${sequenceId}` : `single:${row.id}`,
+    tier, support, channel: channel.id, channelId: channel.id,
+    encounterFacts: channel.encounterFacts, allowEmpty: channel.allowEmpty,
+  };
+}
+function loadCases(): TestCase[] {
+  const source = loadJson(planPath);
+  const singleCases = source.singleCases as PlanRow[] | undefined;
+  const multiGroups = source.multiGroups as Array<{ id: string; tierLabel: PlanRow['tierLabel']; channelLabel: string; turns: PlanRow[] }> | undefined;
+  if (!Array.isArray(singleCases) || !Array.isArray(multiGroups)) throw new Error('PLAN_ROWS_MISSING');
+  const wanted = ['T001', 'T002', 'T003', 'T004', 'T005', 'T026', 'T027', 'T028', 'T029', 'T040', 'T041', 'T042', 'T047'];
+  if (JSON.stringify(singleCases.map((row) => row.id)) !== JSON.stringify(wanted)) throw new Error('SINGLE_CASE_ORDER_OR_SET_MISMATCH');
+  if (multiGroups.length !== 1 || multiGroups[0].id !== 'M01' || JSON.stringify(multiGroups[0].turns.map((row) => row.id)) !== JSON.stringify(['T027', 'T028', 'T029'])) throw new Error('MULTI_GROUP_MISMATCH');
+  const singles = singleCases.map((row) => caseFromRow(row, 'single', null));
+  const multi = multiGroups[0].turns.map((row) => caseFromRow(row, 'multi', multiGroups[0].id));
+  if (singles.length !== 13 || multi.length !== 3 || singles.length + multi.length !== 16) throw new Error('EXPECTED_16_OUTPUTS_PER_PROVIDER');
+  return [...singles, ...multi];
+}
+function makeUserMessage(testCase: TestCase): string {
+  const context = {
+    npc: { id: npc.id, name: npc.name, title: npc.title },
+    channel: testCase.channel, encounterFacts: testCase.encounterFacts,
+    confirmedFacts: [],
+    ...(testCase.allowEmpty ? { allowNoTextReply: true } : {}),
+    playerMessage: testCase.input,
+  };
+  return serializeUntrustedPromptData('customer_runtime_context', context, { maxStringLength: 2000, maxTotalLength: 8000 });
+}
+function composeSystemPrompt(config: PromptConfig, testCase: TestCase): string {
+  const profile = config.npcRolePrompts['P1-001'];
+  if (!profile) throw new Error('ZHANG_PROFILE_MISSING');
+  if (!config.liveCustomerPrompt.endsWith(CUSTOMER_PLAIN_TEXT_OUTPUT_PROTOCOL)) throw new Error('GLOBAL_OUTPUT_PROTOCOL_MISMATCH');
+  const globalPrompt = wrapCustomerPromptWithContentJson(config.liveCustomerPrompt.slice(0, -CUSTOMER_PLAIN_TEXT_OUTPUT_PROTOCOL.length));
+  const rolePrompt = composeNpcRolePrompt(profile, testCase.support, 50, config.supportTierThresholds);
+  const modifier = config.channelModifiers[testCase.channel];
+  const exception = config.npcChannelExceptions['P1-001']?.[testCase.channel];
+  if (typeof modifier !== 'string' || !modifier.trim()) throw new Error(`CHANNEL_MODIFIER_MISSING:${testCase.channel}`);
+  const identity = npcSpeakerIdentityInstruction(npc, channelFor(testCase.channelLabel).label);
+  const outputProtocol = [
+    '## 本次测试输出格式',
+    '只输出单个合法JSON对象，且仅含content字符串字段；NPC正文只写在content字段内，不输出解释或评分。',
+    testCase.allowEmpty ? '当前是微信申请文案测试，content允许为空字符串表示NPC不发送文字；这不代表申请已通过或建立了聊天渠道。' : '本场景必须返回非空content。',
+    '格式示例：{"content":"您好"}',
+  ].join('\n');
+  const system = [globalPrompt, `## 当前人物角色提示\n${rolePrompt}`, `## 当前渠道修饰器\n${modifier}`, exception ? `## 当前人物渠道例外\n${exception}` : '', identity, outputProtocol].filter(Boolean).join('\n\n');
+  const otherNpcNames = Object.entries(PROJECT_ONE_FIVE_PERSON_NPCS).filter(([id]) => id !== 'P1-001').map(([, person]) => person.name);
+  const otherNpcProfiles = Object.entries(config.npcRolePrompts).filter(([id]) => id !== 'P1-001')
+    .flatMap(([, otherProfile]) => typeof otherProfile === 'string' ? [otherProfile] : Object.values(otherProfile))
+    .filter((value): value is string => typeof value === 'string' && value.trim().length > 20);
+  if (otherNpcNames.some((name) => system.includes(name)) || otherNpcProfiles.some((otherProfile) => system.includes(otherProfile))) {
+    throw new Error('OTHER_NPC_DATA_INCLUDED_IN_SYSTEM_PROMPT');
+  }
+  return system;
+}
+function expectedRoles(testCase: TestCase): string[] {
+  return testCase.phase === 'single' ? ['system', 'user'] : ['system', ...Array.from({ length: testCase.turn - 1 }, () => ['user', 'assistant']).flat(), 'user'];
+}
+function makePrepared(config: PromptConfig, testCase: TestCase, allCases: TestCase[]): Prepared {
+  const system = composeSystemPrompt(config, testCase);
+  const userMessage = makeUserMessage(testCase);
+  const messages: ChatMessage[] = [{ role: 'system', content: system }];
+  const priorHistory: Prepared['priorHistory'] = [];
+  if (testCase.phase === 'multi') {
+    for (let turn = 1; turn < testCase.turn; turn += 1) {
+      const previous = allCases.find((item) => item.phase === 'multi' && item.sequenceId === testCase.sequenceId && item.turn === turn);
+      if (!previous) throw new Error(`MULTI_PREVIOUS_TURN_MISSING:${testCase.turn}:${turn}`);
+      messages.push({ role: 'user', content: makeUserMessage(previous) });
+      messages.push({ role: 'assistant', content: `{{actual_selected_content:${previous.caseId}}}` });
+      priorHistory.push({ turn, sourceId: previous.id, input: previous.input, assistantContentPlaceholder: `{{actual_selected_content:${previous.caseId}}}` });
+    }
+  }
+  messages.push({ role: 'user', content: userMessage });
+  if (JSON.stringify(messages.map((message) => message.role)) !== JSON.stringify(expectedRoles(testCase))) throw new Error(`MESSAGE_ROLE_PLAN_MISMATCH:${testCase.caseId}`);
+  const messagesJson = JSON.stringify(messages);
+  return { ...testCase, messages, systemPromptSha256: hash(system), messagesSha256: hash(messagesJson), priorHistory };
+}
+function buildProviderConfigs(catalogue: Json): ProviderConfig[] {
+  const modelIds = Array.isArray(catalogue.availableModelIds) ? catalogue.availableModelIds.filter((value): value is string => typeof value === 'string') : [];
+  if (catalogue.provider !== 'deepseek' || catalogue.origin !== 'api.deepseek.com' || catalogue.status !== 200 || modelIds.length === 0) throw new Error('SAME_DAY_DEEPSEEK_MODEL_CATALOGUE_INVALID');
+  return providers.map((provider) => {
+    const config = getAiProviderConfig(provider);
+    const url = new URL(config.baseUrl);
+    const origin = url.hostname.toLowerCase();
+    if (url.protocol !== 'https:' || origin !== allowedHosts[provider]) throw new Error(`PROVIDER_ORIGIN_NOT_ALLOWLISTED:${provider}`);
+    const effective = provider === 'deepseek' && !modelIds.includes(config.model)
+      ? (catalogue.effectiveModel === 'deepseek-flash' && modelIds.includes('deepseek-flash') ? 'deepseek-flash' : '')
+      : config.model;
+    if (!effective) throw new Error('DEEPSEEK_CONFIGURED_MODEL_UNAVAILABLE_AND_NO_APPROVED_EFFECTIVE_ALIAS');
+    return { provider, configuredModel: config.model, requestedModel: effective, effectiveModel: effective, origin, configuredTimeoutMs: config.timeoutMs };
+  });
+}
+function endpoint(provider: Provider): URL {
+  const config = getAiProviderConfig(provider);
+  const base = new URL(config.baseUrl);
+  if (base.protocol !== 'https:' || base.hostname.toLowerCase() !== allowedHosts[provider]) throw new Error(`PROVIDER_ORIGIN_NOT_ALLOWLISTED:${provider}`);
+  const basePath = base.pathname.replace(/\/+$/, '');
+  const url = basePath.endsWith('/chat/completions') ? base : new URL(`${basePath}/chat/completions`, base.origin);
+  url.search = ''; url.hash = '';
+  return url;
+}
+function parseCompletion(raw: string, allowEmpty: boolean): Parsed {
+  let envelope: unknown;
+  try { envelope = JSON.parse(raw); } catch { return { status: 'invalid_json', valid: false, content: null, returnedModel: null, finishReason: null, usage: null, reasoningContentChars: null, rawContent: null }; }
+  if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope)) return { status: 'invalid_shape', valid: false, content: null, returnedModel: null, finishReason: null, usage: null, reasoningContentChars: null, rawContent: null };
+  const data = envelope as Json;
+  const choice = Array.isArray(data.choices) ? data.choices[0] as Json | undefined : undefined;
+  const message = choice?.message && typeof choice.message === 'object' ? choice.message as Json : null;
+  const rawContent = message?.content ?? null;
+  const text = typeof rawContent === 'string' ? rawContent : Array.isArray(rawContent)
+    ? rawContent.map((part) => part && typeof part === 'object' && (part as Json).type === 'text' ? String((part as Json).text ?? '') : '').join('') : null;
+  const returnedModel = typeof data.model === 'string' ? data.model : null;
+  const finishReason = typeof choice?.finish_reason === 'string' ? choice.finish_reason : null;
+  const reasoning = typeof message?.reasoning_content === 'string' ? message.reasoning_content : '';
+  const invalid = (status: string): Parsed => ({ status, valid: false, content: null, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: chars(reasoning), rawContent });
+  if (text === null) return invalid('invalid_shape');
+  let parsed: unknown;
+  try { parsed = JSON.parse(text); } catch { return invalid('invalid_json'); }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return invalid('invalid_shape');
+  const record = parsed as Json;
+  if (Object.keys(record).length !== 1 || typeof record.content !== 'string') return invalid('invalid_shape');
+  if (!record.content.trim()) return allowEmpty && record.content === ''
+    ? { status: 'valid_silence', valid: true, content: '', returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: chars(reasoning), rawContent }
+    : invalid('blank_content');
+  return { status: 'valid', valid: true, content: record.content, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: chars(reasoning), rawContent };
+}
+function parseSse(raw: string, allowEmpty: boolean): Parsed {
+  let content = ''; let returnedModel: string | null = null; let finishReason: string | null = null; let usage: unknown = null;
+  let reasoningContentChars = 0; let sawEvent = false;
+  for (const line of raw.split(/\r?\n/)) {
+    if (!line.startsWith('data:')) continue;
+    const value = line.slice(5).trim();
+    if (!value || value === '[DONE]') continue;
+    let event: Json;
+    try { event = obj(JSON.parse(value), 'SSE_EVENT'); } catch { continue; }
+    sawEvent = true;
+    if (typeof event.model === 'string') returnedModel = event.model;
+    if (event.usage !== undefined) usage = event.usage;
+    const choice = Array.isArray(event.choices) ? event.choices[0] as Json | undefined : undefined;
+    if (!choice) continue;
+    if (typeof choice.finish_reason === 'string') finishReason = choice.finish_reason;
+    const delta = choice.delta && typeof choice.delta === 'object' ? choice.delta as Json : null;
+    const text = delta?.content;
+    if (typeof text === 'string') content += text;
+    else if (Array.isArray(text)) content += text.map((part) => part && typeof part === 'object' && (part as Json).type === 'text' ? String((part as Json).text ?? '') : '').join('');
+    if (typeof delta?.reasoning_content === 'string') reasoningContentChars += chars(delta.reasoning_content);
+  }
+  if (!sawEvent) return { status: 'blank_sse', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: null };
+  let parsed: unknown;
+  try { parsed = JSON.parse(content); } catch { return { status: 'invalid_json', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content }; }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return { status: 'invalid_shape', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+  const record = parsed as Json;
+  if (Object.keys(record).length !== 1 || typeof record.content !== 'string') return { status: 'invalid_shape', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+  if (!record.content.trim()) return allowEmpty && record.content === ''
+    ? { status: 'valid_silence', valid: true, content: '', returnedModel, finishReason, usage, reasoningContentChars, rawContent: content }
+    : { status: 'blank_content', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+  return { status: 'valid', valid: true, content: record.content, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+}
+function safeError(error: unknown): string {
+  if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)) return 'TIMEOUT';
+  if (error instanceof TypeError) return 'NETWORK_ERROR';
+  return 'REQUEST_ERROR';
+}
+function makeActualMessages(sample: Prepared, history: Array<{ userMessage: string; assistantContent: string }>): ChatMessage[] {
+  const messages: ChatMessage[] = [{ role: 'system', content: sample.messages[0].content }];
+  for (const turn of history) messages.push({ role: 'user', content: turn.userMessage }, { role: 'assistant', content: turn.assistantContent });
+  messages.push({ role: 'user', content: makeUserMessage(sample) });
+  if (JSON.stringify(messages.map((message) => message.role)) !== JSON.stringify(expectedRoles(sample))) throw new Error(`ACTUAL_HISTORY_ROLE_MISMATCH:${sample.caseId}`);
+  return messages;
+}
+async function runAttempt(sample: ProviderPrepared, providerConfig: ProviderConfig, attempt: number, messages: ChatMessage[]): Promise<Attempt> {
+  const provider = sample.provider;
+  const config = getAiProviderConfig(provider);
+  const url = endpoint(provider);
+  const startedAt = new Date().toISOString(); const started = Date.now();
+  const isDeepseek = provider === 'deepseek';
+  const body = {
+    model: providerConfig.requestedModel, messages, temperature: 0.35, max_tokens: 512,
+    response_format: { type: 'json_object' },
+    ...(provider === 'qwen' ? { enable_thinking: false } : { thinking: { type: 'disabled' } }),
+    stream: isDeepseek,
+  };
+  const bodyText = JSON.stringify(body);
+  fs.appendFileSync(path.join(evidenceDir, 'requests.ndjson'), JSON.stringify({
+    provider, caseId: sample.caseId, phase: sample.phase, sequenceId: sample.sequenceId,
+    conversationId: `${sample.conversationKey}:${provider}`, turn: sample.turn, sourceId: sample.id, sourceRow: sample.sourceRow,
+    attempt, configuredModel: providerConfig.configuredModel, requestedModel: providerConfig.requestedModel,
+    origin: providerConfig.origin, endpointPath: url.pathname, temperature: 0.35, maxTokens: 512,
+    thinking: 'disabled', responseFormat: 'json_object', stream: isDeepseek,
+    requestBodySha256: hash(bodyText), systemPromptSha256: sample.systemPromptSha256,
+    messagesSha256: hash(JSON.stringify(messages)), roles: messages.map((message) => message.role), body,
+  }) + '\n', 'utf8');
+
+  let httpStatus: number | null = null; let requestId: string | null = null;
+  let responseBodyText: string | null = null; const rawChunks: string[] = []; let decoder: TextDecoder | null = null;
+  let parsed: Parsed = { status: 'request_error', valid: false, content: null, returnedModel: null, finishReason: null, usage: null, reasoningContentChars: null, rawContent: null };
+  let requestErrorCode: string | null = null;
+  try {
+    const response = await fetch(url, {
+      method: 'POST', headers: { authorization: `Bearer ${config.apiKey}`, 'content-type': 'application/json' },
+      body: bodyText, signal: AbortSignal.timeout(isDeepseek ? deepseekWaitLimitMs : providerConfig.configuredTimeoutMs),
+    });
+    httpStatus = response.status;
+    requestId = response.headers.get('x-request-id') ?? response.headers.get('request-id') ?? response.headers.get('x-tt-logid');
+    if (isDeepseek && response.body) {
+      decoder = new TextDecoder(); const reader = response.body.getReader();
+      while (true) { const chunk = await reader.read(); if (chunk.done) break; rawChunks.push(decoder.decode(chunk.value, { stream: true })); }
+      rawChunks.push(decoder.decode()); responseBodyText = rawChunks.join('');
+      parsed = parseSse(responseBodyText, sample.allowEmpty);
+    } else {
+      responseBodyText = await response.text(); parsed = parseCompletion(responseBodyText, sample.allowEmpty);
+    }
+    if (!response.ok) parsed = { ...parsed, status: 'http_error', valid: false, content: null };
+  } catch (error) {
+    requestErrorCode = safeError(error);
+    if (isDeepseek) {
+      if (decoder) rawChunks.push(decoder.decode());
+      responseBodyText = rawChunks.join('');
+      if (responseBodyText) parsed = parseSse(responseBodyText, sample.allowEmpty);
+      if (!parsed.valid) parsed = { ...parsed, status: parsed.status === 'blank_sse' ? 'request_error_blank_sse' : parsed.status };
+    }
+  }
+  const finishedAt = new Date().toISOString(); const latencyMs = Date.now() - started;
+  const identityViolation = parsed.valid && parsed.content ? hasNpcSpeakerIdentityViolation(npc, parsed.content) : false;
+  const attemptResult: Attempt = {
+    provider, caseId: sample.caseId, phase: sample.phase, sequenceId: sample.sequenceId,
+    conversationId: `${sample.conversationKey}:${provider}`, turn: sample.turn, sourceId: sample.id,
+    attempt, configuredModel: providerConfig.configuredModel, requestedModel: providerConfig.requestedModel,
+    returnedModel: parsed.returnedModel, npcId: npc.id, npcName: npc.name, tier: sample.tier,
+    support: sample.support, pleasantness: 50, channel: sample.channel, input: sample.input,
+    httpStatus, requestId, requestErrorCode, outputStatus: parsed.status, valid: parsed.valid,
+    responseBodyText, responseJson: !isDeepseek && responseBodyText ? (() => { try { return JSON.parse(responseBodyText); } catch { return null; } })() : null,
+    responseContentRaw: parsed.rawContent, content: parsed.content, finishReason: parsed.finishReason,
+    usage: parsed.usage, reasoningContentChars: parsed.reasoningContentChars,
+    contentChars: parsed.content === null ? null : chars(parsed.content.trim()), identityViolation,
+    startedAt, finishedAt, latencyMs,
+  };
+  fs.appendFileSync(path.join(evidenceDir, 'responses.ndjson'), JSON.stringify(attemptResult) + '\n', 'utf8');
+  return attemptResult;
+}
+function priorHistoryFor(sample: Prepared, selectedByCase: Map<string, string>) {
+  return sample.priorHistory.map((turn) => ({
+    turn: turn.turn, sourceId: turn.sourceId, input: turn.input,
+    assistantContent: selectedByCase.get(`${sample.sequenceId}:${turn.sourceId}`) ?? null,
+  }));
+}
+function makeFinalRecord(sourceRevision: number, sample: ProviderPrepared, providerConfig: ProviderConfig, selected: Attempt | null, last: Attempt | null, attemptCount: number, totalLatency: number, selectedByCase: Map<string, string>, outputStatus?: string): Json {
+  return {
+    sourceRevision, provider: sample.provider, caseId: sample.caseId, phase: sample.phase,
+    sequenceId: sample.sequenceId, conversationId: `${sample.conversationKey}:${sample.provider}`,
+    turn: sample.turn, sourceId: sample.id, sourceRow: sample.sourceRow,
+    channel: sample.channel, channelLabel: sample.channelLabel,
+    tier: sample.tier, tierLabel: sample.tierLabel, support: sample.support, pleasantness: 50,
+    kind: sample.focus, input: sample.input,
+    content: selected?.content ?? null, contentChars: selected?.content === null || selected?.content === undefined ? null : chars(selected.content.trim()),
+    outputStatus: outputStatus ?? selected?.outputStatus ?? last?.outputStatus ?? 'not_run',
+    attemptCount, firstValidAttempt: selected?.attempt ?? null,
+    configuredModel: providerConfig.configuredModel, requestedModel: providerConfig.requestedModel,
+    effectiveModel: providerConfig.effectiveModel, returnedModel: selected?.returnedModel ?? last?.returnedModel ?? null,
+    httpStatus: selected?.httpStatus ?? last?.httpStatus ?? null, finishReason: selected?.finishReason ?? last?.finishReason ?? null,
+    latencyMs: totalLatency, identityViolation: selected?.identityViolation ?? last?.identityViolation ?? null,
+    previousTurns: priorHistoryFor(sample, selectedByCase), allowEmpty: sample.allowEmpty,
+    planExpected: sample.expected, planRisk: sample.risk,
+  };
+}
+function currentSourceComparison(current: Json): { previousRevision: number; changedFields: string[]; fields: Json } {
+  const previous = loadJson(revision9Path);
+  if (previous.revision !== 9 || previous.persisted !== true) throw new Error('EXPECTED_PERSISTED_REVISION_9_REFERENCE');
+  const currentConfig = obj(current.config, 'CURRENT_CONFIG') as PromptConfig;
+  const previousConfig = obj(previous.config, 'REVISION_9_CONFIG') as PromptConfig;
+  const before = fingerprintConfig(previousConfig); const after = fingerprintConfig(currentConfig);
+  const fields = Object.fromEntries(Object.keys(after).map((name) => [name, {
+    previousSha256: before[name].sha256, currentSha256: after[name].sha256,
+    previousChars: before[name].chars, currentChars: after[name].chars,
+    changed: before[name].sha256 !== after[name].sha256,
+  }]));
+  const changedFields = Object.keys(after).filter((name) => before[name].sha256 !== after[name].sha256);
+  return { previousRevision: 9, changedFields, fields };
+}
+function prepare() {
+  fs.mkdirSync(evidenceDir, { recursive: true });
+  if (!fs.existsSync(snapshotPath)) throw new Error('FRESH_GET_SNAPSHOT_MISSING');
+  if (!fs.existsSync(cataloguePath)) throw new Error('SAME_DAY_DEEPSEEK_MODEL_CATALOGUE_MISSING');
+  if (fs.existsSync(path.join(evidenceDir, 'requests.ndjson')) || fs.existsSync(path.join(evidenceDir, 'responses.ndjson'))) throw new Error('EXECUTION_EVIDENCE_ALREADY_EXISTS');
+  const current = loadJson(snapshotPath);
+  if (current.persisted !== true || current.revision !== 10) throw new Error('EXPECTED_FRESH_PERSISTED_REVISION_10');
+  const config = obj(current.config, 'PROMPT_CONFIG') as PromptConfig;
+  const comparison = currentSourceComparison(current);
+  if (comparison.changedFields.length === 0) throw new Error('NO_ZHANG_PROMPT_CHANGE_FROM_REVISION_9');
+  const cases = loadCases();
+  const prepared = cases.map((testCase) => makePrepared(config, testCase, cases));
+  const catalogue = loadJson(cataloguePath);
+  const providerConfigs = buildProviderConfigs(catalogue);
+  const casesForProviders = providerConfigs.flatMap(({ provider }) => prepared.map((sample) => ({
+    provider, caseId: sample.caseId, phase: sample.phase, sequenceId: sample.sequenceId,
+    conversationKey: sample.conversationKey, sourceId: sample.id, sourceRow: sample.sourceRow,
+    turn: sample.turn, tier: sample.tier, tierLabel: sample.tierLabel, support: sample.support,
+    pleasantness: 50, channel: sample.channel, channelLabel: sample.channelLabel,
+    input: sample.input, inputSha256: hash(sample.input), systemPromptSha256: sample.systemPromptSha256,
+    messagesSha256: sample.messagesSha256, messageRoles: sample.messages.map((message) => message.role),
+    priorHistory: sample.priorHistory, allowEmpty: sample.allowEmpty,
+  })));
+  const settings = {
+    temperature: 0.35, maxTokens: 512, responseFormat: 'json_object', thinking: 'disabled',
+    deepseekStream: true, deepseekWaitLimitMs, maxAutomaticAttempts: maxAttempts,
+    providerSequence: providers, eachProviderCasesSequential: true, providersParallel: true,
+  };
+  const plan = {
+    preparedAt: new Date().toISOString(), sourcePath: current.sourcePath ?? null,
+    sourceSha256: loadJson(planPath).sourceSha256, sourceRevision: current.revision,
+    sourcePersisted: current.persisted, sourceUpdatedAt: current.updatedAt,
+    previousRevision: comparison.previousRevision, changedFields: comparison.changedFields,
+    promptComparison: comparison.fields, providerConfigs, settings,
+    singleCaseCount: cases.filter((item) => item.phase === 'single').length,
+    multiTurnCount: cases.filter((item) => item.phase === 'multi').length,
+    plannedOutputsPerProvider: prepared.length, plannedOutputsTotal: prepared.length * providers.length,
+    plannedCallsPerProvider: prepared.length, plannedCallsTotal: prepared.length * providers.length,
+    testCases: prepared.map((sample) => ({
+      caseId: sample.caseId, phase: sample.phase, sequenceId: sample.sequenceId,
+      conversationKey: sample.conversationKey, sourceId: sample.id, sourceRow: sample.sourceRow,
+      turn: sample.turn, tier: sample.tier, tierLabel: sample.tierLabel, support: sample.support,
+      pleasantness: 50, channel: sample.channel, channelLabel: sample.channelLabel,
+      focus: sample.focus, input: sample.input, inputSha256: hash(sample.input),
+      expected: sample.expected, risk: sample.risk, encounterFacts: sample.encounterFacts,
+      allowEmpty: sample.allowEmpty, systemPromptSha256: sample.systemPromptSha256,
+      selectedProfileLayer: `${sample.tier} + P1-001 base`,
+      selectedChannelPromptLayer: sample.channel,
+      messagesSha256WithMultiPlaceholders: sample.messagesSha256,
+      messageRoles: sample.messages.map((message) => message.role),
+      historyBeforeTurn: sample.priorHistory,
+      promptMessages: sample.messages,
+    })),
+    providersAndMessages: casesForProviders,
+    modelCatalogue: {
+      sourceEvidence: path.relative(projectRoot, cataloguePath), fetchedAt: catalogue.fetchedAt,
+      status: catalogue.status, configuredModel: catalogue.configuredModel,
+      availableModelIds: catalogue.availableModelIds, effectiveModel: catalogue.effectiveModel,
+      noCatalogueRequestSentDuringPrepare: true,
+    },
+    allowedOrigins: Object.values(allowedHosts), persistenceWrites: false,
+    otherNpcCompleteProfilesIncluded: false,
+    completionRequestsSent: false,
+  };
+  writeJson(path.join(evidenceDir, 'prepared-plan.json'), plan);
+  writeJson(path.join(evidenceDir, 'manifest.json'), {
+    sourceRevision: current.revision, sourcePersisted: current.persisted, sourceUpdatedAt: current.updatedAt,
+    previousRevision: comparison.previousRevision, changedFields: comparison.changedFields,
+    promptComparison: comparison.fields, providers: providerConfigs, settings,
+    plannedOutputsPerProvider: prepared.length, plannedOutputsTotal: prepared.length * providers.length,
+    modelCatalogue: plan.modelCatalogue, allowedOrigins: Object.values(allowedHosts),
+    modelCatalogueGetSent: false, completionRequestsSent: false, completionRequests: 0,
+    completionAttempts: 0, retries: 0, executionStatus: 'prepared_no_model_requests',
+  });
+  fs.copyFileSync(fileURLToPath(import.meta.url), path.join(evidenceDir, 'run-script.ts.txt'));
+  return { current, config, cases, prepared, providerConfigs, settings, plan, comparison };
+}
+function persistResults(sourceRevision: number, records: Json[], providersConfig: ProviderConfig[], planned: number, finished?: boolean) {
+  writeJson(path.join(evidenceDir, 'final-results.json'), {
+    sourceRevision, providers: providersConfig, completedOutputs: records.length,
+    plannedOutputs: planned, records,
+  });
+  if (finished) {
+    const requestLines = fs.readFileSync(path.join(evidenceDir, 'requests.ndjson'), 'utf8').split(/\r?\n/).filter(Boolean);
+    const responseLines = fs.readFileSync(path.join(evidenceDir, 'responses.ndjson'), 'utf8').split(/\r?\n/).filter(Boolean);
+    const manifest = loadJson(path.join(evidenceDir, 'manifest.json'));
+    manifest.finishedAt = new Date().toISOString();
+    manifest.executionStatus = records.length === planned && records.every((row) => ['valid', 'valid_silence'].includes(String(row.outputStatus))) ? 'complete' : 'partial_or_failed';
+    manifest.completionRequestsSent = requestLines.length > 0;
+    manifest.completionRequests = new Set(requestLines.map((line) => {
+      const row = JSON.parse(line) as Json; return `${row.provider}:${row.caseId}`;
+    })).size;
+    manifest.completionAttempts = responseLines.length;
+    manifest.retries = Math.max(0, responseLines.length - Number(manifest.completionRequests));
+    writeJson(path.join(evidenceDir, 'manifest.json'), manifest);
+  }
+}
+async function executeRun(state: ReturnType<typeof prepare>) {
+  if (!runId || !/^[a-z0-9][a-z0-9-]{0,63}$/.test(runId)) throw new Error('EXECUTE_REQUIRES_VALID_RUN_ID');
+  if (fs.existsSync(path.join(evidenceDir, 'requests.ndjson')) || fs.existsSync(path.join(evidenceDir, 'responses.ndjson'))) throw new Error('EXECUTION_EVIDENCE_ALREADY_EXISTS');
+  fs.writeFileSync(path.join(evidenceDir, 'requests.ndjson'), '', 'utf8');
+  fs.writeFileSync(path.join(evidenceDir, 'responses.ndjson'), '', 'utf8');
+  const sourceRevision = Number(state.current.revision);
+  const records: Json[] = [];
+  const selectedByProvider = new Map<Provider, Map<string, string>>();
+  for (const provider of providers) selectedByProvider.set(provider, new Map());
+  const providerStopped = new Map<Provider, string | null>(providers.map((provider) => [provider, null]));
+  const providerRun = async (provider: Provider) => {
+    const providerConfig = state.providerConfigs.find((item) => item.provider === provider)!;
+    const selectedByCase = selectedByProvider.get(provider)!;
+    const multiHistory: Array<{ userMessage: string; assistantContent: string }> = [];
+    const samples = state.prepared.filter((sample) => sample.phase === 'single' || sample.phase === 'multi');
+    let firstDeepseekBlankTimeouts = 0;
+    for (const sampleWithoutProvider of samples) {
+      const sample = { ...sampleWithoutProvider, provider } as ProviderPrepared;
+      if (providerStopped.get(provider)) {
+        const record = makeFinalRecord(sourceRevision, sample, providerConfig, null, null, 0, 0, selectedByCase, 'not_run_after_provider_stop');
+        records.push(record); persistResults(sourceRevision, records, state.providerConfigs, providers.length * state.prepared.length); continue;
+      }
+      if (sample.phase === 'multi' && sample.turn > 1 && multiHistory.length !== sample.turn - 1) {
+        const record = makeFinalRecord(sourceRevision, sample, providerConfig, null, null, 0, 0, selectedByCase, 'not_run_previous_turn_unavailable');
+        records.push(record); persistResults(sourceRevision, records, state.providerConfigs, providers.length * state.prepared.length); continue;
+      }
+      const messages = makeActualMessages(sample, sample.phase === 'multi' ? multiHistory : []);
+      let selected: Attempt | null = null; let last: Attempt | null = null; let attempts = 0; let totalLatency = 0;
+      for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        attempts = attempt;
+        last = await runAttempt(sample, providerConfig, attempt, messages);
+        totalLatency += last.latencyMs;
+        if (last.valid) { selected = last; break; }
+        const longDeepseekBlank = provider === 'deepseek' && !last.content && last.latencyMs >= deepseekWaitLimitMs - 5_000;
+        firstDeepseekBlankTimeouts = longDeepseekBlank ? firstDeepseekBlankTimeouts + 1 : 0;
+        if (provider === 'deepseek' && sample.caseId === state.prepared[0].caseId && firstDeepseekBlankTimeouts >= 2) {
+          providerStopped.set(provider, 'first_sample_two_consecutive_180s_sse_attempts_without_content');
+          break;
+        }
+        if (attempt < maxAttempts) await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      const finalRecord = makeFinalRecord(sourceRevision, sample, providerConfig, selected, last, attempts, totalLatency, selectedByCase);
+      records.push(finalRecord); persistResults(sourceRevision, records, state.providerConfigs, providers.length * state.prepared.length);
+      console.log(JSON.stringify({ runId, provider, caseId: sample.caseId, outputStatus: finalRecord.outputStatus, attemptCount: attempts, latencyMs: totalLatency }));
+      if (selected && sample.phase === 'multi') {
+        multiHistory.push({ userMessage: makeUserMessage(sample), assistantContent: selected.content ?? '' });
+        selectedByCase.set(`${sample.sequenceId}:${sample.id}`, selected.content ?? '');
+      }
+    }
+  };
+  await Promise.all(providers.map((provider) => providerRun(provider)));
+  persistResults(sourceRevision, records, state.providerConfigs, providers.length * state.prepared.length, true);
+  console.log(JSON.stringify({ runId, status: records.length === 48 && records.every((row) => ['valid', 'valid_silence'].includes(String(row.outputStatus))) ? 'complete' : 'partial_or_failed', records: records.length, planned: 48, stopped: Object.fromEntries(providerStopped), evidenceDir }, null, 2));
+}
+async function main() {
+  const state = prepare();
+  console.log(JSON.stringify({
+    mode: execute ? 'prepare_then_execute' : 'prepare_dryrun', sourceRevision: state.current.revision,
+    sourceUpdatedAt: state.current.updatedAt, previousRevision: state.comparison.previousRevision,
+    changedFields: state.comparison.changedFields,
+    promptHashes: state.comparison.fields, providers: state.providerConfigs,
+    singleCount: state.cases.filter((item) => item.phase === 'single').length,
+    multiTurns: state.cases.filter((item) => item.phase === 'multi').map((item) => ({ caseId: item.caseId, turn: item.turn, channel: item.channel, support: item.support })),
+    totalOutputs: state.cases.length * providers.length, completionRequestsSent: false,
+    preparedPlan: path.join(evidenceDir, 'prepared-plan.json'), evidenceDir,
+  }, null, 2));
+  if (execute) await executeRun(state);
+}
+
+main().catch((error: unknown) => {
+  console.error(`ZHANG_STEPS12_TEST_FAILED:${error instanceof Error ? error.message : 'UNKNOWN_ERROR'}`);
+  process.exitCode = 1;
+});

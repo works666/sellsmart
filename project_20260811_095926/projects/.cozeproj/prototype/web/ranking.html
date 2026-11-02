@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+    /* 自定义滚动条（仅用于宽表格） */
+    .table-scroll::-webkit-scrollbar { height: 8px; }
+    .table-scroll::-webkit-scrollbar-track { background: transparent; }
+    .table-scroll::-webkit-scrollbar-thumb { background: #DDE2EC; border-radius: 4px; }
+    .table-scroll::-webkit-scrollbar-thumb:hover { background: #C8CFDC; }
+  </style>
+
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <header class="bg-surface border-b border-outline-variant/60 sticky top-0 z-40 h-14 flex items-center justify-between px-6">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
+          <i data-lucide="target" class="w-4 h-4 text-on-primary"></i>
+        </div>
+        <span class="font-bold text-base text-on-surface">竞标博弈 · 政企销售实训</span>
+      </div>
+      <nav class="flex items-center gap-1" id="top-nav">
+        <a href="home.html" id="nav-home" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">实训工作台</a>
+        <a href="setup.html" id="nav-setup" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">对局配置</a>
+        <a href="game.html" id="nav-game" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">博弈演练</a>
+        <a href="result.html" id="nav-result" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">复盘中心</a>
+        <a href="knowledge.html" id="nav-knowledge" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">产品知识库</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+        <i data-lucide="circle-dot" class="w-3 h-3 text-success"></i>
+        <span class="text-xs font-medium text-on-surface-variant num">已连接 2 个对局</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+        <span class="text-sm font-semibold text-primary">初</span>
+      </div>
+    </div>
+  </header>
+  <!-- @nav:end 导航组件 -->
+
+  <!-- @main-content:start -->
+  <main class="bg-background min-h-[calc(100vh-3.5rem)]">
+    <div class="max-w-7xl mx-auto p-6 space-y-6">
+
+      <!-- ==================== Section 1 · 页面标题 ==================== -->
+      <section class="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <div class="w-7 h-7 rounded-md bg-warning/15 flex items-center justify-center">
+              <i data-lucide="trophy" class="w-4 h-4 text-warning"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-on-surface">排行榜</h1>
+          </div>
+          <p class="text-sm text-on-surface-variant">查看本场对局成绩与全平台玩家排名，沉淀实战数据</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface border border-outline-variant/40 rounded-md text-sm shadow-card">
+            <i data-lucide="layers" class="w-4 h-4 text-primary"></i>
+            <span class="text-xs text-on-surface-variant">当前房间</span>
+            <span class="font-semibold text-on-surface num">智慧政务 v3.2 · 第 38 场</span>
+          </span>
+        </div>
+      </section>
+
+      <!-- ==================== Section 2 · 4 个核心指标卡 ==================== -->
+      <section class="grid grid-cols-4 gap-4">
+
+        <!-- 指标卡 1 · 当前房间人数 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-on-surface-variant uppercase tracking-wide">当前房间人数</span>
+            <div class="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+              <i data-lucide="users" class="w-4 h-4 text-primary"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-3xl font-bold text-on-surface num">8</span>
+            <span class="text-sm text-on-surface-variant">人</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 text-xs text-on-surface-variant">
+            <i data-lucide="user-check" class="w-3 h-3 text-success"></i>
+            <span>全部已就位</span>
+          </div>
+        </div>
+
+        <!-- 指标卡 2 · 我的排名 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-on-surface-variant uppercase tracking-wide">我的本场排名</span>
+            <div class="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+              <i data-lucide="medal" class="w-4 h-4 text-primary"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-3xl font-bold text-on-surface num">4</span>
+            <span class="text-sm text-on-surface-variant num">/ 8</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 text-xs">
+            <i data-lucide="trending-up" class="w-3 h-3 text-success"></i>
+            <span class="text-success font-semibold num">↑2</span>
+            <span class="text-on-surface-variant">较初始排名</span>
+          </div>
+        </div>
+
+        <!-- 指标卡 3 · 我的总积分 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-on-surface-variant uppercase tracking-wide">我的总积分</span>
+            <div class="w-7 h-7 rounded-md bg-warning/15 flex items-center justify-center">
+              <i data-lucide="star" class="w-4 h-4 text-warning"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-3xl font-bold text-on-surface num">12,680</span>
+            <span class="text-sm text-on-surface-variant">分</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 text-xs">
+            <i data-lucide="circle-dot" class="w-3 h-3 text-success"></i>
+            <span class="text-success font-semibold num">+820</span>
+            <span class="text-on-surface-variant">本场获得</span>
+          </div>
+        </div>
+
+        <!-- 指标卡 4 · 累计对局数 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-on-surface-variant uppercase tracking-wide">累计对局数</span>
+            <div class="w-7 h-7 rounded-md bg-success/15 flex items-center justify-center">
+              <i data-lucide="swords" class="w-4 h-4 text-success"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-3xl font-bold text-on-surface num">47</span>
+            <span class="text-sm text-on-surface-variant">场</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 text-xs text-on-surface-variant">
+            <i data-lucide="flame" class="w-3 h-3 text-warning"></i>
+            <span>当前连胜 <span class="font-semibold text-warning num">3</span> 场</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== Section 3 · Tab + 排行榜 ==================== -->
+      <section class="bg-surface rounded-lg shadow-card overflow-hidden">
+
+        <!-- Tab 头（顶部横线 + 文字下划线激活态） -->
+        <div class="border-b border-outline-variant/40 px-5">
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-6">
+              <button id="tab-room" data-tab="room" class="tab-btn relative pb-3 pt-3.5 text-sm font-semibold text-primary transition-colors" aria-current="page">
+                <span class="inline-flex items-center gap-1.5">
+                  <i data-lucide="layers" class="w-4 h-4"></i>当前房间小组榜
+                </span>
+                <span class="absolute left-0 right-0 -bottom-px h-0.5 bg-primary rounded-full"></span>
+              </button>
+              <button id="tab-global" data-tab="global" class="tab-btn relative pb-3 pt-3.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors">
+                <span class="inline-flex items-center gap-1.5">
+                  <i data-lucide="globe" class="w-4 h-4"></i>全平台玩家总榜
+                </span>
+                <span class="absolute left-0 right-0 -bottom-px h-0.5 bg-transparent rounded-full"></span>
+              </button>
+            </div>
+            <div class="py-2 text-xs text-on-surface-variant">
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="info" class="w-3 h-3"></i>本场结算时间 2024-05-18 16:42
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== Tab 1 · 当前房间小组榜 ========== -->
+        <div id="content-room" class="p-5 space-y-4">
+
+          <!-- 工具栏：排序 + 操作 -->
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-on-surface-variant">排序方式</span>
+              <div class="flex items-center gap-1 p-0.5 bg-surface-container rounded-md" id="sort-group">
+                <button id="sort-score" data-sort="score" class="sort-btn px-3 py-1 text-xs font-semibold rounded-sm bg-surface text-primary shadow-sm transition-all" aria-pressed="true">总得分</button>
+                <button id="sort-amount" data-sort="amount" class="sort-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">中标额</button>
+                <button id="sort-margin" data-sort="margin" class="sort-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">利润率</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-share-room" class="bg-surface text-on-surface border border-outline-variant/40 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-surface-container transition-all inline-flex items-center gap-1.5">
+                <i data-lucide="share-2" class="w-3.5 h-3.5"></i>分享本场榜单
+              </button>
+              <button id="btn-export-room" class="bg-surface text-on-surface border border-outline-variant/40 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-surface-container transition-all inline-flex items-center gap-1.5">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>导出 CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- 表格容器：水平滚动 -->
+          <div class="border border-outline-variant/40 rounded-lg overflow-hidden">
+            <div class="table-scroll overflow-x-auto">
+
+              <!-- 表头（8 列） -->
+              <div class="grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 px-4 py-3 bg-surface-container/60 text-xs font-semibold text-on-surface-variant uppercase tracking-wide border-b border-outline-variant/40">
+                <span>排名</span>
+                <span>玩家</span>
+                <span>角色</span>
+                <span class="text-right">总得分</span>
+                <span class="text-right">中标额</span>
+                <span class="text-right">利润率</span>
+                <span class="text-right">决策人好评度</span>
+                <span class="text-right">用时</span>
+              </div>
+
+              <!-- 表格体：8 行玩家数据 -->
+              <div id="room-table-body" class="divide-y divide-outline-variant/40">
+
+                <!-- 列表-房间玩家1：钱子轩（🥇第1名 · 金色渐变） -->
+                <div class="room-row relative grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 items-center px-4 h-14 bg-gradient-to-r from-amber-50/80 via-amber-50/30 to-transparent hover:from-amber-50 hover:to-amber-50/40 transition-colors"
+                     data-score="92" data-amount="1280" data-margin="18">
+                  <span class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300"></span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl leading-none" aria-hidden="true">🥇</span>
+                    <i data-lucide="trophy" class="w-3.5 h-3.5 text-amber-500"></i>
+                    <span class="text-sm font-bold text-on-surface num">1</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                      <span class="text-xs font-semibold text-primary">钱</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">钱子轩</div>
+                      <div class="text-xs text-on-surface-variant truncate">中电信数智 · 央企</div>
+                    </div>
+                  </div>
+                  <span class="text-sm text-on-surface">采购方决策人</span>
+                  <span class="text-sm font-bold text-on-surface num text-right">92</span>
+                  <span class="text-sm font-semibold text-on-surface num text-right">¥1,280万</span>
+                  <span class="text-sm num font-semibold text-success text-right">18%</span>
+                  <div class="flex items-center gap-1.5 justify-end">
+                    <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                      <div class="h-full bg-success rounded-full" style="width: 91%"></div>
+                    </div>
+                    <span class="text-sm num font-semibold text-on-surface">91</span>
+                  </div>
+                  <span class="text-sm num text-on-surface-variant text-right">32:15</span>
+                </div>
+
+                <!-- 列表-房间玩家2：王雅琴（🥈第2名） -->
+                <div class="room-row relative grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 items-center px-4 h-14 bg-gradient-to-r from-slate-100/70 via-slate-50/30 to-transparent hover:from-slate-100 hover:to-slate-50/40 transition-colors"
+                     data-score="88" data-amount="1180" data-margin="22">
+                  <span class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-slate-300 via-slate-400 to-slate-300"></span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl leading-none" aria-hidden="true">🥈</span>
+                    <i data-lucide="trophy" class="w-3.5 h-3.5 text-slate-400"></i>
+                    <span class="text-sm font-bold text-on-surface num">2</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-success/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-semibold text-success">王</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">王雅琴</div>
+                      <div class="text-xs text-on-surface-variant truncate">深圳市政数局 · 政府</div>
+                    </div>
+                  </div>
+                  <span class="text-sm text-on-surface">评标专家</span>
+                  <span class="text-sm font-bold text-on-surface num text-right">88</span>
+                  <span class="text-sm font-semibold text-on-surface num text-right">¥1,180万</span>
+                  <span class="text-sm num font-semibold text-success text-right">22%</span>
+                  <div class="flex items-center gap-1.5 justify-end">
+                    <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                      <div class="h-full bg-success rounded-full" style="width: 87%"></div>
+                    </div>
+                    <span class="text-sm num font-semibold text-on-surface">87</span>
+                  </div>
+                  <span class="text-sm num text-on-surface-variant text-right">28:40</span>
+                </div>
+
+                <!-- 列表-房间玩家3：周慕白（🥉第3名） -->
+                <div class="room-row relative grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 items-center px-4 h-14 bg-gradient-to-r from-orange-50/70 via-orange-50/30 to-transparent hover:from-orange-50 hover:to-orange-50/40 transition-colors"
+                     data-score="85" data-amount="1250" data-margin="15">
+                  <span class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-300 via-orange-400 to-orange-300"></span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl leading-none" aria-hidden="true">🥉</span>
+                    <i data-lucide="trophy" class="w-3.5 h-3.5 text-orange-400"></i>
+                    <span class="text-sm font-bold text-on-surface num">3</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-warning/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-semibold text-warning">周</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">周慕白</div>
+                      <div class="text-xs text-on-surface-variant truncate">华东计算所 · 事业单位</div>
+                    </div>
+                  </div>
+                  <span class="text-sm text-on-surface">商务谈判</span>
+                  <span class="text-sm font-bold text-on-surface num text-right">85</span>
+                  <span class="text-sm font-semibold text-on-surface num text-right">¥1,250万</span>
+                  <span class="text-sm num font-semibold text-warning text-right">15%</span>
+                  <div class="flex items-center gap-1.5 justify-end">
+                    <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                      <div class="h-full bg-success rounded-full" style="width: 84%"></div>
+                    </div>
+                    <span class="text-sm num font-semibold text-on-surface">84</span>
+                  </div>
+                  <span class="text-sm num text-on-surface-variant text-right">35:12</span>
+                </div>
+
+                <!-- 列表-房间玩家4：小初（我 · 高亮行） -->
+                <div class="room-row relative grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 items-center px-4 h-14 bg-primary-container/40 hover:bg-primary-container/60 transition-colors"
+                     data-score="78" data-amount="1150" data-margin="19">
+                  <span class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></span>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="user" class="w-4 h-4 text-primary"></i>
+                    <span class="text-sm font-bold text-primary num">4</span>
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-semibold bg-primary text-on-primary">我</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+                      <span class="text-xs font-semibold text-on-primary">初</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">小初</div>
+                      <div class="text-xs text-on-surface-variant truncate">中科曙光 · 央企</div>
+                    </div>
+                  </div>
+                  <span class="text-sm text-on-surface">销售经理</span>
+                  <span class="text-sm font-bold text-primary num text-right">78</span>
+                  <span class="text-sm font-semibold text-on-surface num text-right">¥1,150万</span>
+                  <span class="text-sm num font-semibold text-success text-right">19%</span>
+                  <div class="flex items-center gap-1.5 justify-end">
+                    <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                      <div class="h-full bg-primary rounded-full" style="width: 76%"></div>
+                    </div>
+                    <span class="text-sm num font-semibold text-primary">76</span>
+                  </div>
+                  <span class="text-sm num text-on-surface-variant text-right">42:08</span>
+                </div>
+
+                <!-- 列表-房间玩家5：林振华 -->
+                <div class="room-row grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors"
+                     data-score="75" data-amount="1080" data-margin="24">
+                  <span class="text-sm font-semibold text-on-surface-variant num pl-3">5</span>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-error/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-semibold text-error">林</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">林振华</div>
+                      <div class="text-xs text-on-surface-variant truncate">海尔工业 · 制造</div>
+                    </div>
+                  </div>
+                  <span class="text-sm text-on-surface">销售总监</span>
+                  <span class="text-sm font-semibold text-on-surface num text-right">75</span>
+                  <span class="text-sm text-on-surface num text-right">¥1,080万</span>
+                  <span class="text-sm num font-semibold text-success text-right">24%</span>
+                  <div class="flex items-center gap-1.5 justify-end">
+                    <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                      <div class="h-full bg-success rounded-full" style="width: 72%"></div>
+                    </div>
+                    <span class="text-sm num font-medium text-on-surface">72</span>
+                  </div>
+                  <span class="text-sm num text-on-surface-variant text-right">38:55</span>
+                </div>
+
+                <!-- 列表-房间玩家6：苏雅琳 -->
+                <div class="room-row grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors"
+                     data-score="71" data-amount="960" data-margin="21">
+                  <span class="text-sm font-semibold text-on-surface-variant num pl-3">6</span>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                      <span class="text-xs font-semibold text-primary">苏</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">苏雅琳</div>
+                      <div class="text-xs text-on-surface-variant truncate">浪潮商用 · 民企</div>
+                    </div>
+                  </div>
+                  <span class="text-sm text-on-surface">客户经理</span>
+                  <span class="text-sm font-semibold text-on-surface num text-right">71</span>
+                  <span class="text-sm text-on-surface num text-right">¥960万</span>
+                  <span class="text-sm num font-semibold text-success text-right">21%</span>
+                  <div class="flex items-center gap-1.5 justify-end">
+                    <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                      <div class="h-full bg-success rounded-full" style="width: 68%"></div>
+                    </div>
+                    <span class="text-sm num font-medium text-on-surface">68</span>
+                  </div>
+                  <span class="text-sm num text-on-surface-variant text-right">45:22</span>
+                </div>
+
+                <!-- 列表-房间玩家7：陈安然 -->
+                <div class="room-row grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors"
+                     data-score="68" data-amount="920" data-margin="16">
+                  <span class="text-sm font-semibold text-on-surface-variant num pl-3">7</span>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-success/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-semibold text-success">陈</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">陈安然</div>
+                      <div class="text-xs text-on-surface-variant truncate">中科院软件中心 · 事业单位</div>
+                    </div>
+                  </div>
+                  <span class="text-sm text-on-surface">商务经理</span>
+                  <span class="text-sm font-semibold text-on-surface num text-right">68</span>
+                  <span class="text-sm text-on-surface num text-right">¥920万</span>
+                  <span class="text-sm num font-semibold text-warning text-right">16%</span>
+                  <div class="flex items-center gap-1.5 justify-end">
+                    <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                      <div class="h-full bg-success rounded-full" style="width: 65%"></div>
+                    </div>
+                    <span class="text-sm num font-medium text-on-surface">65</span>
+                  </div>
+                  <span class="text-sm num text-on-surface-variant text-right">41:30</span>
+                </div>
+
+                <!-- 列表-房间玩家8：杨鸿韬 -->
+                <div class="room-row grid min-w-[1100px] grid-cols-[72px_1.6fr_1.1fr_0.9fr_1fr_0.9fr_1.1fr_0.8fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors"
+                     data-score="64" data-amount="850" data-margin="13">
+                  <span class="text-sm font-semibold text-on-surface-variant num pl-3">8</span>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-warning/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-semibold text-warning">杨</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">杨鸿韬</div>
+                      <div class="text-xs text-on-surface-variant truncate">杭州数据局 · 政府</div>
+                    </div>
+                  </div>
+                  <span class="text-sm text-on-surface">项目经理</span>
+                  <span class="text-sm font-semibold text-on-surface num text-right">64</span>
+                  <span class="text-sm text-on-surface num text-right">¥850万</span>
+                  <span class="text-sm num font-semibold text-error text-right">13%</span>
+                  <div class="flex items-center gap-1.5 justify-end">
+                    <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                      <div class="h-full bg-success rounded-full" style="width: 62%"></div>
+                    </div>
+                    <span class="text-sm num font-medium text-on-surface">62</span>
+                  </div>
+                  <span class="text-sm num text-on-surface-variant text-right">48:12</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- 本场数据汇总 -->
+          <div class="grid grid-cols-4 gap-3">
+            <div class="bg-surface-container/50 rounded-md p-3">
+              <div class="text-xs text-on-surface-variant mb-1">房间平均分</div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-xl font-bold text-on-surface num">77.6</span>
+                <span class="text-xs text-on-surface-variant">分</span>
+              </div>
+            </div>
+            <div class="bg-surface-container/50 rounded-md p-3">
+              <div class="text-xs text-on-surface-variant mb-1">房间最高分</div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-xl font-bold text-warning num">92</span>
+                <span class="text-xs text-on-surface-variant">分</span>
+              </div>
+            </div>
+            <div class="bg-surface-container/50 rounded-md p-3">
+              <div class="text-xs text-on-surface-variant mb-1">中标率</div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-xl font-bold text-success num">62.5%</span>
+                <span class="text-xs text-on-surface-variant num">5/8</span>
+              </div>
+            </div>
+            <div class="bg-surface-container/50 rounded-md p-3">
+              <div class="text-xs text-on-surface-variant mb-1">平均利润率</div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-xl font-bold text-on-surface num">18.5%</span>
+                <span class="text-xs text-on-surface-variant">行业基准 15%</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ========== Tab 2 · 全平台玩家总积分排行榜 ========== -->
+        <div id="content-global" class="p-5 space-y-4 hidden">
+
+          <!-- 工具栏：时间范围 + 赛道 + 操作 -->
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <div class="flex items-center gap-3 flex-wrap">
+              <!-- 时间范围 -->
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-on-surface-variant">时间</span>
+                <div class="flex items-center gap-1 p-0.5 bg-surface-container rounded-md" id="time-group">
+                  <button data-time="week" class="time-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">本周</button>
+                  <button data-time="month" class="time-btn px-3 py-1 text-xs font-semibold rounded-sm bg-surface text-primary shadow-sm transition-all" aria-pressed="true">本月</button>
+                  <button data-time="quarter" class="time-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">本季</button>
+                  <button data-time="all" class="time-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">全部</button>
+                </div>
+              </div>
+              <!-- 赛道 -->
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-on-surface-variant">赛道</span>
+                <div class="flex items-center gap-1 p-0.5 bg-surface-container rounded-md" id="track-group">
+                  <button data-track="all" class="track-btn px-3 py-1 text-xs font-semibold rounded-sm bg-surface text-primary shadow-sm transition-all" aria-pressed="true">综合</button>
+                  <button data-track="gov" class="track-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">政府</button>
+                  <button data-track="inst" class="track-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">事业单位</button>
+                  <button data-track="mfg" class="track-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">制造</button>
+                  <button data-track="soe" class="track-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">央企</button>
+                  <button data-track="pvt" class="track-btn px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all" aria-pressed="false">民企</button>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-on-surface-variant num">共 1,247 名玩家</span>
+            </div>
+          </div>
+
+          <!-- 表格容器 -->
+          <div class="border border-outline-variant/40 rounded-lg overflow-hidden">
+            <div class="table-scroll overflow-x-auto">
+
+              <!-- 表头（9 列） -->
+              <div class="grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 px-4 py-3 bg-surface-container/60 text-xs font-semibold text-on-surface-variant uppercase tracking-wide border-b border-outline-variant/40">
+                <span>排名</span>
+                <span>玩家</span>
+                <span class="text-center">等级</span>
+                <span class="text-right">积分</span>
+                <span class="text-right">胜场</span>
+                <span class="text-right">胜率</span>
+                <span class="text-right">连胜</span>
+                <span>最近活跃</span>
+                <span class="text-center">操作</span>
+              </div>
+
+              <!-- 表格体：20 行玩家 -->
+              <div id="global-table-body" class="divide-y divide-outline-variant/40">
+
+                <!-- 列表-玩家1：赵云峰 Lv.10 金牌 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 bg-gradient-to-r from-amber-50/60 to-transparent hover:from-amber-50/80 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-base" aria-hidden="true">👑</span>
+                    <span class="text-sm font-bold text-on-surface num">1</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-300 to-amber-500 flex items-center justify-center shrink-0 shadow-sm">
+                      <span class="text-xs font-bold text-white">赵</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">赵云峰</div>
+                      <div class="text-xs text-on-surface-variant truncate">北京 · 中电科 · 央企</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-gradient-to-r from-amber-300 to-amber-500 text-white">Lv.10</span>
+                  </div>
+                  <span class="text-sm font-bold text-warning num text-right">48,920</span>
+                  <span class="text-sm num font-semibold text-on-surface text-right">286</span>
+                  <span class="text-sm num font-semibold text-success text-right">82.4%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-bold text-error">12</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">12 分钟前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家2：林晓彤 Lv.10 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 bg-gradient-to-r from-amber-50/40 to-transparent hover:from-amber-50/70 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-bold text-on-surface num">2</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-300 to-amber-500 flex items-center justify-center shrink-0 shadow-sm">
+                      <span class="text-xs font-bold text-white">林</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">林晓彤</div>
+                      <div class="text-xs text-on-surface-variant truncate">上海 · 上海市政数局 · 政府</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-gradient-to-r from-amber-300 to-amber-500 text-white">Lv.10</span>
+                  </div>
+                  <span class="text-sm font-bold text-warning num text-right">45,180</span>
+                  <span class="text-sm num font-semibold text-on-surface text-right">271</span>
+                  <span class="text-sm num font-semibold text-success text-right">79.8%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-bold text-error">8</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">1 小时前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家3：徐正阳 Lv.9 紫牌 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-bold text-on-surface num">3</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-violet-500 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-white">徐</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">徐正阳</div>
+                      <div class="text-xs text-on-surface-variant truncate">深圳 · 华为政企 · 央企</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-violet-500 text-white">Lv.9</span>
+                  </div>
+                  <span class="text-sm font-bold text-on-surface num text-right">41,260</span>
+                  <span class="text-sm num font-semibold text-on-surface text-right">258</span>
+                  <span class="text-sm num font-semibold text-success text-right">76.5%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-bold text-error">6</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">3 小时前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家4：苏明远 Lv.9 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-semibold text-on-surface num">4</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-violet-500 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-white">苏</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">苏明远</div>
+                      <div class="text-xs text-on-surface-variant truncate">广州 · 紫光软件 · 央企</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-violet-500 text-white">Lv.9</span>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface num text-right">38,940</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">245</span>
+                  <span class="text-sm num font-semibold text-success text-right">74.1%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-semibold text-error">5</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">5 小时前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家5：韩墨之 Lv.8 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-semibold text-on-surface num">5</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-violet-500 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-white">韩</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">韩墨之</div>
+                      <div class="text-xs text-on-surface-variant truncate">杭州 · 阿里云政企 · 民企</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-violet-500 text-white">Lv.8</span>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface num text-right">35,720</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">228</span>
+                  <span class="text-sm num font-semibold text-success text-right">71.2%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-semibold text-error">4</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">7 小时前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家6：周明哲 Lv.7 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-semibold text-on-surface num">6</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-violet-500 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-white">周</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">周明哲</div>
+                      <div class="text-xs text-on-surface-variant truncate">成都 · 成都数据局 · 政府</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-violet-500 text-white">Lv.7</span>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface num text-right">32,580</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">215</span>
+                  <span class="text-sm num font-semibold text-success text-right">68.5%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-semibold text-error">3</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">10 小时前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家7：陈思琪 Lv.6 蓝牌 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-semibold text-on-surface num">7</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-white">陈</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">陈思琪</div>
+                      <div class="text-xs text-on-surface-variant truncate">南京 · 中科院软件所 · 事业单位</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-primary text-white">Lv.6</span>
+                  </div>
+                  <span class="text-sm font-medium text-on-surface num text-right">28,940</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">198</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">65.8%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num font-semibold text-on-surface-variant">2</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">昨天 21:15</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家8：吴子默 Lv.6 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-semibold text-on-surface num">8</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-white">吴</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">吴子默</div>
+                      <div class="text-xs text-on-surface-variant truncate">武汉 · 东风技术中心 · 制造</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-primary text-white">Lv.6</span>
+                  </div>
+                  <span class="text-sm font-medium text-on-surface num text-right">26,750</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">186</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">63.2%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-semibold text-error">3</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">昨天 18:42</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家9：黄奕凡 Lv.5 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-semibold text-on-surface num">9</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-white">黄</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">黄奕凡</div>
+                      <div class="text-xs text-on-surface-variant truncate">西安 · 西安计算中心 · 事业单位</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-primary text-white">Lv.5</span>
+                  </div>
+                  <span class="text-sm font-medium text-on-surface num text-right">24,360</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">172</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">60.4%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num font-semibold text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">昨天 14:08</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家10：钱子轩 Lv.5（出现在全平台） -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-semibold text-on-surface num">10</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-white">钱</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-on-surface truncate">钱子轩</div>
+                      <div class="text-xs text-on-surface-variant truncate">北京 · 中电信数智 · 央企</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-primary text-white">Lv.5</span>
+                  </div>
+                  <span class="text-sm font-medium text-on-surface num text-right">22,840</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">165</span>
+                  <span class="text-sm num font-medium text-on-surface text-right">58.7%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-semibold text-error">4</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">2 天前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家11：王雅琴 Lv.4 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">11</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-success/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-success">王</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">王雅琴</div>
+                      <div class="text-xs text-on-surface-variant truncate">深圳 · 深圳市政数局 · 政府</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-primary text-white">Lv.4</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">19,560</span>
+                  <span class="text-sm num text-on-surface-variant text-right">148</span>
+                  <span class="text-sm num text-on-surface-variant text-right">55.2%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">2 天前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家12：周慕白 Lv.4 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">12</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-warning/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-warning">周</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">周慕白</div>
+                      <div class="text-xs text-on-surface-variant truncate">上海 · 华东计算所 · 事业单位</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-primary text-white">Lv.4</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">18,420</span>
+                  <span class="text-sm num text-on-surface-variant text-right">142</span>
+                  <span class="text-sm num text-on-surface-variant text-right">53.8%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 text-error"></i>
+                    <span class="text-sm num font-semibold text-error">2</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">3 天前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家13：林振华 Lv.3 灰牌 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">13</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-error/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-error">林</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">林振华</div>
+                      <div class="text-xs text-on-surface-variant truncate">青岛 · 海尔工业 · 制造</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant">Lv.3</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">16,880</span>
+                  <span class="text-sm num text-on-surface-variant text-right">132</span>
+                  <span class="text-sm num text-on-surface-variant text-right">51.2%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">3 天前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家14：苏雅琳 Lv.3 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">14</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-primary">苏</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">苏雅琳</div>
+                      <div class="text-xs text-on-surface-variant truncate">济南 · 浪潮商用 · 民企</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant">Lv.3</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">15,240</span>
+                  <span class="text-sm num text-on-surface-variant text-right">125</span>
+                  <span class="text-sm num text-on-surface-variant text-right">48.6%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">4 天前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家15：陈安然 Lv.2 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">15</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-success/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-success">陈</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">陈安然</div>
+                      <div class="text-xs text-on-surface-variant truncate">北京 · 中科院软件中心 · 事业单位</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant">Lv.2</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">13,580</span>
+                  <span class="text-sm num text-on-surface-variant text-right">118</span>
+                  <span class="text-sm num text-on-surface-variant text-right">46.2%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">5 天前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家16：杨鸿韬 Lv.2 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">16</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-warning/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-warning">杨</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">杨鸿韬</div>
+                      <div class="text-xs text-on-surface-variant truncate">杭州 · 杭州数据局 · 政府</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant">Lv.2</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">12,140</span>
+                  <span class="text-sm num text-on-surface-variant text-right">108</span>
+                  <span class="text-sm num text-on-surface-variant text-right">44.5%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">5 天前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家17：冯启明 Lv.1 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">17</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-primary">冯</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">冯启明</div>
+                      <div class="text-xs text-on-surface-variant truncate">重庆 · 重庆政数局 · 政府</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant">Lv.1</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">10,820</span>
+                  <span class="text-sm num text-on-surface-variant text-right">95</span>
+                  <span class="text-sm num text-on-surface-variant text-right">42.1%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">6 天前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家18：何子衿 Lv.1 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">18</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-success/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-success">何</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">何子衿</div>
+                      <div class="text-xs text-on-surface-variant truncate">苏州 · 苏州工业园 · 政府</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant">Lv.1</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">9,460</span>
+                  <span class="text-sm num text-on-surface-variant text-right">88</span>
+                  <span class="text-sm num text-on-surface-variant text-right">40.5%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">1 周前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家19：欧阳羽 Lv.1 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">19</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-error/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-error">欧</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">欧阳羽</div>
+                      <div class="text-xs text-on-surface-variant truncate">长沙 · 三一重工 · 制造</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant">Lv.1</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">8,720</span>
+                  <span class="text-sm num text-on-surface-variant text-right">82</span>
+                  <span class="text-sm num text-on-surface-variant text-right">38.4%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">1 周前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 列表-玩家20：邵文渊 Lv.1 -->
+                <div class="global-row grid min-w-[1240px] grid-cols-[72px_1.7fr_0.7fr_0.9fr_0.7fr_0.8fr_0.8fr_1fr_0.7fr] gap-2 items-center px-4 h-14 hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-medium text-on-surface-variant num pl-3">20</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-full bg-warning/15 flex items-center justify-center shrink-0">
+                      <span class="text-xs font-bold text-warning">邵</span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium text-on-surface truncate">邵文渊</div>
+                      <div class="text-xs text-on-surface-variant truncate">天津 · 联想政企 · 民企</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center">
+                    <span class="inline-flex items-center justify-center w-9 h-5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant">Lv.1</span>
+                  </div>
+                  <span class="text-sm num text-on-surface text-right">7,580</span>
+                  <span class="text-sm num text-on-surface-variant text-right">75</span>
+                  <span class="text-sm num text-on-surface-variant text-right">36.2%</span>
+                  <div class="flex items-center gap-1 justify-end">
+                    <span class="text-sm num text-on-surface-variant">0</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant">1 周前</span>
+                  <div class="flex justify-center">
+                    <button class="follow-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-medium border border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary transition-all">
+                      <i data-lucide="user-plus" class="w-3 h-3"></i>关注
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="flex items-center justify-between gap-3 flex-wrap pt-1">
+            <span class="text-xs text-on-surface-variant num">第 1 - 20 条 / 共 1,247 条</span>
+            <div class="flex items-center gap-1" id="pagination">
+              <button id="page-prev" class="w-8 h-8 inline-flex items-center justify-center rounded-md text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <button data-page="1" class="page-btn w-8 h-8 inline-flex items-center justify-center rounded-md text-sm font-semibold bg-primary text-on-surface" aria-pressed="true">1</button>
+              <button data-page="2" class="page-btn w-8 h-8 inline-flex items-center justify-center rounded-md text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" aria-pressed="false">2</button>
+              <button data-page="3" class="page-btn w-8 h-8 inline-flex items-center justify-center rounded-md text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" aria-pressed="false">3</button>
+              <button data-page="4" class="page-btn w-8 h-8 inline-flex items-center justify-center rounded-md text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" aria-pressed="false">4</button>
+              <button data-page="5" class="page-btn w-8 h-8 inline-flex items-center justify-center rounded-md text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" aria-pressed="false">5</button>
+              <span class="w-8 h-8 inline-flex items-center justify-center text-sm text-on-surface-variant">…</span>
+              <button data-page="63" class="page-btn w-8 h-8 inline-flex items-center justify-center rounded-md text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" aria-pressed="false">63</button>
+              <button id="page-next" class="w-8 h-8 inline-flex items-center justify-center rounded-md text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+              <span>每页</span>
+              <select id="page-size" class="bg-surface-container border-none rounded-sm px-2 py-1 text-xs text-on-surface focus:outline-none focus:ring-1 focus:ring-primary/30">
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+              </select>
+              <span>条</span>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ==================== 底部留白 ==================== -->
+      <div class="h-6"></div>
+
+    </div>
+  </main>
+  <!-- @main-content:end -->
+
+  <!-- ==================== FAB · 返回结算页 ==================== -->
+  <button id="btn-fab-back" class="fixed bottom-6 right-6 w-11 h-11 rounded-full bg-primary text-on-primary shadow-float hover:opacity-90 active:scale-95 transition-all inline-flex items-center justify-center z-30 group" title="返回结算页">
+    <i data-lucide="arrow-up" class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
+  </button>
+
+  <script>lucide.createIcons();</script>
+  <script>
+    // 高亮当前页面导航（统一使用 jQuery 选择器）
+    (function () {
+      const path = window.location.pathname.split('/').pop() || 'home.html';
+      const map = {
+        'home.html':      'nav-home',
+        'setup.html':     'nav-setup',
+        'game.html':      'nav-game',
+        'result.html':    'nav-result',
+        'knowledge.html': 'nav-knowledge'
+      };
+      const id = map[path];
+      if (id) {
+        const $el = $('#' + id);
+        if ($el.length) {
+          $el.removeClass('text-on-surface-variant')
+             .addClass('text-primary bg-primary-container')
+             .attr('aria-current', 'page');
+        }
+      }
+    })();
+  </script>
+  <script>
+    $(function() {
+
+      // ========== Tab 切换 ==========
+      // 点击 tab 按钮：切换内容区 + 激活样式
+      $('#tab-room, #tab-global').on('click', function() {
+        const tab = $(this).data('tab');
+        // 切换激活样式
+        $('.tab-btn').each(function() {
+          const isActive = $(this).data('tab') === tab;
+          $(this).removeClass('text-primary text-on-surface-variant hover:text-on-surface')
+                  .addClass(isActive ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface')
+                  .attr('aria-current', isActive ? 'page' : null);
+          // 底部横线
+          $(this).find('span:last-child').toggleClass('bg-primary bg-transparent', isActive ? (isActive ? true : false) : false);
+          // 简单做法：直接控制横线
+          if (isActive) {
+            $(this).find('span:last-child').removeClass('bg-transparent').addClass('bg-primary');
+          } else {
+            $(this).find('span:last-child').removeClass('bg-primary').addClass('bg-transparent');
+          }
+        });
+        // 切换内容
+        if (tab === 'room') {
+          $('#content-room').removeClass('hidden');
+          $('#content-global').addClass('hidden');
+        } else {
+          $('#content-room').addClass('hidden');
+          $('#content-global').removeClass('hidden');
+        }
+      });
+
+      // ========== Tab 1 · 排序切换 ==========
+      // 排序逻辑（对已存在的 DOM 节点重新排序，不生成新 HTML）：
+      // 1. 读取 #room-table-body 内所有 .room-row，按对应 data-* 属性降序排列
+      // 2. 将排好序的节点 append 回 #room-table-body（jQuery 自动移动 DOM 位置）
+      // 3. 同步更新每行的"排名"显示（仅显示数字 1-8，不包含奖牌和特殊样式）
+      function sortRoomTable(key) {
+        const $body = $('#room-table-body');
+        const $rows = $body.children('.room-row').detach();
+        $rows.sort(function(a, b) {
+          const av = parseFloat($(a).data(key)) || 0;
+          const bv = parseFloat($(b).data(key)) || 0;
+          return bv - av;
+        });
+        $body.append($rows);
+        // 更新排名（仅数字，保留原 medal/trophy 等装饰）
+        $rows.each(function(idx) {
+          const rank = idx + 1;
+          // 找到第一个 span/div 内的数字 span，更新文字
+          const $rankSpan = $(this).find('.num').not('[data-score], [data-amount], [data-margin]').first();
+          // 简单做法：找到含 .num 类的第一个显示排名的元素
+          // 实际上我们在每行都有一个独立的排名元素，这里通过选择器定位
+          const $firstCol = $(this).children().first();
+          // 跳过顶部横条和奖牌 emoji
+          const $rankText = $firstCol.find('.num').first();
+          if ($rankText.length) {
+            $rankText.text(rank);
+          }
+        });
+      }
+
+      $('#sort-score, #sort-amount, #sort-margin').on('click', function() {
+        const key = $(this).data('sort');
+        const keyMap = { score: 'score', amount: 'amount', margin: 'margin' };
+        // 切换激活样式
+        $('#sort-group .sort-btn').each(function() {
+          const isActive = $(this).data('sort') === key;
+          $(this).removeClass('bg-surface text-primary shadow-sm text-on-surface-variant hover:text-on-surface text-sm font-semibold text-sm font-medium')
+                  .addClass(isActive ? 'bg-surface text-primary shadow-sm text-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface text-sm font-medium')
+                  .attr('aria-pressed', isActive ? 'true' : 'false');
+        });
+        sortRoomTable(keyMap[key]);
+      });
+
+      // ========== Tab 2 · 时间范围切换 ==========
+      $('#time-group .time-btn').on('click', function() {
+        const time = $(this).data('time');
+        $('#time-group .time-btn').each(function() {
+          const isActive = $(this).data('time') === time;
+          $(this).removeClass('bg-surface text-primary shadow-sm text-on-surface-variant hover:text-on-surface text-xs font-semibold text-xs font-medium')
+                  .addClass(isActive ? 'bg-surface text-primary shadow-sm text-xs font-semibold' : 'text-on-surface-variant hover:text-on-surface text-xs font-medium')
+                  .attr('aria-pressed', isActive ? 'true' : 'false');
+        });
+        // 原型：时间范围切换会触发后端筛选，此处仅记录点击
+        console.log('切换时间范围：', time, '（原型阶段：实际数据需后端接口）');
+      });
+
+      // ========== Tab 2 · 赛道切换 ==========
+      $('#track-group .track-btn').on('click', function() {
+        const track = $(this).data('track');
+        $('#track-group .track-btn').each(function() {
+          const isActive = $(this).data('track') === track;
+          $(this).removeClass('bg-surface text-primary shadow-sm text-on-surface-variant hover:text-on-surface text-xs font-semibold text-xs font-medium')
+                  .addClass(isActive ? 'bg-surface text-primary shadow-sm text-xs font-semibold' : 'text-on-surface-variant hover:text-on-surface text-xs font-medium')
+                  .attr('aria-pressed', isActive ? 'true' : 'false');
+        });
+        // 原型：赛道切换会触发后端筛选
+        console.log('切换赛道：', track, '（原型阶段：实际数据需后端接口）');
+      });
+
+      // ========== Tab 2 · 关注按钮 ==========
+      // 关注/取消关注切换：
+      // 1. 判断当前按钮文字与图标
+      // 2. "关注" → "已关注"（填充背景 + 切换图标为 check）
+      // 3. "已关注" → "关注"（恢复边框样式 + 切换图标为 user-plus）
+      // 4. 更新 aria-pressed 状态
+      $('#global-table-body').on('click', '.follow-btn', function() {
+        const $btn = $(this);
+        const isFollowed = $btn.attr('aria-pressed') === 'true';
+        if (isFollowed) {
+          $btn.removeClass('bg-primary text-on-primary border-primary')
+              .addClass('border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary')
+              .attr('aria-pressed', 'false');
+          $btn.html('<i data-lucide="user-plus" class="w-3 h-3"></i>关注');
+        } else {
+          $btn.removeClass('border-outline-variant/60 text-on-surface hover:bg-primary-container hover:border-primary hover:text-primary')
+              .addClass('bg-primary text-on-primary border-primary hover:opacity-90')
+              .attr('aria-pressed', 'true');
+          $btn.html('<i data-lucide="check" class="w-3 h-3"></i>已关注');
+        }
+        // 重新渲染 lucide 图标
+        if (window.lucide) lucide.createIcons();
+        console.log('关注状态切换：', isFollowed ? '取消关注' : '已关注');
+      });
+
+      // ========== Tab 2 · 分页 ==========
+      // 分页逻辑（原型阶段：仅 UI 状态切换，实际数据需后端分页接口）：
+      // 1. 维护当前页码 currentPage
+      // 2. 点击页码按钮：更新 active 样式
+      // 3. 翻页按钮（page-prev/page-next）：在边界内更新 currentPage 并触发页码按钮 click
+      let currentPage = 1;
+      $('#pagination').on('click', '.page-btn', function() {
+        const page = parseInt($(this).data('page'), 10);
+        if (isNaN(page)) return;
+        currentPage = page;
+        // 更新按钮激活态
+        $('#pagination .page-btn').each(function() {
+          const isActive = parseInt($(this).data('page'), 10) === currentPage;
+          if (isActive) {
+            $(this).removeClass('text-on-surface-variant hover:bg-surface-container hover:text-on-surface')
+                    .addClass('bg-primary text-on-surface');
+            $(this).attr('aria-pressed', 'true');
+          } else {
+            $(this).removeClass('bg-primary text-on-surface')
+                    .addClass('text-on-surface-variant hover:bg-surface-container hover:text-on-surface');
+            $(this).attr('aria-pressed', 'false');
+          }
+        });
+        // 更新翻页按钮 disabled
+        $('#page-prev').prop('disabled', currentPage <= 1);
+        console.log('跳转到第', currentPage, '页（原型阶段：实际数据需后端接口）');
+      });
+
+      // 上下页按钮
+      $('#page-prev').on('click', function() {
+        if (currentPage > 1) {
+          $('#pagination .page-btn[data-page="' + (currentPage - 1) + '"]').trigger('click');
+        }
+      });
+      $('#page-next').on('click', function() {
+        // 简单处理：直接找下一个有 data-page 的按钮
+        const nextPage = currentPage + 1;
+        const $next = $('#pagination .page-btn[data-page="' + nextPage + '"]');
+        if ($next.length) {
+          $next.trigger('click');
+        } else {
+          console.log('已是末页');
+        }
+      });
+
+      // 每页条数切换
+      $('#page-size').on('change', function() {
+        const size = $(this).val();
+        console.log('切换每页条数：', size, '（原型阶段：实际数据需后端接口）');
+      });
+
+      // ========== 工具栏：分享本场榜单 ==========
+      $('#btn-share-room').on('click', function() {
+        console.log('分享本场榜单 - 应实现：');
+        console.log('  1. 弹出分享方式选择弹窗（链接/二维码/企业微信）');
+        console.log('  2. 生成本场排行榜链接（含房间号参数）');
+        console.log('  3. 调用后端接口生成分享卡片海报');
+        console.log('  4. 复制链接到剪贴板并 toast 提示');
+      });
+
+      // ========== 工具栏：导出 CSV ==========
+      $('#btn-export-room').on('click', function() {
+        console.log('导出 CSV - 应实现：');
+        console.log('  1. 将 #room-table-body 数据序列化为 CSV 格式');
+        console.log('  2. 处理特殊字符转义（逗号、引号、换行）');
+        console.log('  3. 通过 Blob + URL.createObjectURL 触发下载');
+        console.log('  4. 文件名格式：ranking_智慧政务v3.2_第38场_yyyymmdd.csv');
+      });
+
+      // ========== FAB · 返回结算页 ==========
+      $('#btn-fab-back').on('click', function() {
+        // 原型：直接跳转；真实环境可附加"已查看排行榜"标记参数
+        window.location.href = 'result.html';
+      });
+
+    });
+  </script>
+</body>
+
+</html>

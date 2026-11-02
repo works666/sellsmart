@@ -1,0 +1,6 @@
+{
+  "generatedAt": "2026-10-21T02:47:09.023Z",
+  "aiCalls": 0,
+  "status": "blocked_pending_explicit_external_jev_permission",
+  "detail": "Real JEV matrix was not run while explicit permission to send the synthetic fixed context to TypeSafe JEV is pending."
+}

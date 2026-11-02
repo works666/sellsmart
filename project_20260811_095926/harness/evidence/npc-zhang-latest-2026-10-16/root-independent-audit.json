@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "sourceRevision": 10,
+  "sourceMatchesIndependentLiveGet": true,
+  "completionRequests": 15,
+  "rawResponses": 15,
+  "validContent": 15,
+  "retries": 0,
+  "sameInputsAndSystemPromptsAcrossModels": true,
+  "selectedTierOnly": true,
+  "rawBodiesIndependentlyParsed": true,
+  "otherNpcProfilesSent": false,
+  "providerSummary": [
+    {
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "cases": 5,
+      "minChars": 25,
+      "maxChars": 55
+    },
+    {
+      "provider": "doubao",
+      "model": "doubao-seed-2-0-lite-260428",
+      "cases": 5,
+      "minChars": 34,
+      "maxChars": 42
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen-plus",
+      "cases": 5,
+      "minChars": 26,
+      "maxChars": 43
+    }
+  ],
+  "qualityObservations": [
+    "DeepSeek低开场46字，超过本版约40字参考；低长推销40字，已客气收束。",
+    "豆包低开场、Qwen低开场及低长推销仍请销售讲重点，低档结束意愿执行不足。",
+    "豆包高开场出现你挑，未坚持默认您；低敏感41字略超约40字参考。",
+    "Qwen敏感样本称内部评审标准公开透明，输入没有提供该事实；虽拒绝透露/保证，仍有事实越界风险。",
+    "单轮抽样不能验证每2至3轮口头语频率或完整拜访质量。",
+    "本批使用可用ID deepseek-flash成功，不足以认定旧超时只由模型别名造成。"
+  ]
+}

@@ -1,0 +1,339 @@
+{
+  "generatedAt": "2026-10-27T06:28:36.528Z",
+  "source": "Supabase read-only via createServerClient; no model requests; no row writes",
+  "designerPromptConfig": {
+    "exists": true,
+    "id": "project-one",
+    "revision": 10,
+    "updatedAt": "2026-10-16T02:59:22.317+00:00",
+    "updatedByPresent": true,
+    "configKeys": [
+      "channelModifiers",
+      "liveCustomerPrompt",
+      "liveEvaluatorPrompt",
+      "npcChannelExceptions",
+      "npcRolePrompts",
+      "previewEvaluatorPrompt",
+      "promptLayers",
+      "promptTestEvaluatorPrompt",
+      "promptTestNpcPrompt",
+      "supportTierThresholds"
+    ]
+  },
+  "globalAiProvider": {
+    "exists": true,
+    "id": "global-ai-provider",
+    "revision": 5,
+    "updatedAt": "2026-10-12T06:44:22.316+00:00",
+    "updatedByPresent": true,
+    "provider": "deepseek"
+  },
+  "previewSessions": {
+    "totalCount": 81,
+    "scannedForUserGroups": 81,
+    "userGroupCount": 7,
+    "sessionsPerUserGroup": [
+      45,
+      15,
+      11,
+      4,
+      3,
+      2,
+      1
+    ],
+    "samples": [
+      {
+        "idPrefix": "399bdfd6",
+        "version": 9,
+        "lastActiveAt": "2026-10-22T08:06:40.615593+00:00",
+        "stateKeys": [
+          "activeCustomerActivityConversation",
+          "activeMeeting",
+          "appointments",
+          "approvedVisitPreparations",
+          "conversations",
+          "customerActivities",
+          "customerActivityChannelCursors",
+          "customerActivityDiagnostics",
+          "lastActiveAt",
+          "npcStates",
+          "pendingCustomerActivityDetections",
+          "previewSessionId",
+          "userId",
+          "version",
+          "wechat"
+        ],
+        "npcIds": [
+          "P1-001",
+          "P1-002",
+          "P1-003",
+          "P1-004",
+          "P1-005"
+        ],
+        "npcRuntimeKeys": {
+          "P1-001": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-002": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-003": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-004": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-005": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ]
+        },
+        "conversationCounts": {
+          "P1-001": 4,
+          "P1-002": 0,
+          "P1-003": 0,
+          "P1-004": 0,
+          "P1-005": 0
+        },
+        "conversationHasText": true,
+        "memoryKeys": {
+          "P1-001": [
+            "id",
+            "mustMention",
+            "sourceMessageIds",
+            "status",
+            "summary",
+            "tags",
+            "type"
+          ],
+          "P1-002": [],
+          "P1-003": [],
+          "P1-004": [],
+          "P1-005": []
+        },
+        "relationshipStateKeys": [],
+        "hasActiveMeeting": true
+      },
+      {
+        "idPrefix": "862a9e9d",
+        "version": 29,
+        "lastActiveAt": "2026-10-22T06:59:33.436599+00:00",
+        "stateKeys": [
+          "activeCustomerActivityConversation",
+          "activeMeeting",
+          "appointments",
+          "approvedVisitPreparations",
+          "conversations",
+          "customerActivities",
+          "customerActivityChannelCursors",
+          "customerActivityDiagnostics",
+          "lastActiveAt",
+          "npcStates",
+          "pendingCustomerActivityDetections",
+          "previewSessionId",
+          "userId",
+          "version",
+          "wechat"
+        ],
+        "npcIds": [
+          "P1-001",
+          "P1-002",
+          "P1-003",
+          "P1-004",
+          "P1-005"
+        ],
+        "npcRuntimeKeys": {
+          "P1-001": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-002": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-003": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-004": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-005": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ]
+        },
+        "conversationCounts": {
+          "P1-001": 8,
+          "P1-002": 0,
+          "P1-003": 0,
+          "P1-004": 0,
+          "P1-005": 0
+        },
+        "conversationHasText": true,
+        "memoryKeys": {
+          "P1-001": [
+            "id",
+            "mustMention",
+            "sourceMessageIds",
+            "status",
+            "summary",
+            "tags",
+            "type"
+          ],
+          "P1-002": [],
+          "P1-003": [],
+          "P1-004": [],
+          "P1-005": []
+        },
+        "relationshipStateKeys": [],
+        "hasActiveMeeting": true
+      },
+      {
+        "idPrefix": "701f74b4",
+        "version": 7,
+        "lastActiveAt": "2026-10-22T03:47:01.510064+00:00",
+        "stateKeys": [
+          "activeCustomerActivityConversation",
+          "activeMeeting",
+          "appointments",
+          "approvedVisitPreparations",
+          "conversations",
+          "customerActivities",
+          "customerActivityChannelCursors",
+          "customerActivityDiagnostics",
+          "lastActiveAt",
+          "npcStates",
+          "pendingCustomerActivityDetections",
+          "previewSessionId",
+          "userId",
+          "version",
+          "wechat"
+        ],
+        "npcIds": [
+          "P1-001",
+          "P1-002",
+          "P1-003",
+          "P1-004",
+          "P1-005"
+        ],
+        "npcRuntimeKeys": {
+          "P1-001": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-002": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-003": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-004": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ],
+          "P1-005": [
+            "activeBlockers",
+            "dimensionScores",
+            "effectiveContactCount",
+            "pleasantness",
+            "support",
+            "workingMemory"
+          ]
+        },
+        "conversationCounts": {
+          "P1-001": 2,
+          "P1-002": 0,
+          "P1-003": 0,
+          "P1-004": 0,
+          "P1-005": 0
+        },
+        "conversationHasText": true,
+        "memoryKeys": {
+          "P1-001": [
+            "id",
+            "mustMention",
+            "sourceMessageIds",
+            "status",
+            "summary",
+            "tags",
+            "type"
+          ],
+          "P1-002": [],
+          "P1-003": [],
+          "P1-004": [],
+          "P1-005": []
+        },
+        "relationshipStateKeys": [],
+        "hasActiveMeeting": true
+      }
+    ]
+  },
+  "boundaries": [
+    "user_id values and message contents were not output or written",
+    "the latest preview sessions cannot be identified as the current user without an authenticated user context; samples are the latest rows across users"
+  ]
+}

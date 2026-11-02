@@ -1,0 +1,8 @@
+{
+  "status": "blocked_before_execution",
+  "scope": "Zhang Jianguo only; 3 providers x 5 cases",
+  "plannedCases": 15,
+  "outboundRequestsStarted": 0,
+  "createdAt": "2026-10-12T09:26:39.1481276Z",
+  "reason": "Auto-review rejected sending internal revised NPC prompt content to three external model services. It determined that authorization to test Zhang across models did not explicitly authorize disclosing this prompt payload to those destinations."
+}

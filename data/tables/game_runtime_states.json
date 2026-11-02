@@ -1,0 +1,1496 @@
+[
+  {
+    "session_id": "ce4446e1-4fa7-40d9-8e0f-fb0eded235b9",
+    "scenario_code": "project-1",
+    "action_points": 28,
+    "dimensions": {
+      "decisionAnalysis": 50,
+      "objectionHandling": 50,
+      "valuePresentation": 50,
+      "informationDiscovery": 50,
+      "relationshipBuilding": 50
+    },
+    "npc_affinity": {
+      "P1-001": 20,
+      "P1-002": 35,
+      "P1-003": 40,
+      "P1-004": 30,
+      "P1-005": 35
+    },
+    "unlocked_npc_ids": [
+      "P1-001",
+      "P1-002",
+      "P1-003",
+      "P1-004",
+      "P1-005"
+    ],
+    "unlocked_clues": [],
+    "conversation_memories": {},
+    "last_action": null,
+    "version": 1,
+    "updated_at": "2026-09-28T05:45:24.604803+00:00",
+    "phase_started_at": "2000-01-01T00:00:00+00:00",
+    "phase_ends_at": "2000-01-01T00:00:00+00:00",
+    "paused_at": null,
+    "paused_remaining_ms": null,
+    "npc_contacts": {
+      "P1-001": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-002": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "email",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-003": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "email",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-004": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-005": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      }
+    },
+    "active_meeting": null,
+    "simulation_state": {
+      "status": "playing",
+      "bidRule": "balanced",
+      "version": 1,
+      "gameMode": "solo",
+      "pausedAt": null,
+      "companyId": "player-company",
+      "maxRounds": 5,
+      "maxStages": 5,
+      "dimensions": {
+        "decisionAnalysis": 50,
+        "objectionHandling": 50,
+        "valuePresentation": 50,
+        "informationDiscovery": 50,
+        "relationshipBuilding": 50
+      },
+      "lastAction": null,
+      "npcAffinity": {
+        "P1-001": 20,
+        "P1-002": 35,
+        "P1-003": 40,
+        "P1-004": 30,
+        "P1-005": 35
+      },
+      "npcContacts": {
+        "P1-001": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-002": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "email",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-003": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "email",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-004": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-005": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        }
+      },
+      "phaseEndsAt": "2000-01-01T00:00:00.000Z",
+      "actionPoints": 28,
+      "appointments": [],
+      "currentRound": 1,
+      "currentStage": 1,
+      "npcAttitudes": {
+        "P1-001": {
+          "history": [],
+          "support": 20,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-002": {
+          "history": [],
+          "support": 35,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-003": {
+          "history": [],
+          "support": 40,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-004": {
+          "history": [],
+          "support": 30,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-005": {
+          "history": [],
+          "support": 35,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        }
+      },
+      "preparations": [],
+      "scenarioCode": "project-1",
+      "activeMeeting": null,
+      "notifications": [],
+      "unlockedClues": [],
+      "meetingMinutes": [],
+      "phaseStartedAt": "2000-01-01T00:00:00.000Z",
+      "publicResearch": {},
+      "unlockedNpcIds": [
+        "P1-001",
+        "P1-002",
+        "P1-003",
+        "P1-004",
+        "P1-005"
+      ],
+      "competitorState": {
+        "name": "ABC竞品",
+        "actions": [],
+        "position": "close",
+        "pressureScore": 52
+      },
+      "complianceRisks": [],
+      "outcomeEvidence": {
+        "publicValue": [],
+        "personalBenefit": []
+      },
+      "overtimeMinutes": 0,
+      "submissionReady": false,
+      "supplierSupport": {
+        "abc-company": {
+          "P1-001": 52,
+          "P1-002": 52,
+          "P1-003": 52,
+          "P1-004": 52,
+          "P1-005": 52
+        },
+        "xyz-company": {
+          "P1-001": 46,
+          "P1-002": 46,
+          "P1-003": 46,
+          "P1-004": 46,
+          "P1-005": 46
+        },
+        "player-company": {
+          "P1-001": 20,
+          "P1-002": 35,
+          "P1-003": 40,
+          "P1-004": 30,
+          "P1-005": 35
+        }
+      },
+      "competitorClaims": [],
+      "supplierProfiles": [
+        {
+          "id": "player-company",
+          "name": "我方公司",
+          "advantageType": "technical_accuracy",
+          "coreAdvantage": "技术精度领先",
+          "preferredBidRule": "technical_accuracy"
+        },
+        {
+          "id": "abc-company",
+          "name": "ABC竞品",
+          "advantageType": "price",
+          "coreAdvantage": "报价最低",
+          "preferredBidRule": "lowest_price"
+        },
+        {
+          "id": "xyz-company",
+          "name": "XYZ竞品",
+          "advantageType": "feature_completeness",
+          "coreAdvantage": "功能覆盖最全面",
+          "preferredBidRule": "feature_completeness"
+        }
+      ],
+      "knownPersonalInfo": {
+        "P1-004": [
+          "我方曾在公开交流活动中与赵晓晨有过短暂接触，但不了解其项目态度。"
+        ]
+      },
+      "pausedRemainingMs": null,
+      "dayAvailableMinutes": 0,
+      "overallSupportState": "LOW",
+      "processedCommandIds": [],
+      "ruleProposalHistory": [],
+      "conversationMemories": {},
+      "cumulativeSpentPoints": 0,
+      "cumulativeTimeMinutes": 0,
+      "progressionMultiplier": 1,
+      "simulatedClockMinutes": 540
+    }
+  },
+  {
+    "session_id": "0d839e94-41da-4071-a07c-27e79975a77a",
+    "scenario_code": "project-1",
+    "action_points": 28,
+    "dimensions": {
+      "decisionAnalysis": 50,
+      "objectionHandling": 50,
+      "valuePresentation": 50,
+      "informationDiscovery": 50,
+      "relationshipBuilding": 50
+    },
+    "npc_affinity": {
+      "P1-001": 20,
+      "P1-002": 35,
+      "P1-003": 40,
+      "P1-004": 30,
+      "P1-005": 35
+    },
+    "unlocked_npc_ids": [
+      "P1-001",
+      "P1-002",
+      "P1-003",
+      "P1-004",
+      "P1-005"
+    ],
+    "unlocked_clues": [],
+    "conversation_memories": {},
+    "last_action": null,
+    "version": 1,
+    "updated_at": "2026-09-28T07:42:14.741388+00:00",
+    "phase_started_at": "2000-01-01T00:00:00+00:00",
+    "phase_ends_at": "2000-01-01T00:00:00+00:00",
+    "paused_at": null,
+    "paused_remaining_ms": null,
+    "npc_contacts": {
+      "P1-001": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-002": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "email",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-003": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "email",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-004": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-005": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      }
+    },
+    "active_meeting": null,
+    "simulation_state": {
+      "status": "playing",
+      "bidRule": "balanced",
+      "version": 1,
+      "gameMode": "solo",
+      "pausedAt": null,
+      "companyId": "player-company",
+      "maxRounds": 5,
+      "maxStages": 5,
+      "workPlans": [],
+      "dimensions": {
+        "decisionAnalysis": 50,
+        "objectionHandling": 50,
+        "valuePresentation": 50,
+        "informationDiscovery": 50,
+        "relationshipBuilding": 50
+      },
+      "lastAction": null,
+      "npcAffinity": {
+        "P1-001": 20,
+        "P1-002": 35,
+        "P1-003": 40,
+        "P1-004": 30,
+        "P1-005": 35
+      },
+      "npcContacts": {
+        "P1-001": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-002": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "email",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-003": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "email",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-004": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-005": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        }
+      },
+      "phaseEndsAt": "2000-01-01T00:00:00.000Z",
+      "visitBriefs": [],
+      "actionPoints": 28,
+      "appointments": [],
+      "currentRound": 1,
+      "currentStage": 1,
+      "npcAttitudes": {
+        "P1-001": {
+          "history": [],
+          "support": 20,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-002": {
+          "history": [],
+          "support": 35,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-003": {
+          "history": [],
+          "support": 40,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-004": {
+          "history": [],
+          "support": 30,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-005": {
+          "history": [],
+          "support": 35,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        }
+      },
+      "preparations": [],
+      "scenarioCode": "project-1",
+      "activeMeeting": null,
+      "notifications": [],
+      "postalRecords": [],
+      "unlockedClues": [],
+      "meetingMinutes": [],
+      "phaseStartedAt": "2000-01-01T00:00:00.000Z",
+      "publicResearch": {},
+      "unlockedNpcIds": [
+        "P1-001",
+        "P1-002",
+        "P1-003",
+        "P1-004",
+        "P1-005"
+      ],
+      "competitorState": {
+        "name": "ABC竞品",
+        "actions": [],
+        "position": "close",
+        "pressureScore": 52
+      },
+      "complianceRisks": [],
+      "outcomeEvidence": {
+        "publicValue": [],
+        "personalBenefit": []
+      },
+      "overtimeMinutes": 0,
+      "submissionReady": false,
+      "supplierSupport": {
+        "abc-company": {
+          "P1-001": 52,
+          "P1-002": 52,
+          "P1-003": 52,
+          "P1-004": 52,
+          "P1-005": 52
+        },
+        "xyz-company": {
+          "P1-001": 46,
+          "P1-002": 46,
+          "P1-003": 46,
+          "P1-004": 46,
+          "P1-005": 46
+        },
+        "player-company": {
+          "P1-001": 20,
+          "P1-002": 35,
+          "P1-003": 40,
+          "P1-004": 30,
+          "P1-005": 35
+        }
+      },
+      "competitorClaims": [],
+      "supplierProfiles": [
+        {
+          "id": "player-company",
+          "name": "我方公司",
+          "advantageType": "technical_accuracy",
+          "coreAdvantage": "技术精度领先",
+          "preferredBidRule": "technical_accuracy"
+        },
+        {
+          "id": "abc-company",
+          "name": "ABC竞品",
+          "advantageType": "price",
+          "coreAdvantage": "报价最低",
+          "preferredBidRule": "lowest_price"
+        },
+        {
+          "id": "xyz-company",
+          "name": "XYZ竞品",
+          "advantageType": "feature_completeness",
+          "coreAdvantage": "功能覆盖最全面",
+          "preferredBidRule": "feature_completeness"
+        }
+      ],
+      "knownPersonalInfo": {
+        "P1-004": [
+          "我方曾在公开交流活动中与赵晓晨有过短暂接触，但不了解其项目态度。"
+        ]
+      },
+      "pausedRemainingMs": null,
+      "dayAvailableMinutes": 0,
+      "overallSupportState": "LOW",
+      "processedCommandIds": [],
+      "ruleProposalHistory": [],
+      "conversationMemories": {},
+      "cumulativeSpentPoints": 0,
+      "cumulativeTimeMinutes": 0,
+      "progressionMultiplier": 1,
+      "simulatedClockMinutes": 540
+    }
+  },
+  {
+    "session_id": "8ffdb636-b7d1-4263-94c8-5e515d270e6f",
+    "scenario_code": "project-1",
+    "action_points": 28,
+    "dimensions": {
+      "decisionAnalysis": 50,
+      "objectionHandling": 50,
+      "valuePresentation": 50,
+      "informationDiscovery": 50,
+      "relationshipBuilding": 50
+    },
+    "npc_affinity": {
+      "P1-001": 20,
+      "P1-002": 35,
+      "P1-003": 40,
+      "P1-004": 30,
+      "P1-005": 35
+    },
+    "unlocked_npc_ids": [
+      "P1-001",
+      "P1-002",
+      "P1-003",
+      "P1-004",
+      "P1-005"
+    ],
+    "unlocked_clues": [],
+    "conversation_memories": {},
+    "last_action": null,
+    "version": 1,
+    "updated_at": "2026-09-28T08:54:06.552177+00:00",
+    "phase_started_at": "2000-01-01T00:00:00+00:00",
+    "phase_ends_at": "2000-01-01T00:00:00+00:00",
+    "paused_at": null,
+    "paused_remaining_ms": null,
+    "npc_contacts": {
+      "P1-001": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-002": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "email",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-003": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "email",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-004": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-005": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      }
+    },
+    "active_meeting": null,
+    "simulation_state": {
+      "status": "playing",
+      "bidRule": "balanced",
+      "version": 1,
+      "gameMode": "solo",
+      "pausedAt": null,
+      "companyId": "player-company",
+      "maxRounds": 5,
+      "maxStages": 5,
+      "workPlans": [],
+      "dimensions": {
+        "decisionAnalysis": 50,
+        "objectionHandling": 50,
+        "valuePresentation": 50,
+        "informationDiscovery": 50,
+        "relationshipBuilding": 50
+      },
+      "lastAction": null,
+      "npcAffinity": {
+        "P1-001": 20,
+        "P1-002": 35,
+        "P1-003": 40,
+        "P1-004": 30,
+        "P1-005": 35
+      },
+      "npcContacts": {
+        "P1-001": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-002": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "email",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-003": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "email",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-004": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-005": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        }
+      },
+      "phaseEndsAt": "2000-01-01T00:00:00.000Z",
+      "visitBriefs": [],
+      "actionPoints": 28,
+      "appointments": [],
+      "currentRound": 1,
+      "currentStage": 1,
+      "npcAttitudes": {
+        "P1-001": {
+          "history": [],
+          "support": 20,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-002": {
+          "history": [],
+          "support": 35,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-003": {
+          "history": [],
+          "support": 40,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-004": {
+          "history": [],
+          "support": 30,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-005": {
+          "history": [],
+          "support": 35,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        }
+      },
+      "preparations": [],
+      "scenarioCode": "project-1",
+      "activeMeeting": null,
+      "notifications": [],
+      "postalRecords": [],
+      "unlockedClues": [],
+      "meetingMinutes": [],
+      "phaseStartedAt": "2000-01-01T00:00:00.000Z",
+      "publicResearch": {},
+      "unlockedNpcIds": [
+        "P1-001",
+        "P1-002",
+        "P1-003",
+        "P1-004",
+        "P1-005"
+      ],
+      "competitorState": {
+        "name": "ABC竞品",
+        "actions": [],
+        "position": "close",
+        "pressureScore": 52
+      },
+      "complianceRisks": [],
+      "outcomeEvidence": {
+        "publicValue": [],
+        "personalBenefit": []
+      },
+      "overtimeMinutes": 0,
+      "submissionReady": false,
+      "supplierSupport": {
+        "abc-company": {
+          "P1-001": 52,
+          "P1-002": 52,
+          "P1-003": 52,
+          "P1-004": 52,
+          "P1-005": 52
+        },
+        "xyz-company": {
+          "P1-001": 46,
+          "P1-002": 46,
+          "P1-003": 46,
+          "P1-004": 46,
+          "P1-005": 46
+        },
+        "player-company": {
+          "P1-001": 20,
+          "P1-002": 35,
+          "P1-003": 40,
+          "P1-004": 30,
+          "P1-005": 35
+        }
+      },
+      "competitorClaims": [],
+      "supplierProfiles": [
+        {
+          "id": "player-company",
+          "name": "我方公司",
+          "advantageType": "technical_accuracy",
+          "coreAdvantage": "技术精度领先",
+          "preferredBidRule": "technical_accuracy"
+        },
+        {
+          "id": "abc-company",
+          "name": "ABC竞品",
+          "advantageType": "price",
+          "coreAdvantage": "报价最低",
+          "preferredBidRule": "lowest_price"
+        },
+        {
+          "id": "xyz-company",
+          "name": "XYZ竞品",
+          "advantageType": "feature_completeness",
+          "coreAdvantage": "功能覆盖最全面",
+          "preferredBidRule": "feature_completeness"
+        }
+      ],
+      "knownPersonalInfo": {
+        "P1-004": [
+          "我方曾在公开交流活动中与赵晓晨有过短暂接触，但不了解其项目态度。"
+        ]
+      },
+      "pausedRemainingMs": null,
+      "dayAvailableMinutes": 0,
+      "overallSupportState": "LOW",
+      "processedCommandIds": [],
+      "ruleProposalHistory": [],
+      "conversationMemories": {},
+      "cumulativeSpentPoints": 0,
+      "cumulativeTimeMinutes": 0,
+      "progressionMultiplier": 1,
+      "simulatedClockMinutes": 540
+    }
+  },
+  {
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "scenario_code": "project-1",
+    "action_points": 25,
+    "dimensions": {
+      "decisionAnalysis": 50,
+      "objectionHandling": 50,
+      "valuePresentation": 50,
+      "informationDiscovery": 50,
+      "relationshipBuilding": 50
+    },
+    "npc_affinity": {
+      "P1-001": 20,
+      "P1-002": 35,
+      "P1-003": 40,
+      "P1-004": 27,
+      "P1-005": 35
+    },
+    "unlocked_npc_ids": [
+      "P1-001",
+      "P1-002",
+      "P1-003",
+      "P1-004",
+      "P1-005"
+    ],
+    "unlocked_clues": [],
+    "conversation_memories": {},
+    "last_action": "visit:short",
+    "version": 7,
+    "updated_at": "2026-10-27T07:41:45.676224+00:00",
+    "phase_started_at": null,
+    "phase_ends_at": null,
+    "paused_at": null,
+    "paused_remaining_ms": null,
+    "npc_contacts": {
+      "P1-001": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-002": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "email",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-003": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "email",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-004": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      },
+      "P1-005": {
+        "status": "known",
+        "hasReplied": false,
+        "wechatStatus": "not_requested",
+        "outboundCount": 0,
+        "initialChannel": "work_phone",
+        "unansweredRound": null,
+        "lastContactRound": null,
+        "lastPhoneOutcome": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "onlineRequestedRound": null
+      }
+    },
+    "active_meeting": {
+      "id": "meeting:drop-in:16752705b2906358d712753f2bbdc4c04e61f16a62f351454174b3f9138e0821",
+      "npcId": "P1-001",
+      "actionId": "short",
+      "maxTurns": 20,
+      "startedAt": "stage:1",
+      "turnCount": 0,
+      "visitType": "short",
+      "appointmentId": "drop-in:16752705b2906358d712753f2bbdc4c04e61f16a62f351454174b3f9138e0821",
+      "completedTasks": [],
+      "durationMinutes": 5,
+      "workTopicOpenedBy": null,
+      "usedPreparationIds": []
+    },
+    "simulation_state": {
+      "status": "playing",
+      "bidRule": "balanced",
+      "version": 7,
+      "gameMode": "solo",
+      "pausedAt": null,
+      "companyId": "player-company",
+      "maxRounds": 1,
+      "maxStages": 1,
+      "workPlans": [],
+      "dimensions": {
+        "decisionAnalysis": 50,
+        "objectionHandling": 50,
+        "valuePresentation": 50,
+        "informationDiscovery": 50,
+        "relationshipBuilding": 50
+      },
+      "lastAction": "visit:short",
+      "npcAffinity": {
+        "P1-001": 20,
+        "P1-002": 35,
+        "P1-003": 40,
+        "P1-004": 27,
+        "P1-005": 35
+      },
+      "npcContacts": {
+        "P1-001": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-002": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "email",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-003": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "email",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-004": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        },
+        "P1-005": {
+          "status": "known",
+          "hasReplied": false,
+          "wechatStatus": "not_requested",
+          "outboundCount": 0,
+          "initialChannel": "work_phone",
+          "unansweredRound": null,
+          "lastContactRound": null,
+          "lastPhoneOutcome": null,
+          "lastContactMinute": null,
+          "channelCooldownUntil": {},
+          "onlineRequestedRound": null
+        }
+      },
+      "phaseEndsAt": "2000-01-01T00:00:00.000Z",
+      "visitBriefs": [],
+      "actionPoints": 25,
+      "appointments": [
+        {
+          "id": "drop-in:5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7",
+          "npcId": "P1-001",
+          "venue": "客户办公地点",
+          "status": "completed",
+          "purpose": "未预约直接登门沟通",
+          "maxTurns": 20,
+          "visitType": "short",
+          "conditions": [],
+          "startMinute": 540,
+          "scheduledRound": 1,
+          "durationMinutes": 5,
+          "reservedMinutes": 0,
+          "invitationMethod": "drop_in",
+          "workTopicOpenedBy": null,
+          "invitationCommandId": "5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7"
+        },
+        {
+          "id": "drop-in:16752705b2906358d712753f2bbdc4c04e61f16a62f351454174b3f9138e0821",
+          "npcId": "P1-001",
+          "venue": "客户办公地点",
+          "status": "active",
+          "purpose": "未预约直接登门沟通",
+          "maxTurns": 20,
+          "visitType": "short",
+          "conditions": [],
+          "startMinute": 540,
+          "scheduledRound": 1,
+          "durationMinutes": 5,
+          "reservedMinutes": 0,
+          "invitationMethod": "drop_in",
+          "workTopicOpenedBy": null,
+          "invitationCommandId": "16752705b2906358d712753f2bbdc4c04e61f16a62f351454174b3f9138e0821"
+        }
+      ],
+      "currentRound": 1,
+      "currentStage": 1,
+      "npcAttitudes": {
+        "P1-001": {
+          "history": [],
+          "support": 20,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-002": {
+          "history": [],
+          "support": 35,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-003": {
+          "history": [],
+          "support": 40,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-004": {
+          "history": [
+            {
+              "round": 1,
+              "minute": 540,
+              "reason": "竞品正在接触项目执行人员",
+              "source": "competitor:1:relationship",
+              "supportDelta": -3,
+              "pleasantnessDelta": 0
+            }
+          ],
+          "support": 27,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        },
+        "P1-005": {
+          "history": [],
+          "support": 35,
+          "pleasantness": 50,
+          "unmetImpression": 0,
+          "complianceAwareness": 0
+        }
+      },
+      "preparations": [],
+      "projectTimer": {
+        "elapsedMs": 346542,
+        "durationMs": 1200000,
+        "visitPaused": true,
+        "lastResumedAt": null,
+        "recoveredIntervals": 1
+      },
+      "scenarioCode": "project-1",
+      "activeMeeting": {
+        "id": "meeting:drop-in:16752705b2906358d712753f2bbdc4c04e61f16a62f351454174b3f9138e0821",
+        "npcId": "P1-001",
+        "actionId": "short",
+        "maxTurns": 20,
+        "startedAt": "stage:1",
+        "turnCount": 0,
+        "visitType": "short",
+        "appointmentId": "drop-in:16752705b2906358d712753f2bbdc4c04e61f16a62f351454174b3f9138e0821",
+        "completedTasks": [],
+        "durationMinutes": 5,
+        "workTopicOpenedBy": null,
+        "usedPreparationIds": []
+      },
+      "notifications": [
+        {
+          "id": "follow-up:drop-in:5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7",
+          "body": "拜访纪要已生成，请确认并完成后续跟进。",
+          "kind": "follow_up",
+          "npcId": "P1-001",
+          "round": 1,
+          "title": "拜访后跟进",
+          "isRead": false,
+          "minute": 540,
+          "targetId": "drop-in:5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7"
+        }
+      ],
+      "postalRecords": [],
+      "unlockedClues": [],
+      "meetingMinutes": [
+        {
+          "id": "minutes:drop-in:5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7",
+          "npcId": "P1-001",
+          "owner": "我方销售 / 张建国",
+          "summary": "本次拜访已结束。",
+          "nextStep": "确认纪要并约定后续沟通",
+          "original": {
+            "summary": "本次拜访已结束。",
+            "nextStep": "确认纪要并约定后续沟通",
+            "confirmedItems": [
+              "已围绕“未预约直接登门沟通”完成沟通"
+            ],
+            "npcCommitments": [],
+            "playerCommitments": [
+              "发送会谈纪要并确认下一步安排"
+            ]
+          },
+          "endReason": "player",
+          "visitType": "short",
+          "createdRound": 1,
+          "appointmentId": "drop-in:5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7",
+          "createdMinute": 540,
+          "nextStepRound": 1,
+          "revisionCount": 0,
+          "completedTasks": [],
+          "confirmedItems": [
+            "已围绕“未预约直接登门沟通”完成沟通"
+          ],
+          "nextStepMinute": 570,
+          "npcCommitments": [],
+          "pendingMaterials": [],
+          "playerCommitments": [
+            "发送会谈纪要并确认下一步安排"
+          ]
+        }
+      ],
+      "phaseStartedAt": "2000-01-01T00:00:00.000Z",
+      "publicResearch": {
+        "P1-001": {
+          "facts": [
+            "项目一的主管副总经理，负责关键项目决策与最终方向把关。",
+            "公开工作信息显示其关注项目稳定性、投入产出和组织协同。",
+            "在项目决策中通常只根据实施风险、交付确定性与长期价值判断是否继续推进，并将技术、验收和执行细节交给对应部门。"
+          ],
+          "npcId": "P1-001",
+          "costPoints": 2,
+          "sourceNote": "项目一五人人物主档中的公开岗位与公开工作信息",
+          "weakSignals": [
+            "决策沟通更适合先讲稳定性、可量化收益和风险边界。"
+          ],
+          "completedRound": 1,
+          "completedMinute": 540
+        }
+      },
+      "unlockedNpcIds": [
+        "P1-001",
+        "P1-002",
+        "P1-003",
+        "P1-004",
+        "P1-005"
+      ],
+      "activePhoneCall": null,
+      "competitorState": {
+        "name": "ABC竞品",
+        "actions": [
+          {
+            "id": "competitor:1:relationship",
+            "kind": "relationship",
+            "round": 1,
+            "title": "竞品正在接触项目执行人员",
+            "summary": "公开迹象显示，竞品正在强调既有合作经验并争取一线执行反馈。",
+            "mitigated": false,
+            "targetNpcId": "P1-004",
+            "pressureDelta": 3,
+            "supportImpact": -3
+          }
+        ],
+        "position": "lagging",
+        "pressureScore": 55
+      },
+      "complianceRisks": [],
+      "outcomeEvidence": {
+        "publicValue": [],
+        "personalBenefit": []
+      },
+      "overtimeMinutes": 0,
+      "submissionReady": false,
+      "supplierSupport": {
+        "abc-company": {
+          "P1-001": 52,
+          "P1-002": 52,
+          "P1-003": 52,
+          "P1-004": 55,
+          "P1-005": 52
+        },
+        "xyz-company": {
+          "P1-001": 46,
+          "P1-002": 46,
+          "P1-003": 46,
+          "P1-004": 46,
+          "P1-005": 46
+        },
+        "player-company": {
+          "P1-001": 20,
+          "P1-002": 35,
+          "P1-003": 40,
+          "P1-004": 27,
+          "P1-005": 35
+        }
+      },
+      "competitorClaims": [],
+      "supplierProfiles": [
+        {
+          "id": "player-company",
+          "name": "我方公司",
+          "advantageType": "technical_accuracy",
+          "coreAdvantage": "技术精度领先",
+          "preferredBidRule": "technical_accuracy"
+        },
+        {
+          "id": "abc-company",
+          "name": "ABC竞品",
+          "advantageType": "price",
+          "coreAdvantage": "报价最低",
+          "preferredBidRule": "lowest_price"
+        },
+        {
+          "id": "xyz-company",
+          "name": "XYZ竞品",
+          "advantageType": "feature_completeness",
+          "coreAdvantage": "功能覆盖最全面",
+          "preferredBidRule": "feature_completeness"
+        }
+      ],
+      "knownPersonalInfo": {
+        "P1-004": [
+          "我方曾在公开交流活动中与赵晓晨有过短暂接触，但不了解其项目态度。"
+        ]
+      },
+      "pausedRemainingMs": null,
+      "customerActivities": {
+        "tasks": [],
+        "version": 1,
+        "decisions": []
+      },
+      "dayAvailableMinutes": 0,
+      "overallSupportState": "LOW",
+      "processedCommandIds": [
+        "c84689de357afbfb234210802d27dde1097ce161b83baca74d41ba4b4be62d0b",
+        "5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7",
+        "be98c107127849488b8127a1fc8dceedd2c1c83cb3d422a982b69fff0ec6630f",
+        "16752705b2906358d712753f2bbdc4c04e61f16a62f351454174b3f9138e0821"
+      ],
+      "ruleProposalHistory": [],
+      "conversationMemories": {},
+      "cumulativeSpentPoints": 8,
+      "cumulativeTimeMinutes": 0,
+      "progressionMultiplier": 1,
+      "simulatedClockMinutes": 540,
+      "customerActivityDiagnostics": [
+        {
+          "at": 1793086663563,
+          "event": "conversation_not_queued",
+          "npcId": "P1-001",
+          "reason": "ended_visit_has_no_sales_message",
+          "details": {
+            "message_count": 0
+          },
+          "conversationId": "visit:meeting:drop-in:5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7"
+        }
+      ],
+      "customerActivityDetectionQueue": []
+    }
+  }
+]

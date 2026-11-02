@@ -1,0 +1,932 @@
+{
+  "checkedAt": "2026-10-21T06:44:26.306Z",
+  "sessionId": "dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5",
+  "updatedAt": "2026-10-21T06:43:53.245344+00:00",
+  "version": 13,
+  "decisionProvider": "jev",
+  "decisionProviderRevision": 0,
+  "activityMode": "numeric",
+  "activityRevision": 3,
+  "members": [
+    {
+      "npcId": "P1-001",
+      "support": 20,
+      "pleasantness": 60
+    },
+    {
+      "npcId": "P1-002",
+      "support": 20,
+      "pleasantness": 60
+    },
+    {
+      "npcId": "P1-003",
+      "support": 20,
+      "pleasantness": 60
+    },
+    {
+      "npcId": "P1-004",
+      "support": 20,
+      "pleasantness": 60
+    },
+    {
+      "npcId": "P1-005",
+      "support": 20,
+      "pleasantness": 60
+    }
+  ],
+  "activeCall": null,
+  "pendingCount": 0,
+  "diagnostics": [
+    {
+      "at": 1792564948613,
+      "event": "phone_conversation_started",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "details": {
+        "startMessageIndex": 4
+      },
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792565032758,
+      "event": "conversation_queued",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "details": {
+        "messageCount": 4,
+        "endMessageIndex": 8
+      },
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da",
+      "organizationSnapshot": [
+        {
+          "npcId": "P1-001",
+          "support": 20,
+          "pleasantness": 60
+        },
+        {
+          "npcId": "P1-002",
+          "support": 20,
+          "pleasantness": 60
+        },
+        {
+          "npcId": "P1-003",
+          "support": 20,
+          "pleasantness": 60
+        },
+        {
+          "npcId": "P1-004",
+          "support": 20,
+          "pleasantness": 60
+        },
+        {
+          "npcId": "P1-005",
+          "support": 20,
+          "pleasantness": 60
+        }
+      ]
+    },
+    {
+      "at": 1792565032758,
+      "event": "detection_started",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792565032760,
+      "event": "candidate_accepted",
+      "npcId": "P1-004",
+      "reason": "sales_proposal_enters_feasibility_without_customer_response",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "deterministic_sales_proposal"
+      },
+      "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792565032760,
+      "event": "model_skipped",
+      "npcId": "P1-004",
+      "reason": "deterministic_candidate_does_not_need_model_classification",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "deterministic_sales_proposal"
+      },
+      "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792565032760,
+      "event": "model_request",
+      "npcId": "P1-004",
+      "reason": "customer_activity_semantic_fallback",
+      "channel": "work_phone",
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792565034280,
+      "event": "model_response",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "details": {
+        "initiator": "sales",
+        "candidate_count": 1
+      },
+      "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792565032758,
+      "event": "candidates_count",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "details": {
+        "count": 1
+      },
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792565032758,
+      "event": "threshold_decision",
+      "npcId": "P1-004",
+      "reason": "团队当前关系状态支持推进该活动。",
+      "channel": "work_phone",
+      "decision": "allow",
+      "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da",
+      "organizationSnapshot": [
+        {
+          "npcId": "P1-001",
+          "support": 20,
+          "pleasantness": 60
+        },
+        {
+          "npcId": "P1-002",
+          "support": 20,
+          "pleasantness": 60
+        },
+        {
+          "npcId": "P1-003",
+          "support": 20,
+          "pleasantness": 60
+        },
+        {
+          "npcId": "P1-004",
+          "support": 20,
+          "pleasantness": 60
+        },
+        {
+          "npcId": "P1-005",
+          "support": 20,
+          "pleasantness": 60
+        }
+      ]
+    },
+    {
+      "at": 1792565032758,
+      "event": "task_created",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "decision": "allow",
+      "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    }
+  ],
+  "decisions": [
+    {
+      "mode": "numeric",
+      "type": "technical_meeting",
+      "npcId": "P1-004",
+      "reason": "团队当前关系状态支持推进该活动。",
+      "decision": "allow",
+      "decidedAt": 1792565032758,
+      "initiator": "sales",
+      "configRevision": 3,
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da",
+      "decisionConfig": {
+        "mode": "numeric",
+        "revision": 3,
+        "thresholds": {
+          "company_visit": {
+            "organization": {
+              "paths": [
+                {
+                  "id": "a",
+                  "label": "项目牵头人与商务负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 18,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-003"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "b",
+                  "label": "技术、商务和综合负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 15,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-003"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-005"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "c",
+                  "label": "团队整体支持且项目或商务负责人之一支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001",
+                        "P1-002",
+                        "P1-003",
+                        "P1-004",
+                        "P1-005"
+                      ],
+                      "minCount": 3,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-001",
+                        "P1-003"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                }
+              ],
+              "minimumPleasantness": 20
+            }
+          },
+          "case_site_visit": {
+            "organization": {
+              "paths": [
+                {
+                  "id": "a",
+                  "label": "技术负责人和实施负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 15,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-004"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "b",
+                  "label": "项目牵头人与技术负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 18,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "c",
+                  "label": "团队整体支持且关键负责人之一支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001",
+                        "P1-002",
+                        "P1-003",
+                        "P1-004",
+                        "P1-005"
+                      ],
+                      "minCount": 3,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-002",
+                        "P1-004"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                }
+              ],
+              "minimumPleasantness": 20
+            }
+          },
+          "technical_meeting": {
+            "organization": {
+              "paths": [
+                {
+                  "id": "a",
+                  "label": "技术负责人和实施负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-004"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "b",
+                  "label": "项目牵头人与技术负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 15,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "c",
+                  "label": "团队整体支持且关键负责人之一支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001",
+                        "P1-002",
+                        "P1-003",
+                        "P1-004",
+                        "P1-005"
+                      ],
+                      "minCount": 3,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-002",
+                        "P1-004"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                }
+              ],
+              "minimumPleasantness": 20
+            }
+          }
+        }
+      },
+      "idempotencyKey": "proposal:6:P1-004|17:technical_meeting|36:a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "proposalMessageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "responseMessageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "relationshipSnapshot": {
+        "role": "一线",
+        "npcId": "P1-004",
+        "stage": "N1",
+        "title": "项目执行人员",
+        "context": "李明辉的直属下属，负责项目具体执行；承担需求落实、任务执行、进度反馈、材料处理、跨环节协调和一线操作验证。",
+        "support": 20,
+        "dimensions": {
+          "decisionAnalysis": 0,
+          "objectionHandling": 0,
+          "valuePresentation": 0,
+          "informationDiscovery": 0,
+          "relationshipBuilding": 0
+        },
+        "organization": {
+          "members": [
+            {
+              "npcId": "P1-001",
+              "support": 20,
+              "pleasantness": 60
+            },
+            {
+              "npcId": "P1-002",
+              "support": 20,
+              "pleasantness": 60
+            },
+            {
+              "npcId": "P1-003",
+              "support": 20,
+              "pleasantness": 60
+            },
+            {
+              "npcId": "P1-004",
+              "support": 20,
+              "pleasantness": 60
+            },
+            {
+              "npcId": "P1-005",
+              "support": 20,
+              "pleasantness": 60
+            }
+          ]
+        },
+        "pleasantness": 60
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "id": "customer-activity:92970755ce7bf7b1:technical_meeting",
+      "type": "technical_meeting",
+      "draft": "",
+      "npcId": "P1-004",
+      "status": "pending",
+      "summary": "赵老师，您看我们下周要不要安排一个技术交流会，这样可以更好地交流技术上的问题，可以直接把需求交代清楚。",
+      "evidence": [
+        {
+          "kind": "proposal",
+          "quote": "技术交流会",
+          "speaker": "sales",
+          "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190"
+        }
+      ],
+      "createdAt": 1792565032758,
+      "initiator": "sales",
+      "decisionMode": "numeric",
+      "responseKind": "not_required",
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da",
+      "decisionConfig": {
+        "mode": "numeric",
+        "revision": 3,
+        "thresholds": {
+          "company_visit": {
+            "organization": {
+              "paths": [
+                {
+                  "id": "a",
+                  "label": "项目牵头人与商务负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 18,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-003"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "b",
+                  "label": "技术、商务和综合负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 15,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-003"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-005"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "c",
+                  "label": "团队整体支持且项目或商务负责人之一支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001",
+                        "P1-002",
+                        "P1-003",
+                        "P1-004",
+                        "P1-005"
+                      ],
+                      "minCount": 3,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-001",
+                        "P1-003"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                }
+              ],
+              "minimumPleasantness": 20
+            }
+          },
+          "case_site_visit": {
+            "organization": {
+              "paths": [
+                {
+                  "id": "a",
+                  "label": "技术负责人和实施负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 15,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-004"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "b",
+                  "label": "项目牵头人与技术负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 18,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "c",
+                  "label": "团队整体支持且关键负责人之一支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001",
+                        "P1-002",
+                        "P1-003",
+                        "P1-004",
+                        "P1-005"
+                      ],
+                      "minCount": 3,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-002",
+                        "P1-004"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                }
+              ],
+              "minimumPleasantness": 20
+            }
+          },
+          "technical_meeting": {
+            "organization": {
+              "paths": [
+                {
+                  "id": "a",
+                  "label": "技术负责人和实施负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 12,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-004"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "b",
+                  "label": "项目牵头人与技术负责人均支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 15,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-002"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                },
+                {
+                  "id": "c",
+                  "label": "团队整体支持且关键负责人之一支持",
+                  "conditions": [
+                    {
+                      "npcIds": [
+                        "P1-001",
+                        "P1-002",
+                        "P1-003",
+                        "P1-004",
+                        "P1-005"
+                      ],
+                      "minCount": 3,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    },
+                    {
+                      "npcIds": [
+                        "P1-002",
+                        "P1-004"
+                      ],
+                      "minCount": 1,
+                      "supportMin": 8,
+                      "pleasantnessMin": 55
+                    }
+                  ]
+                }
+              ],
+              "minimumPleasantness": 20
+            }
+          }
+        }
+      },
+      "decisionReason": "团队当前关系状态支持推进该活动。",
+      "idempotencyKey": "6:P1-004|17:technical_meeting|36:a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "decisionRevision": 3,
+      "proposalMessageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "agreementMessageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190",
+      "sourceConversation": [
+        {
+          "text": "玩家拨打工作电话，等待接听。",
+          "speaker": "sales",
+          "messageId": "9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+        },
+        {
+          "text": "您好，我是赵晓晨。您这会儿打电话来，是有什么事吗？",
+          "speaker": "customer",
+          "messageId": "37416464-af49-4d63-9301-2791731210b9"
+        },
+        {
+          "text": "赵老师，您看我们下周要不要安排一个技术交流会，这样可以更好地交流技术上的问题，可以直接把需求交代清楚。",
+          "speaker": "sales",
+          "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190"
+        },
+        {
+          "text": "嗯……这个技术交流会的事，我得先向上级汇报一下，确认后再答复您。",
+          "speaker": "customer",
+          "messageId": "81977c79-e415-4404-97d7-2d870244ea73"
+        }
+      ],
+      "relationshipSnapshot": {
+        "role": "一线",
+        "npcId": "P1-004",
+        "stage": "N1",
+        "title": "项目执行人员",
+        "context": "李明辉的直属下属，负责项目具体执行；承担需求落实、任务执行、进度反馈、材料处理、跨环节协调和一线操作验证。",
+        "support": 20,
+        "dimensions": {
+          "decisionAnalysis": 0,
+          "objectionHandling": 0,
+          "valuePresentation": 0,
+          "informationDiscovery": 0,
+          "relationshipBuilding": 0
+        },
+        "organization": {
+          "members": [
+            {
+              "npcId": "P1-001",
+              "support": 20,
+              "pleasantness": 60
+            },
+            {
+              "npcId": "P1-002",
+              "support": 20,
+              "pleasantness": 60
+            },
+            {
+              "npcId": "P1-003",
+              "support": 20,
+              "pleasantness": 60
+            },
+            {
+              "npcId": "P1-004",
+              "support": 20,
+              "pleasantness": 60
+            },
+            {
+              "npcId": "P1-005",
+              "support": 20,
+              "pleasantness": 60
+            }
+          ]
+        },
+        "pleasantness": 60
+      }
+    }
+  ],
+  "phoneMessages": [
+    {
+      "at": 1792562236530,
+      "role": "player",
+      "text": "玩家拨打工作电话，等待接听。",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "580b7e5b-09a5-46f3-abd7-e343d4c5a1e9"
+    },
+    {
+      "at": 1792562238230,
+      "role": "npc",
+      "text": "您好，我是赵晓晨。您这会儿打电话来，是有什么事吗？",
+      "channel": "work_phone",
+      "messageId": "5934bfb1-84b1-4d56-a0ab-507233ce974a"
+    },
+    {
+      "at": 1792562291370,
+      "role": "player",
+      "text": "赵老师您好，我想问问看能不能咱们下周召开一个技术交流会，正好也把您这边的需求和我们对一下，提高效率",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "d5341d62-607e-49ca-b6d0-5c92f5c7b707"
+    },
+    {
+      "at": 1792562293908,
+      "role": "npc",
+      "text": "这类安排我需要先向上级汇报，确认后再答复。",
+      "channel": "work_phone",
+      "messageId": "834679e1-e4a2-413b-a2a1-8810b84cdc65"
+    },
+    {
+      "at": 1792564943991,
+      "role": "player",
+      "text": "玩家拨打工作电话，等待接听。",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792564945677,
+      "role": "npc",
+      "text": "您好，我是赵晓晨。您这会儿打电话来，是有什么事吗？",
+      "channel": "work_phone",
+      "messageId": "37416464-af49-4d63-9301-2791731210b9"
+    },
+    {
+      "at": 1792564963600,
+      "role": "player",
+      "text": "赵老师，您看我们下周要不要安排一个技术交流会，这样可以更好地交流技术上的问题，可以直接把需求交代清楚。",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190"
+    },
+    {
+      "at": 1792564966399,
+      "role": "npc",
+      "text": "嗯……这个技术交流会的事，我得先向上级汇报一下，确认后再答复您。",
+      "channel": "work_phone",
+      "messageId": "81977c79-e415-4404-97d7-2d870244ea73"
+    }
+  ]
+}

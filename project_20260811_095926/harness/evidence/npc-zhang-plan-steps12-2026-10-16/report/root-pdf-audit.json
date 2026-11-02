@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "pages": 7,
+  "inputAndReplyChecks": 48,
+  "providerCaseAssociationChecks": 48,
+  "allPagesContactSheetReviewed": true,
+  "page1And6FullSizeReviewed": true,
+  "pdfSha256": "dd59961ea9d96fc983d33b728cbf650ae5c28445c6c27f89af4244b7898a8f43"
+}

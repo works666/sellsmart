@@ -1,0 +1,17 @@
+{
+  "includedCaseCount": 10,
+  "processIdsStopped": [
+    25288,
+    26684
+  ],
+  "productCodeChanged": false,
+  "preserveRawEvidence": true,
+  "status": "deferred_at_user_request",
+  "lastAction": "cancelled the five pending long-wait connections before completion",
+  "includedCasesRetryCount": 0,
+  "sourceExcelModified": false,
+  "completedModels": [
+    "doubao",
+    "qwen"
+  ]
+}

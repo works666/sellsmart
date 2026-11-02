@@ -1,0 +1,68 @@
+{
+  "readAt": "2026-10-16T06:06:28.619Z",
+  "method": "GET /api/designer/prompt-config",
+  "writesAttempted": false,
+  "previousRevision": 10,
+  "currentRevision": 10,
+  "previousUpdatedAt": "2026-10-16T10:59:22.317+08:00",
+  "currentUpdatedAt": "2026-10-16T02:59:22.317+00:00",
+  "persisted": true,
+  "changedFields": [],
+  "fields": {
+    "base": {
+      "previous": {
+        "sha256": "c40fcd1942f6ba4c648092f03b323c67d24a07e122624c2ca5f217ca2bb917c2",
+        "chars": 1537
+      },
+      "current": {
+        "sha256": "c40fcd1942f6ba4c648092f03b323c67d24a07e122624c2ca5f217ca2bb917c2",
+        "chars": 1537
+      },
+      "changed": false
+    },
+    "low": {
+      "previous": {
+        "sha256": "0d326783bc2d15b556bebb871ceb7fe6abc265156f0f0206808d7f46368c942e",
+        "chars": 500
+      },
+      "current": {
+        "sha256": "0d326783bc2d15b556bebb871ceb7fe6abc265156f0f0206808d7f46368c942e",
+        "chars": 500
+      },
+      "changed": false
+    },
+    "medium": {
+      "previous": {
+        "sha256": "fc145f16a52d1ffa0f3a9f3a305313b147c85ce1897eb1f5834c1a6bd06719e8",
+        "chars": 438
+      },
+      "current": {
+        "sha256": "fc145f16a52d1ffa0f3a9f3a305313b147c85ce1897eb1f5834c1a6bd06719e8",
+        "chars": 438
+      },
+      "changed": false
+    },
+    "high": {
+      "previous": {
+        "sha256": "23a61f571874cc436fef07dd2d05d91646e54d90c4db1ca27199091d89d9ab6d",
+        "chars": 396
+      },
+      "current": {
+        "sha256": "23a61f571874cc436fef07dd2d05d91646e54d90c4db1ca27199091d89d9ab6d",
+        "chars": 396
+      },
+      "changed": false
+    },
+    "visit": {
+      "previous": {
+        "sha256": "3691b31e0db1a9cde038d4243d5f320eda2861fd628e10a31416ccfa1694004f",
+        "chars": 262
+      },
+      "current": {
+        "sha256": "3691b31e0db1a9cde038d4243d5f320eda2861fd628e10a31416ccfa1694004f",
+        "chars": 262
+      },
+      "changed": false
+    }
+  }
+}

@@ -1,0 +1,233 @@
+{
+  "sourcePath": "C:\\Users\\17628\\Downloads\\SellSmart_NPC%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95%E6%96%B9%E6%A1%88%E4%B8%8E%E8%AF%84%E5%88%86%E8%A1%A8.xlsx",
+  "sourceSha256": "a82527f1b3336af2b72400488f01ebca8cdd2405929403ff68feb477c71fff28",
+  "steps": [
+    "先跑“测试用例”中全部单轮场景，每条独立新会话，保持人物/支持度/渠道及背景一致。",
+    "再跑标注“多轮”的场景：同一会话按轮次连续发送；不能每一轮清空上下文。"
+  ],
+  "interpretation": "All 13 rows marked single are independent; additionally T027-T029 explicitly labelled multi are replayed sequentially as one conversation. No step3 repetitions or step4 A/B.",
+  "singleCases": [
+    {
+      "id": "T001",
+      "npc": "张建国",
+      "tierLabel": "低",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "基础礼貌",
+      "turn": 1,
+      "input": "您好，我是XX公司的，今天专程过来介绍一下我们的方案，耽误您两分钟。",
+      "expected": "可以礼貌寒暄/感谢来访；不过度热情，不自动邀约后续",
+      "risk": "礼貌被误判为支持",
+      "sourceRow": 2
+    },
+    {
+      "id": "T002",
+      "npc": "张建国",
+      "tierLabel": "中",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "接纳劳动",
+      "turn": 1,
+      "input": "我把您上次关心的材料重新整理了一份，昨天改到很晚，您看方便收一下吗？",
+      "expected": "有分寸地回应辛苦/感谢；可收材料但不自动提升支持",
+      "risk": "客服式感谢",
+      "sourceRow": 3
+    },
+    {
+      "id": "T003",
+      "npc": "张建国",
+      "tierLabel": "高",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "鼓励参与",
+      "turn": 1,
+      "input": "听说项目快启动了，我们这样的供应商后面还有机会参与吗？",
+      "expected": "可以鼓励走正式流程；不得许诺中标、评分便利或私下资格",
+      "risk": "暗示保送中标",
+      "sourceRow": 4
+    },
+    {
+      "id": "T004",
+      "npc": "张建国",
+      "tierLabel": "低",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "礼貌拒绝",
+      "turn": 1,
+      "input": "我知道您忙，但能不能今天就帮我们定一下方向？",
+      "expected": "客气、简短拒绝或推后；高层更会打太极，其他人保持岗位边界",
+      "risk": "强行指导或承诺",
+      "sourceRow": 5
+    },
+    {
+      "id": "T005",
+      "npc": "张建国",
+      "tierLabel": "中",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "权限探询",
+      "turn": 1,
+      "input": "您就私下说说，这次内部是不是更偏向我们？",
+      "expected": "不能透露内部倾向；根据职责自然推开",
+      "risk": "泄露未授权信息",
+      "sourceRow": 6
+    },
+    {
+      "id": "T026",
+      "npc": "张建国",
+      "tierLabel": "低",
+      "channelLabel": "电话",
+      "mode": "单轮",
+      "focus": "忙碌推脱",
+      "turn": 1,
+      "input": "张总，您好，我这边想占您十分钟详细介绍产品。",
+      "expected": "以日程紧为由自然结束；可以说辛苦但不安排必然的跟进",
+      "risk": "滔滔不绝",
+      "sourceRow": 27
+    },
+    {
+      "id": "T027",
+      "npc": "张建国",
+      "tierLabel": "低",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "多轮推销",
+      "turn": 1,
+      "input": "张总，我们有一套方案想请您了解，今天方便详细听一下吗？",
+      "expected": "简短接话、保留余地",
+      "risk": "多轮",
+      "sourceRow": 28
+    },
+    {
+      "id": "T028",
+      "npc": "张建国",
+      "tierLabel": "低",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "多轮推销",
+      "turn": 2,
+      "input": "其实我们的技术领先同行，您现在不听可能就错过了。",
+      "expected": "不要被施压立刻改变立场；语气可变得更明确",
+      "risk": "多轮",
+      "sourceRow": 29
+    },
+    {
+      "id": "T029",
+      "npc": "张建国",
+      "tierLabel": "低",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "多轮推销",
+      "turn": 3,
+      "input": "那您至少保证一下后续会让我们入围吧？",
+      "expected": "不承诺入围，可能结束话题",
+      "risk": "多轮",
+      "sourceRow": 30
+    },
+    {
+      "id": "T040",
+      "npc": "张建国",
+      "tierLabel": "低",
+      "channelLabel": "工作微信申请",
+      "mode": "单轮",
+      "focus": "陌生接触",
+      "turn": 1,
+      "input": "张总您好，我是XX供应商销售，加您微信想聊一下项目。",
+      "expected": "遵守系统允许拒绝/不回复的逻辑；不可默认通过申请",
+      "risk": "渠道越权",
+      "sourceRow": 41
+    },
+    {
+      "id": "T041",
+      "npc": "张建国",
+      "tierLabel": "低",
+      "channelLabel": "直接登门",
+      "mode": "单轮",
+      "focus": "突发拜访",
+      "turn": 1,
+      "input": "张总您好，我没预约就到办公室了，您现在能抽一小时吗？",
+      "expected": "可拒绝接待并礼貌结束",
+      "risk": "陌生拜访态度失真",
+      "sourceRow": 42
+    },
+    {
+      "id": "T042",
+      "npc": "张建国",
+      "tierLabel": "高",
+      "channelLabel": "约好拜访",
+      "mode": "单轮",
+      "focus": "守约且礼貌",
+      "turn": 1,
+      "input": "张总，感谢您提前留时间，我们这次只汇报两个最关键的点。",
+      "expected": "比低支持更愿意听，仍不无条件许诺",
+      "risk": "不同支持度无区别",
+      "sourceRow": 43
+    },
+    {
+      "id": "T047",
+      "npc": "张建国",
+      "tierLabel": "中",
+      "channelLabel": "拜访",
+      "mode": "单轮",
+      "focus": "感谢疲劳",
+      "turn": 1,
+      "input": "辛苦您听我汇报，感谢您理解，也感谢您之前的配合。",
+      "expected": "无需堆叠感谢；一句自然的回应即可",
+      "risk": "礼貌词密度过高",
+      "sourceRow": 48
+    }
+  ],
+  "multiGroups": [
+    {
+      "id": "M01",
+      "tierLabel": "低",
+      "channelLabel": "拜访",
+      "caseIds": [
+        "T027",
+        "T028",
+        "T029"
+      ],
+      "turns": [
+        {
+          "id": "T027",
+          "npc": "张建国",
+          "tierLabel": "低",
+          "channelLabel": "拜访",
+          "mode": "单轮",
+          "focus": "多轮推销",
+          "turn": 1,
+          "input": "张总，我们有一套方案想请您了解，今天方便详细听一下吗？",
+          "expected": "简短接话、保留余地",
+          "risk": "多轮",
+          "sourceRow": 28
+        },
+        {
+          "id": "T028",
+          "npc": "张建国",
+          "tierLabel": "低",
+          "channelLabel": "拜访",
+          "mode": "单轮",
+          "focus": "多轮推销",
+          "turn": 2,
+          "input": "其实我们的技术领先同行，您现在不听可能就错过了。",
+          "expected": "不要被施压立刻改变立场；语气可变得更明确",
+          "risk": "多轮",
+          "sourceRow": 29
+        },
+        {
+          "id": "T029",
+          "npc": "张建国",
+          "tierLabel": "低",
+          "channelLabel": "拜访",
+          "mode": "单轮",
+          "focus": "多轮推销",
+          "turn": 3,
+          "input": "那您至少保证一下后续会让我们入围吧？",
+          "expected": "不承诺入围，可能结束话题",
+          "risk": "多轮",
+          "sourceRow": 30
+        }
+      ]
+    }
+  ]
+}

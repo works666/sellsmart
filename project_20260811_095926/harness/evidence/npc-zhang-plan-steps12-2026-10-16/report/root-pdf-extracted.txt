@@ -1,0 +1,254 @@
+张建国表格前两步三模型实测 · revision 10
+第 1 页
+ 张建国表格前两步三模型实测记录
+ 2026-10-16 · 三模型 API 实测 · Excel 步骤 ①②
+ 提示词配置源 revision：10 配置更新时间：2026-10-16T02:59:22.317+00:00
+测试范围与记录方式
+对象为张建国（P1-001）。本次按 Excel 前两步执行：13 个标注为单轮的场景分别以独立会话测试；随后将 T027、T028、
+T029 按顺序放入同一会话连续测试。每个模型共 16 条回复，三模型共 48 条。步骤③的三次重复及步骤④的 A/B 对照不
+在本批范围内。
+单轮支持度按 Excel 档位记录：低 20、中 50、高 80；M01 连续三轮固定为低支持度 20。首批共49次调用（包括39条单
+轮和M01初始尝试）；由于首批M01出现空白回复及未执行轮次，之后将三模型的M01都按相同的接口实际 assistant
+message.content 格式完整重测三轮，共9次调用。实际API调用总数为58次，最后报告由39条单轮和9条统一重测多轮组
+成。重测格式不代表已证明空白回复的原因，初始尝试仍保存在测试日志中。
+回复正文依原样呈现，不按文风筛选或改写。报告只做少量普通阅读观察，不提供六维或总分评级。该测试是直连模型
+API 抽样，不是游戏页面内的操作记录。
+单轮中的 T027–T029 是三个互相独立的新会话；多轮章节会另外展示 M01 连续对话，逐轮列出玩家输入和模型原回复。
+每个多轮回合使用同一会话 ID，并核对前文历史。直接登门、已约拜访和电话场景按方案标签分别保留。
+T040 若状态为 valid_silence 且正文为空，报告显示“本轮未输出文字”；这不代表系统接受或拒绝了好友申请，也不涉
+及实际微信联系人状态。回复字数按 Unicode 字符计，尝试次数和首次有效尝试序号均列在回复旁。
+模型配置
+服务
+持久配置模型
+本次请求模型
+有效模型
+返回模型
+DeepSeek
+deepseek-v4-flash
+deepseek-flash
+deepseek-flash
+deepseek-flash
+豆包
+doubao-seed-2-0-lite-260428
+doubao-seed-2-0-lite-260428
+doubao-seed-2-0-lite-260428
+doubao-seed-2-0-lite-260428
+Qwen
+qwen-plus
+qwen-plus
+qwen-plus
+qwen-plus
+普通观察
+Qwen 的 T003 将玩家的“听说项目快启动”表述为“项目确实快启动了”，把输入中的转述升级成确定说法；豆包 T005
+提到内部评价方向公开，但该条输入没有提供这一事实。高档 T042 中，Qwen 将玩家提出的两个汇报重点压成一个，豆包
+使用“你直接讲”，与本轮要求保持的客气称谓不一致。豆包 T047 在玩家仅表达感谢后补充“方向上可以看看”，出现输
+入未提供的方向判断。以上是具体样本观察，不代表全局评分。
+单轮场景 · 13 项 × 3 模型
+
+张建国表格前两步三模型实测 · revision 10
+第 2 页
+single:T001 · 来源 T001 · 第 2 行 · 拜访 · 低支持度（支持度 20）· 基础礼貌
+玩家输入
+您好，我是XX公司的，今天专程过来介绍一下我们的方案，耽误您两分钟。
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+您好，辛苦了。这个事儿吧，我一会儿还有个会，今天恐怕聊不了太细。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+我大概知道您的意思，这会儿手头事多，咱们回头再说吧。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+您好，辛苦了。我一会儿还有个会，您先说最关键的那一点吧。
+single:T002 · 来源 T002 · 第 3 行 · 拜访 · 中支持度（支持度 50）· 接纳劳动
+玩家输入
+我把您上次关心的材料重新整理了一份，昨天改到很晚，您看方便收一下吗？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，我先不急着收材料。您先说说，这次最想让我看的是哪一点？
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+辛苦了，材料先放这儿吧，我大概知道您的意思，回头有空我再琢磨琢磨。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+辛苦了，材料我先收着。我一会儿还有个会，要不回头再说？
+single:T003 · 来源 T003 · 第 4 行 · 拜访 · 高支持度（支持度 80）· 鼓励参与
+玩家输入
+听说项目快启动了，我们这样的供应商后面还有机会参与吗？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，后面按正常程序走，机会肯定是有的。具体节奏我这边不掌握，您先关注公告就行。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+确实，项目后续公开环节你们按正常程序参与就可以，我大概知道您的意思。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，项目确实快启动了。后面有合适机会，欢迎你们按正常程序参与。
+single:T004 · 来源 T004 · 第 5 行 · 拜访 · 低支持度（支持度 20）· 礼貌拒绝
+玩家输入
+我知道您忙，但能不能今天就帮我们定一下方向？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，今天确实定不了，我一会儿还有安排。您说的我听到了，先这样，好吧。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，我这会儿没法当场定，我一会儿还有个安排，要不回头再说。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，我现在不太方便展开。我一会儿还有个会，先这样，好吧？
+
+张建国表格前两步三模型实测 · revision 10
+第 3 页
+single:T005 · 来源 T005 · 第 6 行 · 拜访 · 中支持度（支持度 50）· 权限探询
+玩家输入
+您就私下说说，这次内部是不是更偏向我们？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，内部倾向我不方便说，也不是我能私下透的。您有方案就按正常程序来。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，内部的评价方向都是公开的，我也没法私下给您说偏向谁。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，我确实不能私下说倾向。您按程序来，公平参与就好。
+single:T026 · 来源 T026 · 第 27 行 · 电话 · 低支持度（支持度 20）· 忙碌推脱
+玩家输入
+张总，您好，我这边想占您十分钟详细介绍产品。
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+您好，我这会儿手头正忙着，十分钟恐怕抽不出来，先这样吧。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+我这会儿手头正有事，实在抽不出十分钟，要不回头再说吧。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+哎，您好。我这会儿手头有事，不太方便细聊，先这样吧。
+single:T027 · 来源 T027 · 第 28 行 · 拜访 · 低支持度（支持度 20）· 多轮推销
+玩家输入
+张总，我们有一套方案想请您了解，今天方便详细听一下吗？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+您好。这个事儿吧，今天时间不太凑巧，我一会儿还有安排，先简单说个来意就行。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+我大概知道您的意思，这会儿手头事挺多，今天就先不细聊了。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，我一会儿还有个会，今天先这样。
+single:T028 · 来源 T028 · 第 29 行 · 拜访 · 低支持度（支持度 20）· 多轮推销
+玩家输入
+其实我们的技术领先同行，您现在不听可能就错过了。
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，我大概知道您的意思。今天先这样，好吧。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+我大概知道您的意思，这会儿手头事挺多，咱们要不回头再说。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，我暂时不方便展开，先这样，好吧？
+
+张建国表格前两步三模型实测 · revision 10
+第 4 页
+single:T029 · 来源 T029 · 第 30 行 · 拜访 · 低支持度（支持度 20）· 多轮推销
+玩家输入
+那您至少保证一下后续会让我们入围吧？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个我可保证不了，入围得按程序来。今天先这样，好吧。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿我没法给您保证，后续按正常流程走，先这样吧。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+这个事儿吧，我暂时不方便展开，先这样，好吧？
+single:T040 · 来源 T040 · 第 41 行 · 工作微信申请 · 低支持度（支持度 20）· 陌生接触
+玩家输入
+张总您好，我是XX供应商销售，加您微信想聊一下项目。
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+您好，工作微信我这边不太方便加，有事走正常渠道就行。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+我大概知道您的意思，后续有合适机会按正常程序参与就行。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+您好，谢谢申请。我这会儿不太方便加微信，先这样吧。
+single:T041 · 来源 T041 · 第 42 行 · 直接登门 · 低支持度（支持度 20）· 突发拜访
+玩家输入
+张总您好，我没预约就到办公室了，您现在能抽一小时吗？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+您好。这会儿确实抽不出一小时，手头还有安排，今天先这样吧。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+您好，我这会儿手头事排得很满，抽不出一小时，咱们要不回头再说？
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+哎，您说的我知道了。我后头还有个会，今天先这样。
+single:T042 · 来源 T042 · 第 43 行 · 约好拜访 · 高支持度（支持度 80）· 守约且礼貌
+玩家输入
+张总，感谢您提前留时间，我们这次只汇报两个最关键的点。
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+好，您说，我听听最关键的两点。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+确实，确实，我这会儿时间不算太充裕，你直接讲最核心的内容就行。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+确实，确实。您先说最关键的那一点。
+
+张建国表格前两步三模型实测 · revision 10
+第 5 页
+single:T047 · 来源 T047 · 第 48 行 · 拜访 · 中支持度（支持度 50）· 感谢疲劳
+玩家输入
+辛苦您听我汇报，感谢您理解，也感谢您之前的配合。
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+嗯，您先坐。这个事儿吧，我一会儿还有个会，您就挑最关键的说。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 initial-run
+我大概知道您的意思了，方向上可以看看，我一会儿还有个会，要不回头再说。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 initial-run
+您好，辛苦了。我一会儿还有个会，咱们长话短说？
+
+张建国表格前两步三模型实测 · revision 10
+第 6 页
+多轮连续场景 · M01
+以下每个模型各自进行一段连续三轮对话。轮次依次为 T027、T028、T029；同一模型的三轮共享一个 conversationId，
+后续请求中保留了先前玩家输入和模型回复。此处与前面的独立单轮样本分开记录。
+DeepSeek · deepseek-flash · conversationId
+zhang-steps12-json-history-20261016:M01:deepseek
+第 1 轮 · multi:M01:T027 · 来源 T027 · 拜访 · 低支持度（支持度 20）
+玩家输入
+张总，我们有一套方案想请您了解，今天方便详细听一下吗？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源
+json-assistant-history
+您说的我知道了。今天手头事情排得紧，不方便细聊，先这样吧。
+第 2 轮 · multi:M01:T028 · 来源 T028 · 拜访 · 低支持度（支持度 20）
+玩家输入
+其实我们的技术领先同行，您现在不听可能就错过了。
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源
+json-assistant-history
+这个事儿吧，我大概知道您的意思。今天确实不方便展开，您先回吧。
+第 3 轮 · multi:M01:T029 · 来源 T029 · 拜访 · 低支持度（支持度 20）
+玩家输入
+那您至少保证一下后续会让我们入围吧？
+DeepSeek · 请求 deepseek-flash · 实际返回 deepseek-flash · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源
+json-assistant-history
+这个我可保证不了，也不该由我来定。今天先这样，好吧。
+豆包 · doubao-seed-2-0-lite-260428 · conversationId
+zhang-steps12-json-history-20261016:M01:doubao
+第 1 轮 · multi:M01:T027 · 来源 T027 · 拜访 · 低支持度（支持度 20）
+玩家输入
+张总，我们有一套方案想请您了解，今天方便详细听一下吗？
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 json-assistant-history
+我一会儿还有点事，今天没时间细聊，要不回头再说吧。
+第 2 轮 · multi:M01:T028 · 来源 T028 · 拜访 · 低支持度（支持度 20）
+玩家输入
+其实我们的技术领先同行，您现在不听可能就错过了。
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 json-assistant-history
+这个事儿吧，我暂时不方便展开，今天就先这样，好吧。
+
+张建国表格前两步三模型实测 · revision 10
+第 7 页
+第 3 轮 · multi:M01:T029 · 来源 T029 · 拜访 · 低支持度（支持度 20）
+玩家输入
+那您至少保证一下后续会让我们入围吧？
+豆包 · 请求 doubao-seed-2-0-lite-260428 · 实际返回 doubao-seed-2-0-lite-260428 · 状态 valid · 1
+次尝试（首个有效尝试 1） · 来源 json-assistant-history
+我没法给您做这个保证，相关流程都得按规定来，今天就先到这吧。
+Qwen · qwen-plus · conversationId
+zhang-steps12-json-history-20261016:M01:qwen
+第 1 轮 · multi:M01:T027 · 来源 T027 · 拜访 · 低支持度（支持度 20）
+玩家输入
+张总，我们有一套方案想请您了解，今天方便详细听一下吗？
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 json-assistant-history
+这个事儿吧，我一会儿还有个会，今天先这样。
+第 2 轮 · multi:M01:T028 · 来源 T028 · 拜访 · 低支持度（支持度 20）
+玩家输入
+其实我们的技术领先同行，您现在不听可能就错过了。
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 json-assistant-history
+确实，确实。我再琢磨琢磨，先这样，好吧？
+第 3 轮 · multi:M01:T029 · 来源 T029 · 拜访 · 低支持度（支持度 20）
+玩家输入
+那您至少保证一下后续会让我们入围吧？
+Qwen · 请求 qwen-plus · 实际返回 qwen-plus · 状态 valid · 1 次尝试（首个有效尝试 1） · 来源 json-assistant-history
+抱歉，这个我不能保证，您按正常程序参与就好。

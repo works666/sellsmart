@@ -1,0 +1,62 @@
+{
+  "status": "passed",
+  "pdf": "D:\\WeiXun\\project_20260811_095926\\output\\pdf\\2026-10-14-张建国修复后复验记录.pdf",
+  "sourceRoot": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-diagnosis-2026-10-14",
+  "currentRequestCount": 54,
+  "regressionCount": 42,
+  "regressionStages": {
+    "v6-regression/first-pass": 15,
+    "v6-regression/low-refinement": 9,
+    "v6-regression/low-final": 9,
+    "v6-regression/low-action-priority": 9
+  },
+  "regressionOutputStatusCounts": {
+    "valid": 42
+  },
+  "diagnosticCount": 12,
+  "diagnosticStages": {
+    "v5-original-four-exact": 4,
+    "v5-conflict-2x2": 8
+  },
+  "diagnosticNonblankCount": 11,
+  "diagnosticWhitespaceLengths": [
+    13
+  ],
+  "historicalV5BaselineCount": 15,
+  "historicalV5SuccessCount": 11,
+  "historicalV5WhitespaceFailures": [
+    16,
+    17,
+    17,
+    21
+  ],
+  "inputOccurrencesExpected": 54,
+  "inputOccurrencesVerified": 54,
+  "bodyOccurrencesExpected": 64,
+  "bodyOccurrencesVerified": 64,
+  "rawContentOccurrencesExpected": 64,
+  "rawContentOccurrencesVerified": 64,
+  "escapedWhitespaceRecordsRoundTrip": 5,
+  "charCountMismatches": [],
+  "v6RetryCount": 0,
+  "pages": 14,
+  "renderedPages": 14,
+  "recordsDoNotCrossPages": true,
+  "recordBookmarks": 54,
+  "coverQA": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国修复后复验记录-cover.png",
+  "contactSheets": [
+    "D:\\WeiXun\\tmp\\pdfs\\zhang-diagnosis-retest-2026-10-14-contact\\contact-01.png",
+    "D:\\WeiXun\\tmp\\pdfs\\zhang-diagnosis-retest-2026-10-14-contact\\contact-02.png"
+  ],
+  "representativePages": {
+    "qwenLongestFirstPass": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国修复后复验记录-qwen-longest-first-pass.png",
+    "diagnostic13Spaces": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国修复后复验记录-diagnostic-13-spaces.png"
+  },
+  "representativePageNumbers": {
+    "qwenLongestFirstPass": 5,
+    "diagnostic13Spaces": 13
+  },
+  "allPagesRendered": true,
+  "sourceTextComplete": true,
+  "reasoningContentIncluded": false
+}

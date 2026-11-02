@@ -1,0 +1,49 @@
+[
+  {
+    "id": "0d93e9da-c472-467a-95a3-9c141adbfe92",
+    "code": "project-1",
+    "title": "项目一 · 单单位内部竞标",
+    "industry_code": "general-government",
+    "product_category_code": "general",
+    "budget_wan": 100,
+    "duration_months": 5,
+    "technical_difficulties": [],
+    "client_demands": [],
+    "decision_maker_profile": {},
+    "competitors": [
+      {
+        "id": "10000000-0000-4000-8000-000000000102",
+        "features": "数据治理与系统集成方案成熟，适合复杂存量系统环境。",
+        "industry": "政务数字化与数据治理（模拟设定）",
+        "more_info": "纯模拟企业资料，仅用于项目一实训。其项目经历、报价及当前客户关系均未设定，需在对局中继续核实。",
+        "project_id": 1,
+        "company_name": "北辰数科（模拟企业）",
+        "service_support": "模拟设定：可提供本地实施团队与上线后运维响应；服务网点和响应时限尚未核验。",
+        "solution_summary": "强调跨系统数据整合、统一身份与分阶段迁移，具体接口和验收方案需结合招标要求核实。",
+        "representative_experience": "模拟设定：曾参与多源数据整合类项目；未提供可核验的真实客户或合同案例。"
+      },
+      {
+        "id": "10000000-0000-4000-8000-000000000103",
+        "features": "协同办公产品覆盖较完整，部署选择灵活，强调易用性。",
+        "industry": "协同办公与政企软件（模拟设定）",
+        "more_info": "纯模拟企业资料，仅用于项目一实训。其项目经历、报价及当前客户关系均未设定，需在对局中继续核实。",
+        "project_id": 1,
+        "company_name": "云桥协同（模拟企业）",
+        "service_support": "模拟设定：提供远程培训、知识库和上线辅导；具体服务范围与响应等级尚未核验。",
+        "solution_summary": "侧重统一门户、流程协同和分层部署，可按需求讨论模块组合；与现有系统的兼容性需要进一步确认。",
+        "representative_experience": "模拟设定：具有中型组织协同平台交付经验；未提供可核验的真实客户或合同案例。"
+      }
+    ],
+    "tags": [
+      "project-one"
+    ],
+    "difficulty": 1,
+    "description": "年度办公配套升级采购项目。",
+    "is_preset": true,
+    "created_by": "system",
+    "created_at": "2026-09-21T03:12:34.759165+00:00",
+    "revision": 2,
+    "updated_by": "system",
+    "updated_at": "2026-10-14T07:05:36.60446+00:00"
+  }
+]

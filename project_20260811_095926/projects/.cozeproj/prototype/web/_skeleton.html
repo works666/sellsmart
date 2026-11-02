@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+  </style>
+
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <header class="bg-surface border-b border-outline-variant/60 sticky top-0 z-40 h-14 flex items-center justify-between px-6">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
+          <i data-lucide="target" class="w-4 h-4 text-on-primary"></i>
+        </div>
+        <span class="font-bold text-base text-on-surface">竞标博弈 · 政企销售实训</span>
+      </div>
+      <nav class="flex items-center gap-1" id="top-nav">
+        <a href="home.html" id="nav-home" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">实训工作台</a>
+        <a href="setup.html" id="nav-setup" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">对局配置</a>
+        <a href="game.html" id="nav-game" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">博弈演练</a>
+        <a href="result.html" id="nav-result" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">复盘中心</a>
+        <a href="knowledge.html" id="nav-knowledge" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">产品知识库</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+        <i data-lucide="circle-dot" class="w-3 h-3 text-success"></i>
+        <span class="text-xs font-medium text-on-surface-variant num">已连接 2 个对局</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+        <span class="text-sm font-semibold text-primary">初</span>
+      </div>
+    </div>
+  </header>
+  <!-- @nav:end 导航组件 -->
+
+  <!--
+    主内容区：游戏核心页 game.html 使用三栏布局（左侧地图/中间对话/右侧看板）
+    其他页面均为单栏工作台布局（flex-1 + overflow-y-auto）
+  -->
+  <main class="flex-1">
+    <!-- @main-content:start -->
+    <!-- @main-content:end -->
+  </main>
+
+  <script>lucide.createIcons();</script>
+  <script>
+    // 高亮当前页面导航
+    (function() {
+      const path = window.location.pathname.split('/').pop() || 'home.html';
+      const map = { 'home.html': 'nav-home', 'setup.html': 'nav-setup', 'game.html': 'nav-game', 'result.html': 'nav-result', 'knowledge.html': 'nav-knowledge' };
+      const id = map[path];
+      if (id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('text-on-surface-variant');
+          el.classList.add('text-primary', 'bg-primary-container');
+          el.setAttribute('aria-current', 'page');
+        }
+      }
+    })();
+  </script>
+</body>
+
+</html>

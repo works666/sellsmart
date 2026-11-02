@@ -1,0 +1,596 @@
+{
+  "checkedAt": "2026-10-21T08:57:19.437Z",
+  "results": [
+    {
+      "kind": "proposal",
+      "id": "double-negation",
+      "texts": [
+        "不是不能安排技术交流会，我建议咱们先交流需求。"
+      ],
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "diagnostics": [
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_request",
+          "reason": "customer_activity_semantic_fallback"
+        },
+        {
+          "event": "model_response",
+          "reason": "empty_activity_list",
+          "details": {
+            "candidate_count": 0
+          }
+        },
+        {
+          "event": "proposal_semantic_review_started",
+          "reason": "negation_or_withdrawal_signal_requires_context_review",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "withdrawal_message_count": 0
+          }
+        },
+        {
+          "event": "proposal_semantic_review_completed",
+          "reason": "semantic_review_unclear_or_evidence_invalid",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "model_classification": "unclear",
+            "withdrawal_message_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "kind": "proposal",
+      "id": "time-only-negation",
+      "texts": [
+        "现在不能确定时间，但我希望安排一次技术交流会。"
+      ],
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "diagnostics": [
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_request",
+          "reason": "customer_activity_semantic_fallback"
+        },
+        {
+          "event": "model_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "candidate_count": 1,
+            "initiator": "sales"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "proposal",
+      "id": "explicit-withdrawal",
+      "texts": [
+        "我建议下周安排一次技术交流会，讨论接口需求。",
+        "刚才提出的技术交流会先不办了，我撤回这个活动提议。"
+      ],
+      "expected": 0,
+      "actual": 1,
+      "passed": false,
+      "diagnostics": [
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-2",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-2",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_request",
+          "reason": "customer_activity_semantic_fallback"
+        },
+        {
+          "event": "model_response",
+          "reason": "empty_activity_list",
+          "details": {
+            "candidate_count": 0
+          }
+        },
+        {
+          "event": "proposal_semantic_review_started",
+          "reason": "negation_or_withdrawal_signal_requires_context_review",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "withdrawal_message_count": 1
+          }
+        },
+        {
+          "event": "proposal_semantic_review_completed",
+          "reason": "semantic_review_unclear_or_evidence_invalid",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "model_classification": "unclear",
+            "withdrawal_message_count": 1
+          }
+        },
+        {
+          "event": "proposal_semantic_review_completed",
+          "reason": "semantic_review_unclear_or_evidence_invalid",
+          "activityType": "technical_meeting",
+          "messageId": "sales-2",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "model_classification": "unclear",
+            "withdrawal_message_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "kind": "proposal",
+      "id": "withdraw-time-only",
+      "texts": [
+        "我建议下周安排一次技术交流会，讨论接口需求。",
+        "取消刚才说的下周时间，技术交流会的提议仍然保留，时间另议。"
+      ],
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "diagnostics": [
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-2",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-2",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_request",
+          "reason": "customer_activity_semantic_fallback"
+        },
+        {
+          "event": "model_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "candidate_count": 1,
+            "initiator": "sales"
+          }
+        },
+        {
+          "event": "proposal_semantic_review_started",
+          "reason": "negation_or_withdrawal_signal_requires_context_review",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "withdrawal_message_count": 1
+          }
+        },
+        {
+          "event": "proposal_semantic_review_completed",
+          "reason": "semantic_review_unclear_or_evidence_invalid",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "model_classification": "unclear",
+            "withdrawal_message_count": 1
+          }
+        },
+        {
+          "event": "proposal_semantic_review_completed",
+          "reason": "semantic_review_unclear_or_evidence_invalid",
+          "activityType": "technical_meeting",
+          "messageId": "sales-2",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "model_classification": "unclear",
+            "withdrawal_message_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "kind": "proposal",
+      "id": "plain-negative",
+      "texts": [
+        "我们不打算安排技术交流会。"
+      ],
+      "expected": 0,
+      "actual": 0,
+      "passed": true,
+      "diagnostics": [
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_request",
+          "reason": "customer_activity_semantic_fallback"
+        },
+        {
+          "event": "model_response",
+          "reason": "empty_activity_list",
+          "details": {
+            "candidate_count": 0
+          }
+        },
+        {
+          "event": "proposal_semantic_review_started",
+          "reason": "negation_or_withdrawal_signal_requires_context_review",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "withdrawal_message_count": 0
+          }
+        },
+        {
+          "event": "proposal_semantic_review_completed",
+          "reason": "semantic_review_unclear_or_evidence_invalid",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "sales_negation_semantic_review",
+            "model_classification": "unclear",
+            "withdrawal_message_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "kind": "proposal",
+      "id": "customer-refusal",
+      "texts": [
+        "我建议下周安排一次技术交流会，讨论接口需求。"
+      ],
+      "customerReply": "这个暂时无法安排，您先按正常流程走。",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "diagnostics": [
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_request",
+          "reason": "customer_activity_semantic_fallback"
+        },
+        {
+          "event": "model_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "candidate_count": 1,
+            "initiator": "sales"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "reply",
+      "id": "reply-double-negation",
+      "reply": "不是不能安排，我得先向上级汇报，再给您反馈。",
+      "expected": "allowed",
+      "actual": "allowed",
+      "review": {
+        "result": "allowed",
+        "issue": "none"
+      },
+      "passed": true,
+      "trace": [
+        {
+          "event": "semantic_review_started",
+          "signal": "disposition",
+          "result": "unclear",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        },
+        {
+          "event": "semantic_review_completed",
+          "signal": "disposition",
+          "result": "allowed",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        }
+      ]
+    },
+    {
+      "kind": "reply",
+      "id": "reply-time-only",
+      "reply": "时间我现在定不了，我先向上级汇报，再给您反馈。",
+      "expected": "allowed",
+      "actual": "allowed",
+      "review": {
+        "result": "allowed",
+        "issue": "none"
+      },
+      "passed": true,
+      "trace": [
+        {
+          "event": "semantic_review_started",
+          "signal": "disposition",
+          "result": "unclear",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        },
+        {
+          "event": "semantic_review_completed",
+          "signal": "disposition",
+          "result": "allowed",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        }
+      ]
+    },
+    {
+      "kind": "reply",
+      "id": "reply-no-referral",
+      "reply": "您不用联系其他人，我先向上级汇报，再给您反馈。",
+      "expected": "allowed",
+      "actual": "allowed",
+      "review": {
+        "result": "allowed",
+        "issue": "none"
+      },
+      "passed": true,
+      "trace": [
+        {
+          "event": "semantic_review_started",
+          "signal": "disposition",
+          "result": "unclear",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        },
+        {
+          "event": "semantic_review_completed",
+          "signal": "disposition",
+          "result": "allowed",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        }
+      ]
+    },
+    {
+      "kind": "reply",
+      "id": "reply-refusal",
+      "reply": "这个暂时没法安排，您先按正常流程走。",
+      "expected": "violation",
+      "actual": "violation",
+      "review": {
+        "result": "violation",
+        "issue": "ordinary_refusal",
+        "evidenceStart": 0,
+        "evidenceEnd": 18,
+        "evidenceDigest": "b208462022da"
+      },
+      "passed": true,
+      "trace": [
+        {
+          "event": "semantic_review_started",
+          "signal": "disposition",
+          "result": "unclear",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        },
+        {
+          "event": "semantic_review_completed",
+          "signal": "disposition",
+          "result": "violation",
+          "violation": "refusal",
+          "evidence_valid": true,
+          "evidence_start": 0,
+          "evidence_end": 18,
+          "evidence_digest": "b208462022da",
+          "attempt": 0
+        }
+      ]
+    },
+    {
+      "kind": "reply",
+      "id": "reply-acceptance",
+      "reply": "可以，下周二就安排技术交流会，您带团队来吧。",
+      "expected": "violation",
+      "actual": "violation",
+      "review": {
+        "result": "violation",
+        "issue": "premature_acceptance",
+        "evidenceStart": 0,
+        "evidenceEnd": 22,
+        "evidenceDigest": "363aa899f99c"
+      },
+      "passed": true,
+      "trace": [
+        {
+          "event": "semantic_review_started",
+          "signal": "disposition",
+          "result": "unclear",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        },
+        {
+          "event": "semantic_review_completed",
+          "signal": "disposition",
+          "result": "violation",
+          "violation": "commitment",
+          "evidence_valid": true,
+          "evidence_start": 0,
+          "evidence_end": 22,
+          "evidence_digest": "363aa899f99c",
+          "attempt": 0
+        }
+      ]
+    },
+    {
+      "kind": "reply",
+      "id": "reply-referral",
+      "reply": "请您直接找李经理安排技术交流会。",
+      "expected": "violation",
+      "actual": "violation",
+      "review": {
+        "result": "violation",
+        "issue": "player_referral",
+        "evidenceStart": 0,
+        "evidenceEnd": 16,
+        "evidenceDigest": "9730e02daebb"
+      },
+      "passed": true,
+      "trace": [
+        {
+          "event": "semantic_review_started",
+          "signal": "disposition",
+          "result": "unclear",
+          "violation": "none",
+          "evidence_valid": false,
+          "attempt": 0
+        },
+        {
+          "event": "semantic_review_completed",
+          "signal": "disposition",
+          "result": "violation",
+          "violation": "referral",
+          "evidence_valid": true,
+          "evidence_start": 0,
+          "evidence_end": 16,
+          "evidence_digest": "9730e02daebb",
+          "attempt": 0
+        }
+      ]
+    }
+  ]
+}

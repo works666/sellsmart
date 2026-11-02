@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "originalSha256": "8de831fd8d19c2d0a14be4fee7e24f831d2658766c21d372b07c16e42853b43f",
+  "parsedRows": 35,
+  "exactFields": 35,
+  "roleChannelWarnings": 20,
+  "differingCurrentFields": [],
+  "realSavePerformed": true,
+  "saveMode": "identical current content; no prompt text changes",
+  "beforeRevision": 8,
+  "afterRevision": 9,
+  "persisted": true,
+  "sourceUnchanged": true
+}

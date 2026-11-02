@@ -1,0 +1,74 @@
+{
+  "status": "passed",
+  "pdf": "D:\\WeiXun\\project_20260811_095926\\output\\pdf\\2026-10-14-张建国三模型自然对话实测记录.pdf",
+  "sourceSummary": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-natural-replies-2026-10-14\\v5-live\\summary.json",
+  "sourceRawResponses": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-natural-replies-2026-10-14\\v5-live\\responses.ndjson",
+  "runId": "v5-live",
+  "plannedCases": 15,
+  "completedCases": 15,
+  "validBodies": 11,
+  "invalidJsonRecords": 4,
+  "inputsExpected": 15,
+  "inputsVerified": 15,
+  "bodiesExpected": 11,
+  "bodiesVerified": 11,
+  "invalidRawLengths": {
+    "deepseek-P1-001-low-sensitive-refusal": 16,
+    "deepseek-P1-001-low-long-pitch": 17,
+    "deepseek-P1-001-medium-opening": 21,
+    "deepseek-P1-001-high-opening": 17
+  },
+  "invalidRawWhitespace": {
+    "deepseek-P1-001-low-sensitive-refusal": [
+      "U+0020"
+    ],
+    "deepseek-P1-001-low-long-pitch": [
+      "U+0020"
+    ],
+    "deepseek-P1-001-medium-opening": [
+      "U+0020"
+    ],
+    "deepseek-P1-001-high-opening": [
+      "U+0020"
+    ]
+  },
+  "invalidRawRoundTripsExact": true,
+  "charCountMismatches": 0,
+  "within35SoftTarget": 11,
+  "over35SoftTarget": 0,
+  "lengthDoesNotImplyQuality": true,
+  "pageCount": 5,
+  "renderedPageCount": 5,
+  "casePages": {
+    "deepseek-P1-001-low-opening": 2,
+    "deepseek-P1-001-low-sensitive-refusal": 2,
+    "deepseek-P1-001-low-long-pitch": 2,
+    "deepseek-P1-001-medium-opening": 2,
+    "deepseek-P1-001-high-opening": 3,
+    "doubao-P1-001-low-opening": 4,
+    "doubao-P1-001-low-sensitive-refusal": 4,
+    "doubao-P1-001-low-long-pitch": 4,
+    "doubao-P1-001-medium-opening": 4,
+    "doubao-P1-001-high-opening": 4,
+    "qwen-P1-001-low-opening": 5,
+    "qwen-P1-001-low-sensitive-refusal": 5,
+    "qwen-P1-001-low-long-pitch": 5,
+    "qwen-P1-001-medium-opening": 5,
+    "qwen-P1-001-high-opening": 5
+  },
+  "contactSheets": [
+    "D:\\WeiXun\\tmp\\pdfs\\zhang-natural-replies-2026-10-14-thumbnails\\contact-01.png"
+  ],
+  "coverQA": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-cover.png",
+  "detailQA": {
+    "deepseek-P1-001-low-sensitive-refusal": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-deepseek-P1-001-low-sensitive-refusal-invalid.png",
+    "deepseek-P1-001-low-long-pitch": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-deepseek-P1-001-low-long-pitch-invalid.png",
+    "deepseek-P1-001-medium-opening": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-deepseek-P1-001-medium-opening-invalid.png",
+    "deepseek-P1-001-high-opening": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-deepseek-P1-001-high-opening-invalid.png",
+    "qwen-P1-001-low-opening": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-qwen-P1-001-low-opening-review.png",
+    "qwen-P1-001-medium-opening": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-qwen-P1-001-medium-opening-review.png",
+    "qwen-P1-001-high-opening": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-qwen-P1-001-high-opening-review.png",
+    "qwen-P1-001-low-sensitive-refusal": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-qwen-P1-001-low-sensitive-refusal-review.png",
+    "doubao-P1-001-low-sensitive-refusal": "D:\\WeiXun\\tmp\\pdfs\\2026-10-14-张建国三模型自然对话实测记录-doubao-P1-001-low-sensitive-refusal-review.png"
+  }
+}

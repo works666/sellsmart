@@ -1,0 +1,1 @@
+ALTER TABLE "health_check" ADD PRIMARY KEY ("id");

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+    /* 身份卡片悬停抬升 */
+    .identity-card { transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease; }
+    .identity-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-float); border-color: var(--color-primary); }
+    /* 二级 Tab 选中态 */
+    .sub-tab.active { background-color: var(--color-primary); color: var(--color-on-primary); }
+    /* 模态框进入动画 */
+    .modal-backdrop { animation: fadeIn 200ms ease; }
+    .modal-panel { animation: scaleIn 220ms cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    /* 输入框图标对齐 */
+    .input-icon-wrap { position: relative; }
+    .input-icon-wrap > i { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--color-on-surface-variant); pointer-events: none; }
+    .input-icon-wrap > input { padding-left: 2.25rem; }
+  </style>
+
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '�' };
+      const icon = icons[cat] || '�';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @main-content:start -->
+  <main class="min-h-screen flex flex-col">
+
+    <!-- ========== 登录卡片区域 ========== -->
+    <div class="flex-1 flex items-center justify-center p-4">
+      <div class="w-full max-w-[420px]">
+
+        <!-- 品牌标识 -->
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+              <i data-lucide="target" class="w-5 h-5 text-on-primary"></i>
+            </div>
+            <div class="text-left">
+              <div class="text-lg font-bold text-on-surface">竞标博弈</div>
+              <div class="text-xs text-on-surface-variant">政企销售 AI 实训平台</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 登录卡片 -->
+        <div class="bg-surface rounded-xl shadow-dialog p-7">
+
+          <h1 class="text-xl font-bold text-on-surface mb-1">欢迎登录</h1>
+          <p class="text-sm text-on-surface-variant mb-5">选择登录方式进入实训工作台</p>
+
+          <!-- Tab 切换 -->
+          <div class="flex gap-1 p-1 bg-surface-container rounded-md mb-5" id="login-tabs">
+            <button id="tab-phone" class="flex-1 py-2 text-sm font-medium rounded-sm bg-surface text-on-surface shadow-card transition-all" aria-current="true">手机验证码</button>
+            <button id="tab-password" class="flex-1 py-2 text-sm font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-all">账号密码</button>
+          </div>
+
+          <!-- ============ 手机验证码表单 ============ -->
+          <div id="form-phone">
+            <div class="space-y-3">
+              <div class="input-icon-wrap">
+                <i data-lucide="smartphone" class="w-4 h-4"></i>
+                <input id="input-phone" type="tel" maxlength="11" placeholder="请输入手机号" class="w-full bg-surface-container border-none rounded-md py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+              </div>
+              <div class="flex gap-2">
+                <div class="input-icon-wrap flex-1">
+                  <i data-lucide="shield-check" class="w-4 h-4"></i>
+                  <input id="input-code" type="text" maxlength="6" placeholder="6 位验证码" class="w-full bg-surface-container border-none rounded-md py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+                </div>
+                <button id="btn-send-code" class="shrink-0 px-4 py-2.5 bg-primary-container text-primary text-sm font-medium rounded-md hover:bg-primary-container/80 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed">发送验证码</button>
+              </div>
+
+              <div class="flex items-center justify-between text-xs">
+                <label class="flex items-center gap-1.5 text-on-surface-variant cursor-pointer">
+                  <input id="remember-me" type="checkbox" class="w-3.5 h-3.5 rounded border-outline-variant/50 text-primary focus:ring-primary/30"/>
+                  记住登录状态
+                </label>
+                <a href="javascript:void(0)" id="link-forgot-code" class="text-primary hover:underline">收不到验证码？</a>
+              </div>
+
+              <button id="btn-login-phone" class="w-full bg-primary text-on-primary py-2.5 rounded-md text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2">
+                <i data-lucide="log-in" class="w-4 h-4"></i>登录
+              </button>
+            </div>
+          </div>
+
+          <!-- ============ 账号密码表单（默认隐藏） ============ -->
+          <div id="form-password" class="hidden">
+            <div class="space-y-3">
+              <div class="input-icon-wrap">
+                <i data-lucide="user" class="w-4 h-4"></i>
+                <input id="input-account" type="text" placeholder="请输入账号" class="w-full bg-surface-container border-none rounded-md py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+              </div>
+              <div class="input-icon-wrap">
+                <i data-lucide="lock" class="w-4 h-4"></i>
+                <input id="input-password" type="password" placeholder="请输入密码" class="w-full bg-surface-container border-none rounded-md py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+              </div>
+
+              <div class="flex items-center justify-between text-xs">
+                <label class="flex items-center gap-1.5 text-on-surface-variant cursor-pointer">
+                  <input id="remember-pwd" type="checkbox" class="w-3.5 h-3.5 rounded border-outline-variant/50 text-primary focus:ring-primary/30"/>
+                  记住登录状态
+                </label>
+                <a href="javascript:void(0)" id="link-forgot-pwd" class="text-primary hover:underline">忘记密码？</a>
+              </div>
+
+              <button id="btn-login-password" class="w-full bg-primary text-on-primary py-2.5 rounded-md text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2">
+                <i data-lucide="log-in" class="w-4 h-4"></i>登录
+              </button>
+            </div>
+          </div>
+
+          <!-- 分割线 -->
+          <div class="flex items-center gap-3 my-5">
+            <div class="flex-1 h-px bg-outline-variant/60"></div>
+            <span class="text-xs text-on-surface-variant/70">其他登录方式</span>
+            <div class="flex-1 h-px bg-outline-variant/60"></div>
+          </div>
+
+          <!-- 第三方登录（占位） -->
+          <div class="flex items-center justify-center gap-4">
+            <button id="btn-sso-enterprise" class="w-10 h-10 rounded-full bg-surface-container hover:bg-primary-container text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors" title="企业 SSO">
+              <i data-lucide="building" class="w-4.5 h-4.5"></i>
+            </button>
+            <button id="btn-sso-wechat" class="w-10 h-10 rounded-full bg-surface-container hover:bg-primary-container text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors" title="微信登录">
+              <i data-lucide="message-circle" class="w-4.5 h-4.5"></i>
+            </button>
+            <button id="btn-sso-feishu" class="w-10 h-10 rounded-full bg-surface-container hover:bg-primary-container text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors" title="飞书登录">
+              <i data-lucide="send" class="w-4.5 h-4.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 底部链接 -->
+        <div class="text-center mt-4 text-xs text-on-surface-variant">
+          还没有账号？
+          <a href="javascript:void(0)" id="link-register" class="text-primary font-medium hover:underline">立即注册</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 底部备案信息 ========== -->
+    <footer class="py-4 px-6 text-center text-xs text-on-surface-variant/70 space-y-1">
+      <div class="flex items-center justify-center gap-3">
+        <span class="flex items-center gap-1">
+          <i data-lucide="shield" class="w-3 h-3"></i>
+          等保三级认证
+        </span>
+        <span class="w-px h-3 bg-outline-variant"></span>
+        <span class="flex items-center gap-1">
+          <i data-lucide="globe" class="w-3 h-3"></i>
+          政企采购首选
+        </span>
+        <span class="w-px h-3 bg-outline-variant"></span>
+        <span>© 2025 竞标博弈</span>
+      </div>
+      <div>
+        <a href="javascript:void(0)" class="hover:text-on-surface transition-colors">京ICP备 2025000001 号-1</a>
+        <span class="mx-2">·</span>
+        <a href="javascript:void(0)" class="hover:text-on-surface transition-colors">京公网安备 11010100000001 号</a>
+        <span class="mx-2">·</span>
+        <a href="javascript:void(0)" class="hover:text-on-surface transition-colors">服务协议</a>
+        <span class="mx-2">·</span>
+        <a href="javascript:void(0)" class="hover:text-on-surface transition-colors">隐私政策</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ========== 身份选择弹窗（默认隐藏） ========== -->
+  <div id="modal-identity" class="fixed inset-0 z-50 hidden">
+    <!-- 背景遮罩 -->
+    <div class="absolute inset-0 bg-black/50 modal-backdrop"></div>
+
+    <!-- 弹窗面板 -->
+    <div class="relative h-full flex items-center justify-center p-4">
+      <div class="modal-panel bg-surface rounded-xl shadow-dialog w-full max-w-[880px] p-7">
+
+        <!-- 头部 -->
+        <div class="text-center mb-6">
+          <h2 class="text-xl font-bold text-on-surface">选择您的身份</h2>
+          <p class="text-sm text-on-surface-variant mt-1">不同身份对应不同的工作台与权限，请选择与您匹配的入口</p>
+        </div>
+
+        <!-- 4 列身份卡片 -->
+        <div class="grid grid-cols-4 gap-4 mb-2">
+
+          <!-- 卡片-平台设计师 -->
+          <button id="card-platform-designer" data-role="platform-designer" class="identity-card bg-surface border border-outline-variant/60 rounded-xl p-4 text-left flex flex-col group">
+            <div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center mb-3 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+              <i data-lucide="wand-2" class="w-6 h-6 text-primary group-hover:text-on-primary transition-colors"></i>
+            </div>
+            <div class="text-base font-semibold text-on-surface mb-1">平台设计师</div>
+            <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">搭建与维护整个平台</div>
+            <ul class="space-y-1.5 mt-auto text-xs text-on-surface-variant">
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>页面编辑器</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>数据表设计</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>工作流编排</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>角色与权限配置</span>
+              </li>
+            </ul>
+          </button>
+
+          <!-- 卡片-企业管理员 -->
+          <button id="card-enterprise-admin" data-role="enterprise-admin" class="identity-card bg-surface border border-outline-variant/60 rounded-xl p-4 text-left flex flex-col group">
+            <div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center mb-3 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+              <i data-lucide="building-2" class="w-6 h-6 text-primary group-hover:text-on-primary transition-colors"></i>
+            </div>
+            <div class="text-base font-semibold text-on-surface mb-1">企业管理员</div>
+            <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">管理学院与员工</div>
+            <ul class="space-y-1.5 mt-auto text-xs text-on-surface-variant">
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>学员名单管理</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>邀请码生成</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>查看全员对话/报告</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>报告批量下载</span>
+              </li>
+            </ul>
+            <div class="mt-2.5 inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-medium bg-warning/15 text-warning w-fit">
+              <i data-lucide="info" class="w-2.5 h-2.5 mr-0.5"></i>无游戏对战
+            </div>
+          </button>
+
+          <!-- 卡片-培训教练 -->
+          <button id="card-trainer" data-role="trainer" class="identity-card bg-surface border border-outline-variant/60 rounded-xl p-4 text-left flex flex-col group">
+            <div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center mb-3 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+              <i data-lucide="megaphone" class="w-6 h-6 text-primary group-hover:text-on-primary transition-colors"></i>
+            </div>
+            <div class="text-base font-semibold text-on-surface mb-1">培训教练</div>
+            <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">组织多人联机实训</div>
+            <ul class="space-y-1.5 mt-auto text-xs text-on-surface-variant">
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>创建多人房间</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>全局启停控制</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>实时查看玩家数据</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                <span>统一点评反馈</span>
+              </li>
+            </ul>
+          </button>
+
+          <!-- 卡片-玩家（含二级 Tab） -->
+          <div class="flex flex-col">
+            <button id="card-player" data-role="player" class="identity-card bg-surface border border-outline-variant/60 rounded-xl p-4 text-left flex-1 flex flex-col group">
+              <div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center mb-3 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <i data-lucide="user-round" class="w-6 h-6 text-primary group-hover:text-on-primary transition-colors"></i>
+              </div>
+              <div class="text-base font-semibold text-on-surface mb-1">玩家</div>
+              <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">参与博弈演练</div>
+
+              <!-- 二级 Tab（互斥选中） -->
+              <div id="player-sub-tabs" class="flex gap-1 p-0.5 bg-surface-container rounded-sm mb-2.5">
+                <button id="sub-tab-employee" data-sub-role="employee" class="sub-tab active flex-1 py-1 text-[11px] font-medium rounded-sm transition-colors">企业员工</button>
+                <button id="sub-tab-individual" data-sub-role="individual" class="sub-tab flex-1 py-1 text-[11px] font-medium rounded-sm text-on-surface-variant hover:text-on-surface transition-colors">付费个人</button>
+              </div>
+
+              <!-- 企业员工权限 -->
+              <ul id="perm-employee" class="space-y-1.5 text-xs text-on-surface-variant">
+                <li class="flex items-start gap-1.5">
+                  <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                  <span>输入邀请码加入</span>
+                </li>
+                <li class="flex items-start gap-1.5">
+                  <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                  <span>手机号绑定企业</span>
+                </li>
+                <li class="flex items-start gap-1.5">
+                  <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                  <span>免费使用专属场景</span>
+                </li>
+              </ul>
+
+              <!-- 付费个人权限（默认隐藏） -->
+              <ul id="perm-individual" class="space-y-1.5 text-xs text-on-surface-variant hidden">
+                <li class="flex items-start gap-1.5">
+                  <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                  <span>付费解锁通用场景</span>
+                </li>
+                <li class="flex items-start gap-1.5">
+                  <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                  <span>无邀请码限制</span>
+                </li>
+                <li class="flex items-start gap-1.5">
+                  <i data-lucide="check" class="w-3 h-3 text-success mt-0.5 shrink-0"></i>
+                  <span>个人学习进度存档</span>
+                </li>
+              </ul>
+            </button>
+          </div>
+        </div>
+
+        <!-- 弹窗底部 -->
+        <div class="flex items-center justify-between pt-4 mt-2 border-t border-outline-variant/60">
+          <div class="text-xs text-on-surface-variant flex items-center gap-1.5">
+            <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            选择身份后可在「个人中心」中切换
+          </div>
+          <div class="flex gap-2">
+            <button id="btn-modal-cancel" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- @main-content:end -->
+
+  <script>lucide.createIcons();</script>
+  <script>
+    $(function() {
+
+      // ========== Tab 切换：手机验证码 / 账号密码 ==========
+      $('#tab-phone').on('click', function() {
+        $(this).attr('aria-current', 'true')
+               .addClass('bg-surface text-on-surface shadow-card')
+               .removeClass('text-on-surface-variant');
+        $('#tab-password').removeAttr('aria-current')
+                          .removeClass('bg-surface text-on-surface shadow-card')
+                          .addClass('text-on-surface-variant');
+        $('#form-phone').removeClass('hidden');
+        $('#form-password').addClass('hidden');
+      });
+
+      $('#tab-password').on('click', function() {
+        $(this).attr('aria-current', 'true')
+               .addClass('bg-surface text-on-surface shadow-card')
+               .removeClass('text-on-surface-variant');
+        $('#tab-phone').removeAttr('aria-current')
+                       .removeClass('bg-surface text-on-surface shadow-card')
+                       .addClass('text-on-surface-variant');
+        $('#form-password').removeClass('hidden');
+        $('#form-phone').addClass('hidden');
+      });
+
+      // ========== 验证码 60s 倒计时 ==========
+      let countdown = 0;
+      let timer = null;
+      $('#btn-send-code').on('click', function() {
+        if (countdown > 0) return;
+        const phone = $('#input-phone').val().trim();
+        if (!/^1\d{10}$/.test(phone)) {
+          alert('请输入有效的 11 位手机号');
+          $('#input-phone').focus();
+          return;
+        }
+        // 模拟发送验证码（实际应调用短信接口）
+        console.log('发送验证码到:', phone);
+        countdown = 60;
+        const $btn = $(this);
+        $btn.prop('disabled', true).text('重新发送 (60s)');
+        timer = setInterval(function() {
+          countdown--;
+          if (countdown <= 0) {
+            clearInterval(timer);
+            $btn.prop('disabled', false).text('重新发送');
+          } else {
+            $btn.text(`重新发送 (${countdown}s)`);
+          }
+        }, 1000);
+      });
+
+      // ========== 登录按钮（demo 项目不判断账密，直接弹身份选择） ==========
+      $('#btn-login-phone').on('click', function() {
+        const phone = $('#input-phone').val().trim();
+        const code = $('#input-code').val().trim();
+        if (!/^1\d{10}$/.test(phone)) {
+          alert('请输入有效的 11 位手机号');
+          $('#input-phone').focus();
+          return;
+        }
+        if (!/^\d{6}$/.test(code)) {
+          alert('请输入 6 位验证码');
+          $('#input-code').focus();
+          return;
+        }
+        // demo 项目不判断账密，直接弹出身份选择
+        console.log('登录成功，弹出身份选择弹窗');
+        openIdentityModal();
+      });
+
+      $('#btn-login-password').on('click', function() {
+        const account = $('#input-account').val().trim();
+        const pwd = $('#input-password').val();
+        if (!account) { alert('请输入账号'); $('#input-account').focus(); return; }
+        if (!pwd) { alert('请输入密码'); $('#input-password').focus(); return; }
+        // demo 项目不判断账密，直接弹出身份选择
+        console.log('登录成功，弹出身份选择弹窗');
+        openIdentityModal();
+      });
+
+      // ========== 弹窗控制 ==========
+      function openIdentityModal() {
+        $('#modal-identity').removeClass('hidden');
+        // 重新创建图标（防止被 hidden 时未渲染）
+        lucide.createIcons();
+      }
+
+      function closeIdentityModal() {
+        $('#modal-identity').addClass('hidden');
+      }
+
+      $('#btn-modal-cancel').on('click', closeIdentityModal);
+
+      // 点击遮罩关闭
+      $('#modal-identity').on('click', function(e) {
+        if (e.target === this) closeIdentityModal();
+      });
+
+      // ESC 键关闭
+      $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && !$('#modal-identity').hasClass('hidden')) {
+          closeIdentityModal();
+        }
+      });
+
+      // ========== 玩家卡片二级 Tab 切换（互斥选中） ==========
+      $('#player-sub-tabs').on('click', 'button', function() {
+        const subRole = $(this).data('sub-role');
+        // 切换 Tab 选中态
+        $('#player-sub-tabs button').removeClass('active text-on-primary').addClass('text-on-surface-variant');
+        $(this).addClass('active text-on-primary').removeClass('text-on-surface-variant');
+        // 切换权限清单
+        if (subRole === 'employee') {
+          $('#perm-employee').removeClass('hidden');
+          $('#perm-individual').addClass('hidden');
+        } else {
+          $('#perm-individual').removeClass('hidden');
+          $('#perm-employee').addClass('hidden');
+        }
+      });
+
+      // ========== 选择身份（点击卡片 → 进入对应工作台） ==========
+      // 后续会按身份分发到不同 dashboard，目前统一跳转 home.html
+      $('#card-platform-designer, #card-enterprise-admin, #card-trainer, #card-player').on('click', function() {
+        const role = $(this).data('role');
+        const subRole = $('#sub-tab-employee').hasClass('active') ? 'employee' : 'individual';
+        // 实际应根据 role + subRole 跳转到不同 dashboard：
+        //   - platform-designer → designer-dashboard.html
+        //   - enterprise-admin → admin-dashboard.html
+        //   - trainer → trainer-dashboard.html
+        //   - player + employee → home.html（企业员工）
+        //   - player + individual → home.html（付费个人）
+        // demo 阶段统一跳转 home.html
+        console.log('选择身份:', role, '子身份:', subRole, '→ 跳转 home.html');
+        window.location.href = 'home.html?role=' + role + '&sub_role=' + subRole;
+      });
+
+      // ========== 其他辅助链接（占位） ==========
+      $('#link-forgot-code').on('click', function() {
+        console.log('需要实现：跳转到「收不到验证码」帮助页，引导用户通过手机号找回或联系客服');
+      });
+      $('#link-forgot-pwd').on('click', function() {
+        console.log('需要实现：跳转到「忘记密码」流程，输入手机号 → 验证码验证 → 设置新密码');
+      });
+      $('#link-register').on('click', function() {
+        console.log('需要实现：跳转到企业注册流程，填写企业信息 → 申请试用 → 等待审核');
+      });
+      $('#btn-sso-enterprise').on('click', function() {
+        console.log('需要调用企业 SSO 登录接口，跳转到 IdP 登录页');
+      });
+      $('#btn-sso-wechat').on('click', function() {
+        console.log('需要调用微信扫码登录接口，展示二维码并轮询登录状态');
+      });
+      $('#btn-sso-feishu').on('click', function() {
+        console.log('需要调用飞书 OAuth 登录接口，跳转到飞书授权页');
+      });
+
+    });
+  </script>
+</body>
+
+</html>

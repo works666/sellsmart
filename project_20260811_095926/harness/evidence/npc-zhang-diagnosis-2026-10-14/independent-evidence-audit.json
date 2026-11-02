@@ -1,0 +1,33 @@
+{
+  "runs": {
+    "first-pass": {
+      "count": 15,
+      "maxChars": 47,
+      "minChars": 10,
+      "over35": 5
+    },
+    "low-refinement": {
+      "count": 9,
+      "maxChars": 46,
+      "minChars": 10,
+      "over35": 2
+    },
+    "low-final": {
+      "count": 9,
+      "maxChars": 43,
+      "minChars": 10,
+      "over35": 3
+    },
+    "low-action-priority": {
+      "count": 9,
+      "maxChars": 30,
+      "minChars": 10,
+      "over35": 0
+    }
+  },
+  "total": 42,
+  "reportAllBodies": true,
+  "finalLongPitchClosure": true,
+  "finalSensitiveBothRefused": true,
+  "scope": "Direct one-turn prompts, not full UI visits; staged prompt/settings changes, not strict A/B"
+}

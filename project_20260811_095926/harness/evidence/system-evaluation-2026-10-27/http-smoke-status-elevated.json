@@ -1,0 +1,45 @@
+{
+  "endpoint": "/api/designer/system-evaluation",
+  "checkedAt": "2026-10-27T06:49:00.857Z",
+  "environmentFile": "projects/.env.local (loaded; values omitted)",
+  "serverContext": "Local production server restarted with outbound DB access enabled.",
+  "results": [
+    {
+      "check": "anonymous_get",
+      "status": 401
+    },
+    {
+      "check": "anonymous_post",
+      "status": 401
+    },
+    {
+      "check": "player_post",
+      "status": 403,
+      "errorCode": "forbidden"
+    },
+    {
+      "check": "designer_get_own_list",
+      "status": 200,
+      "sessionCount": 0
+    },
+    {
+      "check": "designer_post_missing_snapshot",
+      "status": 404,
+      "errorCode": "not_found"
+    }
+  ],
+  "verified": {
+    "anonymous_get_401": true,
+    "anonymous_post_401": true,
+    "player_forbidden_403": true,
+    "designer_get_200_empty_own_list": true,
+    "fake_missing_snapshot_404": true
+  },
+  "modelInvoked": false,
+  "notes": [
+    "Temporary signed identities were generated in-process from projects/.env.local. No token or temporary user identifier was persisted or printed.",
+    "The designer GET filtered its query to the temporary designer identity and returned an empty list; no real account rows were read into the response.",
+    "The POST used snapshot mode with a fabricated UUID and temporary designer identity. The owner-scoped lookup returned not_found before AI generation or DeepEval judging.",
+    "The earlier sandbox-bound run is preserved separately in http-smoke-status.json and returned 503 for designer reads while outbound networking was restricted."
+  ]
+}

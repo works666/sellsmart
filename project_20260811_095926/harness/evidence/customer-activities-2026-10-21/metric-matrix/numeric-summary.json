@@ -1,0 +1,157 @@
+{
+  "generatedAt": "2026-10-21T02:47:09.021Z",
+  "scope": "Local numeric-threshold service decision test; no persisted-config read, database call, or AI request.",
+  "aiCalls": 0,
+  "numericConfig": {
+    "revision": 1,
+    "mode": "numeric",
+    "thresholds": {
+      "technical_meeting": {
+        "supportMin": 50,
+        "pleasantnessMin": 50
+      },
+      "case_site_visit": {
+        "supportMin": 50,
+        "pleasantnessMin": 50
+      },
+      "company_visit": {
+        "supportMin": 50,
+        "pleasantnessMin": 50
+      }
+    }
+  },
+  "numericRows": [
+    {
+      "type": "technical_meeting",
+      "support": 49,
+      "pleasantness": 50,
+      "decision": {
+        "decision": "reject",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标未同时满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "technical_meeting",
+      "support": 50,
+      "pleasantness": 49,
+      "decision": {
+        "decision": "reject",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标未同时满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "technical_meeting",
+      "support": 50,
+      "pleasantness": 50,
+      "decision": {
+        "decision": "allow",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标已满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "technical_meeting",
+      "support": 51,
+      "pleasantness": 51,
+      "decision": {
+        "decision": "allow",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标已满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "case_site_visit",
+      "support": 49,
+      "pleasantness": 50,
+      "decision": {
+        "decision": "reject",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标未同时满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "case_site_visit",
+      "support": 50,
+      "pleasantness": 49,
+      "decision": {
+        "decision": "reject",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标未同时满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "case_site_visit",
+      "support": 50,
+      "pleasantness": 50,
+      "decision": {
+        "decision": "allow",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标已满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "case_site_visit",
+      "support": 51,
+      "pleasantness": 51,
+      "decision": {
+        "decision": "allow",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标已满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "company_visit",
+      "support": 49,
+      "pleasantness": 50,
+      "decision": {
+        "decision": "reject",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标未同时满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "company_visit",
+      "support": 50,
+      "pleasantness": 49,
+      "decision": {
+        "decision": "reject",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标未同时满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "company_visit",
+      "support": 50,
+      "pleasantness": 50,
+      "decision": {
+        "decision": "allow",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标已满足该活动配置条件。"
+      }
+    },
+    {
+      "type": "company_visit",
+      "support": 51,
+      "pleasantness": 51,
+      "decision": {
+        "decision": "allow",
+        "mode": "numeric",
+        "configRevision": 1,
+        "reason": "冻结的关系指标已满足该活动配置条件。"
+      }
+    }
+  ]
+}

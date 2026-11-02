@@ -1,0 +1,65 @@
+{
+  "httpStatus": 200,
+  "revision": 5,
+  "tiers": {
+    "mediumMin": 35,
+    "highMin": 70
+  },
+  "people": [
+    {
+      "id": "P1-001",
+      "type": "object",
+      "baseLength": 508,
+      "lowLength": 1348,
+      "mediumLength": 1440,
+      "highLength": 1527,
+      "lowTierExamples": true,
+      "mediumTierExamples": true,
+      "highTierExamples": true
+    },
+    {
+      "id": "P1-002",
+      "type": "object",
+      "baseLength": 553,
+      "lowLength": 1320,
+      "mediumLength": 1387,
+      "highLength": 1469,
+      "lowTierExamples": true,
+      "mediumTierExamples": true,
+      "highTierExamples": true
+    },
+    {
+      "id": "P1-003",
+      "type": "object",
+      "baseLength": 536,
+      "lowLength": 1276,
+      "mediumLength": 1389,
+      "highLength": 1460,
+      "lowTierExamples": true,
+      "mediumTierExamples": true,
+      "highTierExamples": true
+    },
+    {
+      "id": "P1-004",
+      "type": "object",
+      "baseLength": 515,
+      "lowLength": 1294,
+      "mediumLength": 1375,
+      "highLength": 1483,
+      "lowTierExamples": true,
+      "mediumTierExamples": true,
+      "highTierExamples": true
+    },
+    {
+      "id": "P1-005",
+      "type": "object",
+      "baseLength": 524,
+      "lowLength": 1303,
+      "mediumLength": 1404,
+      "highLength": 1500,
+      "lowTierExamples": true,
+      "mediumTierExamples": true,
+      "highTierExamples": true
+    }
+  ]
+}

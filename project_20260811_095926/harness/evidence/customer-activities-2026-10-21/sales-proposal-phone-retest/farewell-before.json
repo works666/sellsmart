@@ -1,0 +1,76 @@
+{
+  "checkedAt": "2026-10-22T02:54:26.126Z",
+  "sessionId": "701f74b4-dd93-4eec-9325-83fd9fd6a6f1",
+  "updatedAt": "2026-10-22T02:51:33.782396+00:00",
+  "version": 2,
+  "decisionProvider": "jev",
+  "decisionProviderRevision": 0,
+  "activityMode": "numeric",
+  "activityRevision": 3,
+  "members": [
+    {
+      "npcId": "P1-001",
+      "support": 0,
+      "pleasantness": 48
+    },
+    {
+      "npcId": "P1-002",
+      "support": 0,
+      "pleasantness": 50
+    },
+    {
+      "npcId": "P1-003",
+      "support": 0,
+      "pleasantness": 50
+    },
+    {
+      "npcId": "P1-004",
+      "support": 0,
+      "pleasantness": 50
+    },
+    {
+      "npcId": "P1-005",
+      "support": 0,
+      "pleasantness": 50
+    }
+  ],
+  "activeCall": null,
+  "pendingCount": 0,
+  "diagnostics": [
+    {
+      "at": 1792637487445,
+      "event": "semantic_review_started",
+      "npcId": "P1-001",
+      "reason": "customer_activity_reply_unclear",
+      "channel": "visit",
+      "details": {
+        "result": "unclear",
+        "signal": "disposition",
+        "attempt": 0,
+        "violation": "none",
+        "evidence_valid": false
+      },
+      "messageId": "faecfe64-63e8-4027-abd9-5296bfb65bb1",
+      "conversationId": "reply:faecfe64-63e8-4027-abd9-5296bfb65bb1"
+    },
+    {
+      "at": 1792637488529,
+      "event": "semantic_review_completed",
+      "npcId": "P1-001",
+      "reason": "customer_activity_reply_allowed",
+      "channel": "visit",
+      "details": {
+        "result": "allowed",
+        "signal": "disposition",
+        "attempt": 0,
+        "violation": "none",
+        "evidence_valid": false
+      },
+      "messageId": "faecfe64-63e8-4027-abd9-5296bfb65bb1",
+      "conversationId": "reply:faecfe64-63e8-4027-abd9-5296bfb65bb1"
+    }
+  ],
+  "decisions": [],
+  "tasks": [],
+  "phoneMessages": []
+}

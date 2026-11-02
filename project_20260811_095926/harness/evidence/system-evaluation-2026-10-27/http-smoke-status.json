@@ -1,0 +1,43 @@
+{
+  "endpoint": "/api/designer/system-evaluation",
+  "checkedAt": "2026-10-27T06:42:14.326Z",
+  "environmentFile": "projects/.env.local (loaded; values omitted)",
+  "results": [
+    {
+      "check": "anonymous_get",
+      "status": 401
+    },
+    {
+      "check": "anonymous_post",
+      "status": 401
+    },
+    {
+      "check": "temporary_player_post",
+      "status": 403,
+      "errorCode": "forbidden"
+    },
+    {
+      "check": "temporary_designer_get_own_list",
+      "status": 503,
+      "errorCode": "unavailable"
+    },
+    {
+      "check": "temporary_designer_post_missing_snapshot",
+      "status": 503,
+      "errorCode": "unavailable"
+    }
+  ],
+  "verified": {
+    "anonymous_get_401": true,
+    "anonymous_post_401": true,
+    "player_forbidden_403": true,
+    "designer_get_200_empty_own_list": false,
+    "missing_snapshot_404": false
+  },
+  "notes": [
+    "Temporary signed identities were generated in-process from projects/.env.local. No token or temporary user identifier was persisted or printed.",
+    "The snapshot POST used only snapshot mode with a fabricated UUID and a temporary designer identity. It did not reference an existing real-user session.",
+    "The designer GET and POST returned 503 unavailable, so database reachability and owner-filtered 404 behavior remain unverified over HTTP.",
+    "The inspected handler loads read-only config and the owner-scoped snapshot before creating the AI invoker; this failed request did not reach generation or DeepEval judging."
+  ]
+}

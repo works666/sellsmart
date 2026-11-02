@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "pdf": "D:\\WeiXun\\project_20260811_095926\\output\\pdf\\2026-10-16-新版张建国三模型实测记录.pdf",
+  "renderedPageCount": 7,
+  "visualReview": "all pages inspected; no clipped text, overlaps, or missing Chinese glyphs",
+  "renderedPages": [
+    {
+      "file": "page-1.png",
+      "bytes": 297191
+    },
+    {
+      "file": "page-2.png",
+      "bytes": 287181
+    },
+    {
+      "file": "page-3.png",
+      "bytes": 125668
+    },
+    {
+      "file": "page-4.png",
+      "bytes": 296755
+    },
+    {
+      "file": "page-5.png",
+      "bytes": 127783
+    },
+    {
+      "file": "page-6.png",
+      "bytes": 273897
+    },
+    {
+      "file": "page-7.png",
+      "bytes": 121214
+    }
+  ]
+}

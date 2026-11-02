@@ -1,0 +1,128 @@
+{
+  "checkedAt": "2026-10-21T06:43:45.725Z",
+  "sessionId": "dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5",
+  "updatedAt": "2026-10-21T06:43:31.637977+00:00",
+  "version": 12,
+  "decisionProvider": "jev",
+  "decisionProviderRevision": 0,
+  "activityMode": "numeric",
+  "activityRevision": 3,
+  "members": [
+    {
+      "npcId": "P1-001",
+      "support": 20,
+      "pleasantness": 60
+    },
+    {
+      "npcId": "P1-002",
+      "support": 20,
+      "pleasantness": 60
+    },
+    {
+      "npcId": "P1-003",
+      "support": 20,
+      "pleasantness": 60
+    },
+    {
+      "npcId": "P1-004",
+      "support": 20,
+      "pleasantness": 60
+    },
+    {
+      "npcId": "P1-005",
+      "support": 20,
+      "pleasantness": 60
+    }
+  ],
+  "activeCall": {
+    "npcId": "P1-004",
+    "channel": "work_phone",
+    "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da",
+    "startMessageIndex": 4
+  },
+  "pendingCount": 0,
+  "diagnostics": [
+    {
+      "at": 1792564948613,
+      "event": "phone_conversation_started",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "details": {
+        "startMessageIndex": 4
+      },
+      "conversationId": "preview:dec963d5-c7c5-4ec0-9d16-e5dfe6c07bc5:call:9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    }
+  ],
+  "decisions": [],
+  "tasks": [],
+  "phoneMessages": [
+    {
+      "at": 1792562236530,
+      "role": "player",
+      "text": "玩家拨打工作电话，等待接听。",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "580b7e5b-09a5-46f3-abd7-e343d4c5a1e9"
+    },
+    {
+      "at": 1792562238230,
+      "role": "npc",
+      "text": "您好，我是赵晓晨。您这会儿打电话来，是有什么事吗？",
+      "channel": "work_phone",
+      "messageId": "5934bfb1-84b1-4d56-a0ab-507233ce974a"
+    },
+    {
+      "at": 1792562291370,
+      "role": "player",
+      "text": "赵老师您好，我想问问看能不能咱们下周召开一个技术交流会，正好也把您这边的需求和我们对一下，提高效率",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "d5341d62-607e-49ca-b6d0-5c92f5c7b707"
+    },
+    {
+      "at": 1792562293908,
+      "role": "npc",
+      "text": "这类安排我需要先向上级汇报，确认后再答复。",
+      "channel": "work_phone",
+      "messageId": "834679e1-e4a2-413b-a2a1-8810b84cdc65"
+    },
+    {
+      "at": 1792564943991,
+      "role": "player",
+      "text": "玩家拨打工作电话，等待接听。",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "9d0f6112-6b2f-4934-b5e2-4f0d5a8524da"
+    },
+    {
+      "at": 1792564945677,
+      "role": "npc",
+      "text": "您好，我是赵晓晨。您这会儿打电话来，是有什么事吗？",
+      "channel": "work_phone",
+      "messageId": "37416464-af49-4d63-9301-2791731210b9"
+    },
+    {
+      "at": 1792564963600,
+      "role": "player",
+      "text": "赵老师，您看我们下周要不要安排一个技术交流会，这样可以更好地交流技术上的问题，可以直接把需求交代清楚。",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "a462fe15-b8b3-4e8c-86cd-4e3721296190"
+    },
+    {
+      "at": 1792564966399,
+      "role": "npc",
+      "text": "嗯……这个技术交流会的事，我得先向上级汇报一下，确认后再答复您。",
+      "channel": "work_phone",
+      "messageId": "81977c79-e415-4404-97d7-2d870244ea73"
+    }
+  ]
+}

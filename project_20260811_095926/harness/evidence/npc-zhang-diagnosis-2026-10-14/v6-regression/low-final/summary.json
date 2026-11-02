@@ -1,0 +1,171 @@
+{
+  "createdAt": "2026-10-14T09:33:34.726Z",
+  "sampleType": "9 low-tier one-turn direct prompt samples for Zhang Jianguo only; not a full game UI visit",
+  "runId": "low-final",
+  "plannedCases": 9,
+  "completedCases": 9,
+  "outputStatusCounts": {
+    "valid": 9
+  },
+  "providers": [
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "origin": "api.deepseek.com"
+    },
+    {
+      "provider": "doubao",
+      "model": "doubao-seed-2-0-lite-260428",
+      "origin": "ark.cn-beijing.volces.com"
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen-plus",
+      "origin": "dashscope.aliyuncs.com"
+    }
+  ],
+  "supportTiers": {
+    "low": 20,
+    "medium": 50,
+    "high": 80
+  },
+  "casesPerProvider": 3,
+  "settings": {
+    "temperature": 0.35,
+    "maxTokens": 3000,
+    "jsonMode": true,
+    "thinking": "disabled",
+    "retries": 0
+  },
+  "softLengthReferenceChars": 35,
+  "reportPath": "D:\\WeiXun\\project_20260811_095926\\outputs\\2026-10-14-张建国修复后复验报告.md",
+  "records": [
+    {
+      "caseId": "deepseek-P1-001-low-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": "deepseek-flash",
+      "kind": "opening",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 43,
+      "overSoftReference": true,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "deepseek-P1-001-low-sensitive-refusal",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": "deepseek-flash",
+      "kind": "sensitive-refusal",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 28,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "deepseek-P1-001-low-long-pitch",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": "deepseek-flash",
+      "kind": "long-pitch",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 36,
+      "overSoftReference": true,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "doubao-P1-001-low-opening",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "kind": "opening",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 23,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "doubao-P1-001-low-sensitive-refusal",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "kind": "sensitive-refusal",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 23,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "doubao-P1-001-low-long-pitch",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "kind": "long-pitch",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 29,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "qwen-P1-001-low-opening",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "kind": "opening",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 10,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "qwen-P1-001-low-sensitive-refusal",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "kind": "sensitive-refusal",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 25,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "qwen-P1-001-low-long-pitch",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "kind": "long-pitch",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 42,
+      "overSoftReference": true,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    }
+  ],
+  "finishedAt": "2026-10-14T09:33:34.734Z"
+}

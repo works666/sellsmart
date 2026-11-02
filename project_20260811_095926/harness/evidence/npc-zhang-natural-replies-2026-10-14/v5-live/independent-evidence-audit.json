@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "samples": 15,
+  "uniqueCases": 15,
+  "validBodies": 11,
+  "invalidJson": 4,
+  "minChars": 13,
+  "maxChars": 29,
+  "providerCounts": {
+    "deepseek": {
+      "samples": 5,
+      "bodies": 1
+    },
+    "doubao": {
+      "samples": 5,
+      "bodies": 5
+    },
+    "qwen": {
+      "samples": 5,
+      "bodies": 5
+    }
+  },
+  "blankLengths": {
+    "deepseek-P1-001-medium-opening": 21,
+    "deepseek-P1-001-high-opening": 17,
+    "deepseek-P1-001-low-sensitive-refusal": 16,
+    "deepseek-P1-001-low-long-pitch": 17
+  },
+  "qualityPassed": false
+}

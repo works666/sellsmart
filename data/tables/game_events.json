@@ -1,0 +1,206 @@
+[
+  {
+    "id": "26b6cf19-3357-4a84-9680-22fc5028685d",
+    "session_id": "ce4446e1-4fa7-40d9-8e0f-fb0eded235b9",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "session.created",
+    "payload": {
+      "scenarioCode": "project-1",
+      "replacedCount": 0,
+      "replacedExisting": false
+    },
+    "created_at": "2026-09-28T05:45:24.604803+00:00"
+  },
+  {
+    "id": "5384e072-6063-4e5a-8b28-42556a58ef66",
+    "session_id": "0d839e94-41da-4071-a07c-27e79975a77a",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "session.replaced",
+    "payload": {
+      "scenarioCode": "project-1",
+      "replacedCount": 1,
+      "replacedExisting": true
+    },
+    "created_at": "2026-09-28T07:42:14.741388+00:00"
+  },
+  {
+    "id": "2c4d4612-abaa-4245-9eb7-10a9dbc39480",
+    "session_id": "0d839e94-41da-4071-a07c-27e79975a77a",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "session.continued",
+    "payload": {
+      "round": 1,
+      "version": 1,
+      "hasActiveMeeting": false
+    },
+    "created_at": "2026-09-28T07:46:43.15995+00:00"
+  },
+  {
+    "id": "f881a665-9416-4a07-918d-a551431a6964",
+    "session_id": "8ffdb636-b7d1-4263-94c8-5e515d270e6f",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "session.replaced",
+    "payload": {
+      "scenarioCode": "project-1",
+      "replacedCount": 1,
+      "replacedExisting": true
+    },
+    "created_at": "2026-09-28T08:54:06.552177+00:00"
+  },
+  {
+    "id": "1b8f700a-1c54-4975-b857-0e812cdb3007",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "session.replaced",
+    "payload": {
+      "scenarioCode": "project-1",
+      "replacedCount": 1,
+      "replacedExisting": true
+    },
+    "created_at": "2026-09-30T10:12:06.05609+00:00"
+  },
+  {
+    "id": "896d47ed-6c44-42eb-9a84-08b8830b354f",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "session.continued",
+    "payload": {
+      "round": 1,
+      "version": 1,
+      "hasActiveMeeting": false
+    },
+    "created_at": "2026-10-12T07:19:13.389031+00:00"
+  },
+  {
+    "id": "4f83dd6b-d639-4945-841a-13f6ff3ad772",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "project_timer.recovered",
+    "payload": {
+      "expired": false,
+      "commandId": "timer:1:0:checkpoint",
+      "elapsedMs": 0,
+      "actionPoints": 28,
+      "recoveredIntervals": 0
+    },
+    "created_at": "2026-10-27T07:35:06.338641+00:00"
+  },
+  {
+    "id": "f967b44e-75ee-47dd-8a02-94cc78d4d621",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "session.continued",
+    "payload": {
+      "round": 1,
+      "version": 2,
+      "hasActiveMeeting": false
+    },
+    "created_at": "2026-10-27T07:35:08.972593+00:00"
+  },
+  {
+    "id": "1d373850-5a9c-49a7-b327-00f31c76574a",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": "P1-001",
+    "round": 1,
+    "event_type": "public_info.researched",
+    "payload": {
+      "npcId": "P1-001",
+      "commandId": "e8d5c85c-58af-4155-acac-f5c942ef0bc3",
+      "factCount": 3,
+      "costPoints": 2,
+      "weakSignalCount": 1
+    },
+    "created_at": "2026-10-27T07:35:50.837681+00:00"
+  },
+  {
+    "id": "885b0e6c-5420-4bdf-8e2b-d55e7c0ae3a0",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": "P1-001",
+    "round": 1,
+    "event_type": "visit.started",
+    "payload": {
+      "npcId": "P1-001",
+      "commandId": "dd3d187f-befc-410c-9423-5f73848a7e44",
+      "visitType": "short",
+      "appointmentId": "drop-in:5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7",
+      "conditionCount": 0,
+      "scheduledRound": 1,
+      "scheduledMinute": 540,
+      "preparationCount": 0
+    },
+    "created_at": "2026-10-27T07:36:50.043338+00:00"
+  },
+  {
+    "id": "63fe9685-abf8-4edd-997d-48c2c509ad44",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": "P1-001",
+    "round": 1,
+    "event_type": "visit.completed",
+    "payload": {
+      "npcId": "P1-001",
+      "reason": "player",
+      "maxTurns": 20,
+      "commandId": "5a9f52a5-0d9b-46f6-8ccd-eb0026ecfa7a",
+      "turnCount": 0,
+      "visitType": "short",
+      "appointmentId": "drop-in:5e0f84bb32491429db728a7664580a79b157a0c2bd94632f177537c21ed6cfb7",
+      "hasPlayerSummary": false,
+      "usedPreparationCount": 0
+    },
+    "created_at": "2026-10-27T07:37:43.131289+00:00"
+  },
+  {
+    "id": "2e9a9c64-02fd-45cc-9071-cbd3906eefe3",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "project_timer.recovered",
+    "payload": {
+      "expired": false,
+      "commandId": "timer:5:1:checkpoint",
+      "elapsedMs": 324840,
+      "actionPoints": 28,
+      "recoveredIntervals": 1
+    },
+    "created_at": "2026-10-27T07:41:24.473915+00:00"
+  },
+  {
+    "id": "029415ed-17fa-4e10-a354-44da57a367d5",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": null,
+    "round": 1,
+    "event_type": "session.continued",
+    "payload": {
+      "round": 1,
+      "version": 6,
+      "hasActiveMeeting": false
+    },
+    "created_at": "2026-10-27T07:41:26.300952+00:00"
+  },
+  {
+    "id": "472443f0-2240-4d0e-b239-164ec3992356",
+    "session_id": "5965cd17-5d8b-4ba3-b708-de20509d534f",
+    "npc_key": "P1-001",
+    "round": 1,
+    "event_type": "visit.started",
+    "payload": {
+      "npcId": "P1-001",
+      "commandId": "477ec235-27c4-496e-92d4-8fac4dff2559",
+      "visitType": "short",
+      "appointmentId": "drop-in:16752705b2906358d712753f2bbdc4c04e61f16a62f351454174b3f9138e0821",
+      "conditionCount": 0,
+      "scheduledRound": 1,
+      "scheduledMinute": 540,
+      "preparationCount": 0
+    },
+    "created_at": "2026-10-27T07:41:45.676224+00:00"
+  }
+]

@@ -1,0 +1,423 @@
+{
+  "pdf": "D:\\WeiXun\\project_20260811_095926\\output\\pdf\\2026-10-14-张建国修复后复验记录.pdf",
+  "pages": 14,
+  "recordsChecked": 69,
+  "passed": true,
+  "failed": [],
+  "checks": [
+    {
+      "stage": "first-pass",
+      "caseId": "deepseek-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "deepseek-P1-001-medium-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "deepseek-P1-001-high-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "deepseek-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "doubao-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "doubao-P1-001-medium-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "doubao-P1-001-high-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "doubao-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "doubao-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "qwen-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "qwen-P1-001-medium-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "qwen-P1-001-high-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "qwen-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "first-pass",
+      "caseId": "qwen-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "deepseek-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "deepseek-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "doubao-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "doubao-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "doubao-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "qwen-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "qwen-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-refinement",
+      "caseId": "qwen-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "deepseek-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "deepseek-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "doubao-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "doubao-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "doubao-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "qwen-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "qwen-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-final",
+      "caseId": "qwen-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "deepseek-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "deepseek-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "doubao-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "doubao-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "doubao-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "qwen-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "qwen-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "low-action-priority",
+      "caseId": "qwen-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-original-four-exact",
+      "caseId": "deepseek-P1-001-medium-opening-v5-conflict-default",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-original-four-exact",
+      "caseId": "deepseek-P1-001-high-opening-v5-conflict-default",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-original-four-exact",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal-v5-conflict-default",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-original-four-exact",
+      "caseId": "deepseek-P1-001-low-long-pitch-v5-conflict-default",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-conflict-2x2",
+      "caseId": "deepseek-P1-001-medium-opening-v5-conflict-default",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-conflict-2x2",
+      "caseId": "deepseek-P1-001-medium-opening-v5-conflict-disabled",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-conflict-2x2",
+      "caseId": "deepseek-P1-001-medium-opening-json-compatible-default",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-conflict-2x2",
+      "caseId": "deepseek-P1-001-medium-opening-json-compatible-disabled",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-conflict-2x2",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal-v5-conflict-default",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-conflict-2x2",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal-v5-conflict-disabled",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-conflict-2x2",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal-json-compatible-default",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-conflict-2x2",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal-json-compatible-disabled",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "deepseek-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "qwen-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "qwen-P1-001-medium-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "deepseek-P1-001-medium-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "qwen-P1-001-high-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "qwen-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "deepseek-P1-001-high-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "qwen-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "deepseek-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "deepseek-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "doubao-P1-001-low-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "doubao-P1-001-medium-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "doubao-P1-001-high-opening",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "doubao-P1-001-low-sensitive-refusal",
+      "inputPresent": true,
+      "contentPresent": true
+    },
+    {
+      "stage": "v5-baseline",
+      "caseId": "doubao-P1-001-low-long-pitch",
+      "inputPresent": true,
+      "contentPresent": true
+    }
+  ]
+}

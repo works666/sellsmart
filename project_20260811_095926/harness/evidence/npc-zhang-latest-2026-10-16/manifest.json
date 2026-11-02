@@ -1,0 +1,148 @@
+{
+  "sourceRevision": 10,
+  "sourcePersisted": true,
+  "sourceUpdatedAt": "2026-10-16T10:59:22.317+08:00",
+  "previousRevision": 9,
+  "changedFields": [
+    "base",
+    "low",
+    "medium",
+    "high",
+    "visit"
+  ],
+  "fields": {
+    "base": {
+      "previousSha256": "a1f1de7b2a2256b7afc69cb34f2a8daa285053732d04d9fdc101473f8fd20709",
+      "currentSha256": "c40fcd1942f6ba4c648092f03b323c67d24a07e122624c2ca5f217ca2bb917c2",
+      "changed": true
+    },
+    "low": {
+      "previousSha256": "26918975275df24aa898fc374fd07c5657ba8f784942da3ad855e9e23203cf9c",
+      "currentSha256": "0d326783bc2d15b556bebb871ceb7fe6abc265156f0f0206808d7f46368c942e",
+      "changed": true
+    },
+    "medium": {
+      "previousSha256": "8ef6a131616768a39d75158d1625b47f892749f58048ef9c34639e21f6349763",
+      "currentSha256": "fc145f16a52d1ffa0f3a9f3a305313b147c85ce1897eb1f5834c1a6bd06719e8",
+      "changed": true
+    },
+    "high": {
+      "previousSha256": "a78efcc199da1a8b2ce070aca93be9f4219efa3435852fd3e7fde126a70c728f",
+      "currentSha256": "23a61f571874cc436fef07dd2d05d91646e54d90c4db1ca27199091d89d9ab6d",
+      "changed": true
+    },
+    "visit": {
+      "previousSha256": "c3aca15c9ad2c54fad5b25498df515ce5f2ca2f0aad9f449cd3aa7267add6bac",
+      "currentSha256": "3691b31e0db1a9cde038d4243d5f320eda2861fd628e10a31416ccfa1694004f",
+      "changed": true
+    }
+  },
+  "providers": [
+    {
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "effectiveModel": "deepseek-flash",
+      "origin": "api.deepseek.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "effectiveModel": "doubao-seed-2-0-lite-260428",
+      "origin": "ark.cn-beijing.volces.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "effectiveModel": "qwen-plus",
+      "origin": "dashscope.aliyuncs.com",
+      "configuredTimeoutMs": 60000
+    }
+  ],
+  "settings": {
+    "temperature": 0.35,
+    "maxTokens": 512,
+    "responseFormat": "json_object",
+    "thinking": "disabled",
+    "deepseekStream": true,
+    "deepseekWaitLimitMs": 180000,
+    "maxAutomaticAttempts": 3,
+    "providerSequence": [
+      "deepseek",
+      "doubao",
+      "qwen"
+    ]
+  },
+  "totalModelCalls": 15,
+  "deepseekModelCatalogue": {
+    "provider": "deepseek",
+    "origin": "api.deepseek.com",
+    "status": 200,
+    "fetchedAt": "2026-10-16T03:10:36.032Z",
+    "configuredModel": "deepseek-v4-flash",
+    "availableModelIds": [
+      "deepseek-flash",
+      "deepseek-v4-pro"
+    ],
+    "effectiveModel": "deepseek-flash",
+    "responseBodySha256": "b86388abe65929c84de3825eee299b8d78bae23e82e300239f3c788569eb5f39"
+  },
+  "allowedOrigins": [
+    "api.deepseek.com",
+    "ark.cn-beijing.volces.com",
+    "dashscope.aliyuncs.com"
+  ],
+  "modelCatalogueGetSent": true,
+  "completionRequestsSent": true,
+  "finishedAt": "2026-10-16T03:11:43.439Z",
+  "executionStatus": "complete",
+  "completionRequests": 15,
+  "completionAttempts": 15,
+  "retries": 0,
+  "otherNpcCompleteProfilesIncludedInRequests": false,
+  "sameMessagesPerCaseAcrossProviders": true,
+  "allRequestOriginsAllowlisted": true,
+  "postRunReadback": {
+    "readAt": "2026-10-16T03:13:28.359Z",
+    "method": "GET /api/designer/prompt-config",
+    "writesAttempted": false,
+    "snapshotRevision": 10,
+    "latestRevision": 10,
+    "snapshotUpdatedAt": "2026-10-16T10:59:22.317+08:00",
+    "latestUpdatedAt": "2026-10-16T02:59:22.317+00:00",
+    "revisionChanged": false,
+    "changedFields": [],
+    "fields": {
+      "base": {
+        "snapshotSha256": "c40fcd1942f6ba4c648092f03b323c67d24a07e122624c2ca5f217ca2bb917c2",
+        "latestSha256": "c40fcd1942f6ba4c648092f03b323c67d24a07e122624c2ca5f217ca2bb917c2",
+        "changed": false
+      },
+      "low": {
+        "snapshotSha256": "0d326783bc2d15b556bebb871ceb7fe6abc265156f0f0206808d7f46368c942e",
+        "latestSha256": "0d326783bc2d15b556bebb871ceb7fe6abc265156f0f0206808d7f46368c942e",
+        "changed": false
+      },
+      "medium": {
+        "snapshotSha256": "fc145f16a52d1ffa0f3a9f3a305313b147c85ce1897eb1f5834c1a6bd06719e8",
+        "latestSha256": "fc145f16a52d1ffa0f3a9f3a305313b147c85ce1897eb1f5834c1a6bd06719e8",
+        "changed": false
+      },
+      "high": {
+        "snapshotSha256": "23a61f571874cc436fef07dd2d05d91646e54d90c4db1ca27199091d89d9ab6d",
+        "latestSha256": "23a61f571874cc436fef07dd2d05d91646e54d90c4db1ca27199091d89d9ab6d",
+        "changed": false
+      },
+      "visit": {
+        "snapshotSha256": "3691b31e0db1a9cde038d4243d5f320eda2861fd628e10a31416ccfa1694004f",
+        "latestSha256": "3691b31e0db1a9cde038d4243d5f320eda2861fd628e10a31416ccfa1694004f",
+        "changed": false
+      }
+    },
+    "persisted": true
+  }
+}

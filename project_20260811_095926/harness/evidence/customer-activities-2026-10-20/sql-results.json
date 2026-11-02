@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "engine": "isolated PGlite PostgreSQL",
+  "productionDatabaseTouched": false,
+  "minimalFixtureSchema": true,
+  "results": [
+    {
+      "name": "planning_before_deadline",
+      "passed": true,
+      "elapsedMs": 120000,
+      "actionPoints": 20
+    },
+    {
+      "name": "planning_after_deadline",
+      "passed": true,
+      "elapsedMs": 140000,
+      "actionPoints": 20
+    },
+    {
+      "name": "ordinary_visit",
+      "passed": true,
+      "elapsedMs": 180000,
+      "actionPoints": 20
+    },
+    {
+      "name": "ordinary_clock",
+      "passed": true,
+      "elapsedMs": 140000,
+      "actionPoints": 20
+    }
+  ],
+  "permissions": {
+    "authenticated": false,
+    "service_role": true
+  }
+}

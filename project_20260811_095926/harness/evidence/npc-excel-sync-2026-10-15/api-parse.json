@@ -1,0 +1,4 @@
+{
+  "error": "上传文件不是有效的 .xlsx 工作簿。",
+  "code": "INVALID_XLSX"
+}

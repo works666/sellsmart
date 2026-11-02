@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "configuredModel": "deepseek-v4-flash",
+  "models": [
+    "deepseek-flash",
+    "deepseek-v4-pro"
+  ],
+  "error": null
+}

@@ -1,0 +1,347 @@
+{
+  "state": {
+    "scenarioCode": "project-1",
+    "progressionMultiplier": 1,
+    "currentRound": 1,
+    "maxRounds": 5,
+    "actionPoints": 28,
+    "status": "playing",
+    "dimensions": {
+      "decisionAnalysis": 50,
+      "relationshipBuilding": 50,
+      "valuePresentation": 50,
+      "objectionHandling": 50,
+      "informationDiscovery": 50
+    },
+    "npcAffinity": {
+      "P1-001": 20,
+      "P1-002": 35,
+      "P1-003": 40,
+      "P1-004": 30,
+      "P1-005": 35
+    },
+    "unlockedNpcIds": [
+      "P1-001",
+      "P1-002",
+      "P1-003",
+      "P1-004",
+      "P1-005"
+    ],
+    "unlockedClues": [],
+    "conversationMemories": {},
+    "npcContacts": {
+      "P1-001": {
+        "status": "known",
+        "initialChannel": "work_phone",
+        "onlineRequestedRound": null,
+        "unansweredRound": null,
+        "outboundCount": 0,
+        "hasReplied": false,
+        "lastContactRound": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "wechatStatus": "not_requested",
+        "lastPhoneOutcome": null
+      },
+      "P1-002": {
+        "status": "known",
+        "initialChannel": "email",
+        "onlineRequestedRound": null,
+        "unansweredRound": null,
+        "outboundCount": 0,
+        "hasReplied": false,
+        "lastContactRound": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "wechatStatus": "not_requested",
+        "lastPhoneOutcome": null
+      },
+      "P1-003": {
+        "status": "known",
+        "initialChannel": "email",
+        "onlineRequestedRound": null,
+        "unansweredRound": null,
+        "outboundCount": 0,
+        "hasReplied": false,
+        "lastContactRound": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "wechatStatus": "not_requested",
+        "lastPhoneOutcome": null
+      },
+      "P1-004": {
+        "status": "known",
+        "initialChannel": "work_phone",
+        "onlineRequestedRound": null,
+        "unansweredRound": null,
+        "outboundCount": 0,
+        "hasReplied": false,
+        "lastContactRound": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "wechatStatus": "not_requested",
+        "lastPhoneOutcome": null
+      },
+      "P1-005": {
+        "status": "known",
+        "initialChannel": "work_phone",
+        "onlineRequestedRound": null,
+        "unansweredRound": null,
+        "outboundCount": 0,
+        "hasReplied": false,
+        "lastContactRound": null,
+        "lastContactMinute": null,
+        "channelCooldownUntil": {},
+        "wechatStatus": "not_requested",
+        "lastPhoneOutcome": null
+      }
+    },
+    "lastAction": null,
+    "version": 1,
+    "currentStage": 1,
+    "maxStages": 5,
+    "gameMode": "solo",
+    "companyId": "player-company",
+    "knownPersonalInfo": {
+      "P1-004": [
+        "我方曾在公开交流活动中与赵晓晨有过短暂接触，但不了解其项目态度。"
+      ]
+    },
+    "simulatedClockMinutes": 540,
+    "dayAvailableMinutes": 0,
+    "overtimeMinutes": 0,
+    "cumulativeTimeMinutes": 0,
+    "cumulativeSpentPoints": 0,
+    "appointments": [],
+    "preparations": [],
+    "workPlans": [],
+    "postalRecords": [],
+    "visitBriefs": [],
+    "meetingMinutes": [],
+    "notifications": [],
+    "npcAttitudes": {
+      "P1-001": {
+        "pleasantness": 50,
+        "support": 20,
+        "unmetImpression": 0,
+        "complianceAwareness": 0,
+        "history": []
+      },
+      "P1-002": {
+        "pleasantness": 50,
+        "support": 35,
+        "unmetImpression": 0,
+        "complianceAwareness": 0,
+        "history": []
+      },
+      "P1-003": {
+        "pleasantness": 50,
+        "support": 40,
+        "unmetImpression": 0,
+        "complianceAwareness": 0,
+        "history": []
+      },
+      "P1-004": {
+        "pleasantness": 50,
+        "support": 30,
+        "unmetImpression": 0,
+        "complianceAwareness": 0,
+        "history": []
+      },
+      "P1-005": {
+        "pleasantness": 50,
+        "support": 35,
+        "unmetImpression": 0,
+        "complianceAwareness": 0,
+        "history": []
+      }
+    },
+    "supplierSupport": {
+      "player-company": {
+        "P1-001": 20,
+        "P1-002": 35,
+        "P1-003": 40,
+        "P1-004": 30,
+        "P1-005": 35
+      },
+      "abc-company": {
+        "P1-001": 52,
+        "P1-002": 52,
+        "P1-003": 52,
+        "P1-004": 52,
+        "P1-005": 52
+      },
+      "xyz-company": {
+        "P1-001": 46,
+        "P1-002": 46,
+        "P1-003": 46,
+        "P1-004": 46,
+        "P1-005": 46
+      }
+    },
+    "bidRule": "balanced",
+    "ruleProposalHistory": [],
+    "overallSupportState": "LOW",
+    "supplierProfiles": [
+      {
+        "id": "player-company",
+        "name": "我方公司",
+        "advantageType": "technical_accuracy",
+        "coreAdvantage": "技术精度领先",
+        "preferredBidRule": "technical_accuracy"
+      },
+      {
+        "id": "abc-company",
+        "name": "ABC竞品",
+        "advantageType": "price",
+        "coreAdvantage": "报价最低",
+        "preferredBidRule": "lowest_price"
+      },
+      {
+        "id": "xyz-company",
+        "name": "XYZ竞品",
+        "advantageType": "feature_completeness",
+        "coreAdvantage": "功能覆盖最全面",
+        "preferredBidRule": "feature_completeness"
+      }
+    ],
+    "outcomeEvidence": {
+      "publicValue": [],
+      "personalBenefit": []
+    },
+    "complianceRisks": [],
+    "publicResearch": {},
+    "competitorState": {
+      "name": "ABC竞品",
+      "pressureScore": 52,
+      "position": "close",
+      "actions": []
+    },
+    "competitorClaims": [],
+    "submissionReady": false,
+    "processedCommandIds": [],
+    "phaseStartedAt": "2000-01-01T00:00:00.000Z",
+    "phaseEndsAt": "2000-01-01T00:00:00.000Z",
+    "pausedAt": null,
+    "pausedRemainingMs": null,
+    "activeMeeting": null
+  },
+  "npcs": [
+    {
+      "id": "P1-001",
+      "projectId": 1,
+      "category": "高层",
+      "name": "张建国",
+      "title": "主管副总经理",
+      "gender": "未提供",
+      "age": null,
+      "hometown": "未提供",
+      "personality": "强势、时间观念极强、对供应商天然戒备；偏好一两句结论，只判断是否值得转交、安排或指向相关部门，不争论、不追问细节。",
+      "weakness": null,
+      "initiallyVisible": true,
+      "initialContactChannel": "work_phone",
+      "initialSupport": 20,
+      "decisionWeight": 0.2835820895522388,
+      "complianceSensitivity": 85,
+      "actionPreferences": {
+        "roadshow": 3,
+        "visit": 2,
+        "video": 1,
+        "gift": -3,
+        "dinner": -2
+      }
+    },
+    {
+      "id": "P1-002",
+      "projectId": 1,
+      "category": "中层",
+      "name": "李明辉",
+      "title": "项目经理",
+      "gender": "未提供",
+      "age": null,
+      "hometown": "未提供",
+      "personality": "资深、严谨、专业、重逻辑与数据；愿意和真正懂技术的人深聊。",
+      "weakness": null,
+      "initiallyVisible": true,
+      "initialContactChannel": "email",
+      "initialSupport": 35,
+      "decisionWeight": 0.2537313432835821,
+      "complianceSensitivity": 70,
+      "actionPreferences": {
+        "roadshow": 2,
+        "visit": 2,
+        "tea": 1,
+        "gift": -3
+      }
+    },
+    {
+      "id": "P1-003",
+      "projectId": 1,
+      "category": "中层",
+      "name": "王德福",
+      "title": "招采办主任",
+      "gender": "未提供",
+      "age": null,
+      "hometown": "未提供",
+      "personality": "热情、健谈、重视被尊重；表面亲近但对底价和纪律有边界。",
+      "weakness": null,
+      "initiallyVisible": true,
+      "initialContactChannel": "email",
+      "initialSupport": 40,
+      "decisionWeight": 0.22388059701492538,
+      "complianceSensitivity": 90,
+      "actionPreferences": {
+        "sample": 2,
+        "video": 1,
+        "gift": -3,
+        "dinner": -2
+      }
+    },
+    {
+      "id": "P1-004",
+      "projectId": 1,
+      "category": "一线",
+      "name": "赵晓晨",
+      "title": "项目执行人员",
+      "gender": "未提供",
+      "age": null,
+      "hometown": "未提供",
+      "personality": "谨慎内敛、怕担责、不愿主动透露信息；建立安全感后会表达真实体验。",
+      "weakness": null,
+      "initiallyVisible": true,
+      "initialContactChannel": "work_phone",
+      "initialSupport": 30,
+      "decisionWeight": 0.13432835820895522,
+      "complianceSensitivity": 60,
+      "actionPreferences": {
+        "tea": 2,
+        "festival": 1,
+        "gift": -1,
+        "roadshow": 1
+      }
+    },
+    {
+      "id": "P1-005",
+      "projectId": 1,
+      "category": "一线",
+      "name": "刘思琪",
+      "title": "办公室员工6",
+      "gender": "未提供",
+      "age": null,
+      "hometown": "未提供",
+      "personality": "热情开朗、擅长拉近关系、喜欢轻松话题；涉及机密时会巧妙回避。",
+      "weakness": null,
+      "initiallyVisible": true,
+      "initialContactChannel": "work_phone",
+      "initialSupport": 35,
+      "decisionWeight": 0.1044776119402985,
+      "complianceSensitivity": 55,
+      "actionPreferences": {
+        "tea": 2,
+        "festival": 1,
+        "gift": -1,
+        "dinner": 1
+      }
+    }
+  ]
+}

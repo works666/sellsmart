@@ -1,0 +1,44 @@
+{
+  "httpStatus": 200,
+  "revision": 5,
+  "provider": "deepseek",
+  "providerRevision": 5,
+  "people": [
+    {
+      "id": "P1-001",
+      "isProfile": true,
+      "lowLength": 1578,
+      "shortReplyRuleLoaded": true,
+      "referenceLength": "通常10-30字，最多40字",
+      "genericBusyCloseLoaded": true
+    },
+    {
+      "id": "P1-002",
+      "isProfile": true,
+      "lowLength": 1427,
+      "shortReplyRuleLoaded": true,
+      "referenceLength": "通常20-45字，最多60字"
+    },
+    {
+      "id": "P1-003",
+      "isProfile": true,
+      "lowLength": 1414,
+      "shortReplyRuleLoaded": true,
+      "referenceLength": "通常20-45字，最多60字"
+    },
+    {
+      "id": "P1-004",
+      "isProfile": true,
+      "lowLength": 1420,
+      "shortReplyRuleLoaded": true,
+      "referenceLength": "通常20-45字，最多60字"
+    },
+    {
+      "id": "P1-005",
+      "isProfile": true,
+      "lowLength": 1408,
+      "shortReplyRuleLoaded": true,
+      "referenceLength": "通常20-45字，最多60字"
+    }
+  ]
+}

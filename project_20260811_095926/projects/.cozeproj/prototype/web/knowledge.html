@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+  </style>
+
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <header class="bg-surface border-b border-outline-variant/60 sticky top-0 z-40 h-14 flex items-center justify-between px-6">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
+          <i data-lucide="target" class="w-4 h-4 text-on-primary"></i>
+        </div>
+        <span class="font-bold text-base text-on-surface">竞标博弈 · 政企销售实训</span>
+      </div>
+      <nav class="flex items-center gap-1" id="top-nav">
+        <a href="home.html" id="nav-home" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">实训工作台</a>
+        <a href="setup.html" id="nav-setup" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">对局配置</a>
+        <a href="game.html" id="nav-game" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">博弈演练</a>
+        <a href="result.html" id="nav-result" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">复盘中心</a>
+        <a href="knowledge.html" id="nav-knowledge" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">产品知识库</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+        <i data-lucide="circle-dot" class="w-3 h-3 text-success"></i>
+        <span class="text-xs font-medium text-on-surface-variant num">已连接 2 个对局</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+        <span class="text-sm font-semibold text-primary">初</span>
+      </div>
+    </div>
+  </header>
+  <!-- @nav:end 导航组件 -->
+
+  <main class="flex-1 bg-background">
+    <!-- @main-content:start -->
+    <div class="max-w-7xl mx-auto px-6 py-8 pb-32">
+
+      <!-- 顶部说明区 -->
+      <section>
+        <h1 class="text-2xl font-bold text-on-surface">上传你的产品知识库</h1>
+        <p class="text-sm text-on-surface-variant mt-2 max-w-2xl">上传产品资料后，AI 将围绕你的产品生成对局场景，让博弈更贴近你的真实业务</p>
+
+        <!-- 当前状态卡 -->
+        <div class="bg-surface rounded-lg shadow-card p-5 mt-6 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4 min-w-0">
+            <div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+              <i data-lucide="package" class="w-6 h-6 text-primary"></i>
+            </div>
+            <div class="min-w-0">
+              <p class="text-xs text-on-surface-variant">当前产品</p>
+              <p class="text-base font-semibold text-on-surface mt-1 truncate">智慧政务平台 v3.2</p>
+              <p class="text-xs text-on-surface-variant mt-1 num">上次更新 · 2 小时前</p>
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-success/15 text-success rounded-md text-sm font-medium shrink-0">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            就绪
+          </span>
+        </div>
+      </section>
+
+      <!-- 大型上传区（核心视觉） -->
+      <section class="mt-10">
+        <div id="upload-zone" class="bg-surface rounded-lg shadow-card border-2 border-dashed border-outline-variant hover:border-primary/50 transition-colors min-h-64 flex flex-col items-center justify-center cursor-pointer p-12 text-center group">
+          <div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center group-hover:scale-105 transition-transform">
+            <i data-lucide="cloud-upload" class="w-9 h-9 text-primary"></i>
+          </div>
+          <p class="text-base font-semibold text-on-surface mt-5">拖拽文件到此处，或点击选择文件</p>
+          <p class="text-sm text-on-surface-variant mt-2">支持 PDF / DOCX / PPTX / XLSX / MD / TXT · 单文件最大 50MB</p>
+          <p class="text-xs text-on-surface-variant/70 mt-5 max-w-md leading-relaxed">系统将自动解析文件内容并提取产品参数，AI 竞品将基于此产品进行博弈</p>
+        </div>
+
+        <!-- 模拟状态：正在解析中 -->
+        <div class="mt-4 bg-surface rounded-lg shadow-card p-4">
+          <div class="flex items-center gap-3 flex-wrap">
+            <i data-lucide="file-text" class="w-5 h-5 text-error shrink-0"></i>
+            <span class="text-sm font-medium text-on-surface">产品说明书_v3.2.pdf</span>
+            <span class="text-xs text-on-surface-variant num">2.3MB</span>
+            <div class="flex items-center gap-1.5 ml-auto">
+              <i data-lucide="loader-2" class="w-3.5 h-3.5 text-primary animate-spin"></i>
+              <span class="text-xs text-primary font-medium">正在解析中</span>
+            </div>
+            <span class="text-sm font-semibold text-primary num w-10 text-right">65%</span>
+          </div>
+          <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden mt-3">
+            <div class="bg-primary h-1.5 rounded-full transition-all" style="width: 65%"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 已上传文件列表 -->
+      <section class="mt-10">
+        <div class="flex items-end justify-between mb-4">
+          <div>
+            <h2 class="text-base font-semibold text-on-surface">已上传文件</h2>
+            <p class="text-xs text-on-surface-variant mt-1">所有文件将自动索引用于 AI 训练</p>
+          </div>
+          <span class="text-xs text-on-surface-variant num">共 8 份</span>
+        </div>
+        <div class="bg-surface rounded-lg shadow-card overflow-hidden">
+          <!-- 表头 -->
+          <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-surface-container text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
+            <span class="col-span-5">文件名</span>
+            <span class="col-span-1">类型</span>
+            <span class="col-span-1">大小</span>
+            <span class="col-span-2">上传时间</span>
+            <span class="col-span-1">状态</span>
+            <span class="col-span-2 text-right">操作</span>
+          </div>
+          <!-- 表格内容 - 全部硬编码 -->
+          <div id="file-table-body" class="divide-y divide-outline-variant/50">
+            <!-- 列表-文件1: 智慧政务平台 v3.2 说明书.pdf -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-surface-container/50 transition-colors items-center">
+              <div class="col-span-5 flex items-center gap-2.5 min-w-0">
+                <i data-lucide="file-text" class="w-4 h-4 text-error shrink-0"></i>
+                <span class="text-sm font-medium text-on-surface truncate">智慧政务平台 v3.2 说明书.pdf</span>
+              </div>
+              <span class="col-span-1 text-xs font-semibold text-error">PDF</span>
+              <span class="col-span-1 text-sm text-on-surface-variant num">2.3MB</span>
+              <span class="col-span-2 text-sm text-on-surface-variant">2 小时前</span>
+              <span class="col-span-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已索引</span>
+              </span>
+              <div class="col-span-2 flex gap-3 justify-end">
+                <button class="btn-view text-primary text-sm font-medium hover:underline" data-filename="智慧政务平台 v3.2 说明书.pdf">查看</button>
+                <button class="btn-delete text-on-surface-variant text-sm font-medium hover:text-error transition-colors" data-filename="智慧政务平台 v3.2 说明书.pdf">删除</button>
+              </div>
+            </div>
+            <!-- 列表-文件2: 技术白皮书_信创适配.docx -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-surface-container/50 transition-colors items-center">
+              <div class="col-span-5 flex items-center gap-2.5 min-w-0">
+                <i data-lucide="file-text" class="w-4 h-4 text-primary shrink-0"></i>
+                <span class="text-sm font-medium text-on-surface truncate">技术白皮书_信创适配.docx</span>
+              </div>
+              <span class="col-span-1 text-xs font-semibold text-primary">DOCX</span>
+              <span class="col-span-1 text-sm text-on-surface-variant num">1.8MB</span>
+              <span class="col-span-2 text-sm text-on-surface-variant">2 小时前</span>
+              <span class="col-span-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已索引</span>
+              </span>
+              <div class="col-span-2 flex gap-3 justify-end">
+                <button class="btn-view text-primary text-sm font-medium hover:underline" data-filename="技术白皮书_信创适配.docx">查看</button>
+                <button class="btn-delete text-on-surface-variant text-sm font-medium hover:text-error transition-colors" data-filename="技术白皮书_信创适配.docx">删除</button>
+              </div>
+            </div>
+            <!-- 列表-文件3: 解决方案_政务云.pptx -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-surface-container/50 transition-colors items-center">
+              <div class="col-span-5 flex items-center gap-2.5 min-w-0">
+                <i data-lucide="presentation" class="w-4 h-4 text-warning shrink-0"></i>
+                <span class="text-sm font-medium text-on-surface truncate">解决方案_政务云.pptx</span>
+              </div>
+              <span class="col-span-1 text-xs font-semibold text-warning">PPTX</span>
+              <span class="col-span-1 text-sm text-on-surface-variant num">3.5MB</span>
+              <span class="col-span-2 text-sm text-on-surface-variant">2 小时前</span>
+              <span class="col-span-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已索引</span>
+              </span>
+              <div class="col-span-2 flex gap-3 justify-end">
+                <button class="btn-view text-primary text-sm font-medium hover:underline" data-filename="解决方案_政务云.pptx">查看</button>
+                <button class="btn-delete text-on-surface-variant text-sm font-medium hover:text-error transition-colors" data-filename="解决方案_政务云.pptx">删除</button>
+              </div>
+            </div>
+            <!-- 列表-文件4: 客户案例集_某市政务.pdf -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-surface-container/50 transition-colors items-center">
+              <div class="col-span-5 flex items-center gap-2.5 min-w-0">
+                <i data-lucide="file-text" class="w-4 h-4 text-error shrink-0"></i>
+                <span class="text-sm font-medium text-on-surface truncate">客户案例集_某市政务.pdf</span>
+              </div>
+              <span class="col-span-1 text-xs font-semibold text-error">PDF</span>
+              <span class="col-span-1 text-sm text-on-surface-variant num">4.2MB</span>
+              <span class="col-span-2 text-sm text-on-surface-variant">昨天 18:30</span>
+              <span class="col-span-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已索引</span>
+              </span>
+              <div class="col-span-2 flex gap-3 justify-end">
+                <button class="btn-view text-primary text-sm font-medium hover:underline" data-filename="客户案例集_某市政务.pdf">查看</button>
+                <button class="btn-delete text-on-surface-variant text-sm font-medium hover:text-error transition-colors" data-filename="客户案例集_某市政务.pdf">删除</button>
+              </div>
+            </div>
+            <!-- 列表-文件5: 产品参数表.xlsx -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-surface-container/50 transition-colors items-center">
+              <div class="col-span-5 flex items-center gap-2.5 min-w-0">
+                <i data-lucide="sheet" class="w-4 h-4 text-success shrink-0"></i>
+                <span class="text-sm font-medium text-on-surface truncate">产品参数表.xlsx</span>
+              </div>
+              <span class="col-span-1 text-xs font-semibold text-success">XLSX</span>
+              <span class="col-span-1 text-sm text-on-surface-variant num">0.8MB</span>
+              <span class="col-span-2 text-sm text-on-surface-variant">昨天 16:45</span>
+              <span class="col-span-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已索引</span>
+              </span>
+              <div class="col-span-2 flex gap-3 justify-end">
+                <button class="btn-view text-primary text-sm font-medium hover:underline" data-filename="产品参数表.xlsx">查看</button>
+                <button class="btn-delete text-on-surface-variant text-sm font-medium hover:text-error transition-colors" data-filename="产品参数表.xlsx">删除</button>
+              </div>
+            </div>
+            <!-- 列表-文件6: FAQ.md -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-surface-container/50 transition-colors items-center">
+              <div class="col-span-5 flex items-center gap-2.5 min-w-0">
+                <i data-lucide="file-code-2" class="w-4 h-4 text-on-surface-variant shrink-0"></i>
+                <span class="text-sm font-medium text-on-surface truncate">FAQ.md</span>
+              </div>
+              <span class="col-span-1 text-xs font-semibold text-on-surface-variant">MD</span>
+              <span class="col-span-1 text-sm text-on-surface-variant num">0.1MB</span>
+              <span class="col-span-2 text-sm text-on-surface-variant">3 天前</span>
+              <span class="col-span-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已索引</span>
+              </span>
+              <div class="col-span-2 flex gap-3 justify-end">
+                <button class="btn-view text-primary text-sm font-medium hover:underline" data-filename="FAQ.md">查看</button>
+                <button class="btn-delete text-on-surface-variant text-sm font-medium hover:text-error transition-colors" data-filename="FAQ.md">删除</button>
+              </div>
+            </div>
+            <!-- 列表-文件7: 培训视频.mp4 (处理中) -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-surface-container/50 transition-colors items-center">
+              <div class="col-span-5 flex items-center gap-2.5 min-w-0">
+                <i data-lucide="video" class="w-4 h-4 text-primary shrink-0"></i>
+                <span class="text-sm font-medium text-on-surface truncate">培训视频.mp4</span>
+              </div>
+              <span class="col-span-1 text-xs font-semibold text-primary">MP4</span>
+              <span class="col-span-1 text-sm text-on-surface-variant num">18MB</span>
+              <span class="col-span-2 text-sm text-on-surface-variant">3 天前</span>
+              <span class="col-span-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">处理中</span>
+              </span>
+              <div class="col-span-2 flex gap-3 justify-end">
+                <button class="btn-view text-primary text-sm font-medium hover:underline" data-filename="培训视频.mp4">查看</button>
+                <button class="btn-cancel text-on-surface-variant text-sm font-medium hover:text-error transition-colors" data-filename="培训视频.mp4">取消</button>
+              </div>
+            </div>
+            <!-- 列表-文件8: 投标模板.docx -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-surface-container/50 transition-colors items-center">
+              <div class="col-span-5 flex items-center gap-2.5 min-w-0">
+                <i data-lucide="file-text" class="w-4 h-4 text-primary shrink-0"></i>
+                <span class="text-sm font-medium text-on-surface truncate">投标模板.docx</span>
+              </div>
+              <span class="col-span-1 text-xs font-semibold text-primary">DOCX</span>
+              <span class="col-span-1 text-sm text-on-surface-variant num">1.2MB</span>
+              <span class="col-span-2 text-sm text-on-surface-variant">5 天前</span>
+              <span class="col-span-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已索引</span>
+              </span>
+              <div class="col-span-2 flex gap-3 justify-end">
+                <button class="btn-view text-primary text-sm font-medium hover:underline" data-filename="投标模板.docx">查看</button>
+                <button class="btn-delete text-on-surface-variant text-sm font-medium hover:text-error transition-colors" data-filename="投标模板.docx">删除</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 产品配置区（双栏 grid-cols-2） -->
+      <section class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 左栏 - 产品基本信息 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="info" class="w-4 h-4 text-primary"></i>
+            <h2 class="text-base font-semibold text-on-surface">产品基本信息</h2>
+          </div>
+          <p class="text-xs text-on-surface-variant mt-1">填写核心信息帮助 AI 更准确地理解你的产品</p>
+
+          <div class="mt-5 space-y-4">
+            <div>
+              <label for="input-product-name" class="text-xs font-medium text-on-surface-variant block mb-1.5">产品名称</label>
+              <input id="input-product-name" type="text" value="智慧政务平台 v3.2" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+            </div>
+            <div>
+              <label for="select-product-type" class="text-xs font-medium text-on-surface-variant block mb-1.5">产品类型</label>
+              <select id="select-product-type" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                <option>智慧政务</option>
+                <option>CRM</option>
+                <option>数据中台</option>
+                <option>AI 客服</option>
+                <option>网络安全</option>
+                <option>ERP</option>
+                <option>协同办公</option>
+                <option>其他</option>
+              </select>
+            </div>
+            <div>
+              <label for="textarea-selling-points" class="text-xs font-medium text-on-surface-variant block mb-1.5">核心卖点</label>
+              <textarea id="textarea-selling-points" rows="3" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none">自主可控信创适配、区县一体化、AI智能审批、千万级并发</textarea>
+            </div>
+            <div>
+              <label for="input-competitors" class="text-xs font-medium text-on-surface-variant block mb-1.5">关键竞品</label>
+              <input id="input-competitors" type="text" value="领航科技、数智云图、华宇软件" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+              <p class="text-xs text-on-surface-variant/70 mt-1.5">多个竞品用"、"分隔，AI 将模拟这些竞品的销售策略</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右栏 - AI 提示词约束 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-primary"></i>
+            <h2 class="text-base font-semibold text-on-surface">AI 提示词约束</h2>
+          </div>
+          <p class="text-xs text-on-surface-variant mt-1">限定 AI 生成对局内容时的输出范围</p>
+
+          <div class="mt-5 space-y-4">
+            <div>
+              <label class="text-xs font-medium text-on-surface-variant block mb-2">必须包含的信息</label>
+              <div class="flex flex-wrap gap-2">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary-container text-primary text-xs font-medium rounded-md">
+                  <i data-lucide="check" class="w-3 h-3"></i>产品名
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary-container text-primary text-xs font-medium rounded-md">
+                  <i data-lucide="check" class="w-3 h-3"></i>技术参数
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary-container text-primary text-xs font-medium rounded-md">
+                  <i data-lucide="check" class="w-3 h-3"></i>客户案例
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary-container text-primary text-xs font-medium rounded-md">
+                  <i data-lucide="check" class="w-3 h-3"></i>行业方案
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary-container text-primary text-xs font-medium rounded-md">
+                  <i data-lucide="check" class="w-3 h-3"></i>实施周期
+                </span>
+              </div>
+            </div>
+            <div>
+              <label for="textarea-forbidden" class="text-xs font-medium text-on-surface-variant block mb-1.5">禁止错误描述</label>
+              <textarea id="textarea-forbidden" rows="5" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none leading-relaxed">· 不能说"永远不出故障"等绝对化表述
+· 不能说"100% 安全"
+· 不能说"能解决一切问题"</textarea>
+              <p class="text-xs text-on-surface-variant/70 mt-1.5">AI 在生成客户质疑和销售话术时不得违反以上规则</p>
+            </div>
+            <div class="flex items-start gap-2.5 p-3 bg-success/10 rounded-md">
+              <i data-lucide="database" class="w-4 h-4 text-success shrink-0 mt-0.5"></i>
+              <div>
+                <p class="text-sm font-medium text-success">已从 6 份文件提取 <span class="num">12,438</span> 字符用于 AI 训练</p>
+                <p class="text-xs text-success/80 mt-1 leading-relaxed">下次对局开始时，AI 竞品将基于此产品知识进行博弈</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 底部操作栏 fixed bottom-0 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant/60 z-30 shadow-float">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
+        <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+          <i data-lucide="info" class="w-4 h-4 text-on-surface-variant/70"></i>
+          <span>上传文件后将自动进入对局配置</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="btn-back-home" class="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors px-2 py-2">回到首页</button>
+          <button id="btn-clear" class="bg-surface-container text-on-surface px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">清空重新上传</button>
+          <button id="btn-start-game" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+            <i data-lucide="swords" class="w-4 h-4"></i>
+            基于此产品开新对局
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- @main-content:end -->
+  </main>
+
+  <script>lucide.createIcons();</script>
+  <script>
+    // 高亮当前页面导航
+    $(function() {
+      const path = window.location.pathname.split('/').pop() || 'home.html';
+      const map = { 'home.html': 'nav-home', 'setup.html': 'nav-setup', 'game.html': 'nav-game', 'result.html': 'nav-result', 'knowledge.html': 'nav-knowledge' };
+      const $el = $('#' + map[path]);
+      if ($el.length) {
+        $el.removeClass('text-on-surface-variant').addClass('text-primary bg-primary-container').attr('aria-current', 'page');
+      }
+    });
+  </script>
+
+  <script>
+    $(function() {
+
+      // 上传区点击 → 弹出文件选择提示
+      // 后续应实现完整行为：
+      // 1. 弹出系统文件选择器（input type="file" multi）
+      // 2. 校验文件大小 ≤ 50MB，类型在白名单内（PDF/DOCX/PPTX/XLSX/MD/TXT）
+      // 3. 在"正在解析中"卡片中追加新文件进度条
+      // 4. 解析完成后文件自动出现在下方文件列表中
+      $('#upload-zone').on('click', function() {
+        console.log('触发文件选择器，当前点击了上传区');
+        alert('已弹出文件选择器（原型示意）\n请选择 PDF / DOCX / PPTX / XLSX / MD / TXT 文件\n单文件最大 50MB');
+      });
+
+      // 拖拽高亮反馈
+      // 后续应实现完整行为：
+      // 1. dragover 时添加高亮样式（primary 背景 + 边框变色）
+      // 2. dragleave 移除高亮
+      // 3. drop 时获取 files 列表，逐一触发上传流程并显示进度
+      $('#upload-zone').on('dragover', function(e) {
+        e.preventDefault();
+        $(this).addClass('border-primary bg-primary-container/30');
+      }).on('dragleave', function() {
+        $(this).removeClass('border-primary bg-primary-container/30');
+      }).on('drop', function(e) {
+        e.preventDefault();
+        $(this).removeClass('border-primary bg-primary-container/30');
+        console.log('已接收到拖拽文件:', e.originalEvent.dataTransfer.files);
+        alert('已接收拖拽文件（原型示意），将开始解析');
+      });
+
+      // 文件列表行：查看按钮
+      // 后续应实现完整行为：
+      // 1. 弹出预览模态框，展示文件内容（PDF 渲染 / Office 转换预览）
+      // 2. 显示文件被解析出的关键信息（参数、卖点、案例等）
+      $('#file-table-body').on('click', '.btn-view', function() {
+        const filename = $(this).data('filename');
+        console.log('应查看文件:', filename);
+        alert('应弹出文件预览：' + filename);
+      });
+
+      // 文件列表行：删除按钮
+      // 后续应实现完整行为：
+      // 1. 弹出确认对话框："确定删除 [文件名] 吗？"
+      // 2. 用户确认后从 DOM 中移除该行
+      // 3. 同步更新"已上传文件"统计数字
+      // 4. 同步更新右侧"已从 N 份文件提取 M 字符"提示
+      $('#file-table-body').on('click', '.btn-delete', function() {
+        const filename = $(this).data('filename');
+        console.log('应删除文件:', filename);
+        alert('应弹出确认对话框后删除文件：' + filename);
+      });
+
+      // 文件列表行：取消按钮（仅处理中的文件）
+      // 后续应实现完整行为：
+      // 1. 调用取消上传接口，停止该文件的后台处理
+      // 2. 移除该行 DOM，状态从"处理中"变为隐藏
+      $('#file-table-body').on('click', '.btn-cancel', function() {
+        const filename = $(this).data('filename');
+        console.log('应取消处理文件:', filename);
+        alert('应取消该文件的后台处理：' + filename);
+      });
+
+      // 表单输入变更 → 实时提示已修改
+      $('#input-product-name, #select-product-type, #textarea-selling-points, #input-competitors, #textarea-forbidden').on('input change', function() {
+        console.log('产品配置已更新:', $(this).attr('id'), '=', $(this).val());
+      });
+
+      // 底部按钮：清空重新上传
+      // 后续应实现完整行为：
+      // 1. 弹出确认对话框："确定清空全部已上传文件吗？"
+      // 2. 用户确认后清空文件列表、重置表单、清除进度条
+      // 3. 重新显示默认空状态上传区
+      $('#btn-clear').on('click', function() {
+        console.log('应清空所有已上传文件并重置');
+        alert('应清空所有已上传文件并重置表单（原型示意）');
+      });
+
+      // 底部按钮：回到首页
+      $('#btn-back-home').on('click', function() {
+        window.location.href = 'home.html';
+      });
+
+      // 底部按钮：基于此产品开新对局
+      $('#btn-start-game').on('click', function() {
+        window.location.href = 'setup.html?product=smartgov';
+      });
+
+    });
+  </script>
+</body>
+
+</html>

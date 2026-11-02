@@ -1,0 +1,55 @@
+{
+  "commonLength": 1206,
+  "rows": [
+    {
+      "id": "P1-001",
+      "base": 517,
+      "low": 238,
+      "medium": 242,
+      "high": 255,
+      "exampleCount": 18,
+      "exportMatches": true,
+      "sharedOccurrences": 1
+    },
+    {
+      "id": "P1-002",
+      "base": 558,
+      "low": 229,
+      "medium": 245,
+      "high": 257,
+      "exampleCount": 18,
+      "exportMatches": true,
+      "sharedOccurrences": 1
+    },
+    {
+      "id": "P1-003",
+      "base": 542,
+      "low": 240,
+      "medium": 247,
+      "high": 264,
+      "exampleCount": 18,
+      "exportMatches": true,
+      "sharedOccurrences": 1
+    },
+    {
+      "id": "P1-004",
+      "base": 531,
+      "low": 236,
+      "medium": 244,
+      "high": 252,
+      "exampleCount": 18,
+      "exportMatches": true,
+      "sharedOccurrences": 1
+    },
+    {
+      "id": "P1-005",
+      "base": 535,
+      "low": 231,
+      "medium": 250,
+      "high": 263,
+      "exampleCount": 18,
+      "exportMatches": true,
+      "sharedOccurrences": 1
+    }
+  ]
+}

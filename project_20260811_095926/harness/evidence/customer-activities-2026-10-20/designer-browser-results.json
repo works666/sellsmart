@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "mockedApi": true,
+  "gets": 3,
+  "writes": [
+    {
+      "expectedRevision": 0,
+      "config": {
+        "mode": "numeric",
+        "thresholds": {
+          "technical_meeting": {
+            "supportMin": 0,
+            "pleasantnessMin": 100
+          },
+          "case_site_visit": {
+            "supportMin": 51,
+            "pleasantnessMin": 50
+          },
+          "company_visit": {
+            "supportMin": 52,
+            "pleasantnessMin": 50
+          }
+        }
+      }
+    },
+    {
+      "expectedRevision": 1,
+      "config": {
+        "mode": "numeric",
+        "thresholds": {
+          "technical_meeting": {
+            "supportMin": 60,
+            "pleasantnessMin": 100
+          },
+          "case_site_visit": {
+            "supportMin": 51,
+            "pleasantnessMin": 50
+          },
+          "company_visit": {
+            "supportMin": 52,
+            "pleasantnessMin": 50
+          }
+        }
+      }
+    },
+    {
+      "expectedRevision": 1,
+      "config": {
+        "mode": "numeric",
+        "thresholds": {
+          "technical_meeting": {
+            "supportMin": 60,
+            "pleasantnessMin": 100
+          },
+          "case_site_visit": {
+            "supportMin": 51,
+            "pleasantnessMin": 50
+          },
+          "company_visit": {
+            "supportMin": 52,
+            "pleasantnessMin": 50
+          }
+        }
+      }
+    },
+    {
+      "expectedRevision": 1,
+      "config": {
+        "mode": "numeric",
+        "thresholds": {
+          "technical_meeting": {
+            "supportMin": 60,
+            "pleasantnessMin": 100
+          },
+          "case_site_visit": {
+            "supportMin": 51,
+            "pleasantnessMin": 50
+          },
+          "company_visit": {
+            "supportMin": 52,
+            "pleasantnessMin": 50
+          }
+        }
+      }
+    }
+  ],
+  "config": {
+    "mode": "numeric",
+    "thresholds": {
+      "technical_meeting": {
+        "supportMin": 60,
+        "pleasantnessMin": 100
+      },
+      "case_site_visit": {
+        "supportMin": 51,
+        "pleasantnessMin": 50
+      },
+      "company_visit": {
+        "supportMin": 52,
+        "pleasantnessMin": 50
+      }
+    },
+    "revision": 2
+  },
+  "errors": []
+}

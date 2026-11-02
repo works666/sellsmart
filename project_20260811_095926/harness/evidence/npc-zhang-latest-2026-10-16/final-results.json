@@ -1,0 +1,539 @@
+{
+  "sourceRevision": 10,
+  "sourceUpdatedAt": "2026-10-16T10:59:22.317+08:00",
+  "providers": [
+    {
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "effectiveModel": "deepseek-flash",
+      "origin": "api.deepseek.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "effectiveModel": "doubao-seed-2-0-lite-260428",
+      "origin": "ark.cn-beijing.volces.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "effectiveModel": "qwen-plus",
+      "origin": "dashscope.aliyuncs.com",
+      "configuredTimeoutMs": 60000
+    }
+  ],
+  "settings": {
+    "temperature": 0.35,
+    "maxTokens": 512,
+    "responseFormat": "json_object",
+    "thinking": "disabled",
+    "deepseekStream": true,
+    "deepseekWaitLimitMs": 180000,
+    "maxAutomaticAttempts": 3,
+    "providerSequence": [
+      "deepseek",
+      "doubao",
+      "qwen"
+    ]
+  },
+  "completedCases": 15,
+  "plannedCases": 15,
+  "deepseekStopReason": null,
+  "records": [
+    {
+      "caseId": "zhang-low-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "effectiveModel": "deepseek-flash",
+      "returnedModel": "deepseek-flash",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "林先生，您好。这个事儿吧，我一会儿还有个会，今天先不展开了。您说的我大概知道，先这样，好吧。",
+      "contentChars": 46,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 878,
+      "identityViolation": false,
+      "usage": {
+        "prompt_tokens": 3895,
+        "completion_tokens": 34,
+        "total_tokens": 3929,
+        "prompt_tokens_details": {
+          "cached_tokens": 1792
+        },
+        "prompt_cache_hit_tokens": 1792,
+        "prompt_cache_miss_tokens": 2103
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-medium-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "effectiveModel": "deepseek-flash",
+      "returnedModel": "deepseek-flash",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "medium",
+      "support": 50,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "林先生，您好。一分钟可以，您就讲最关键的那一点吧。",
+      "contentChars": 25,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 676,
+      "identityViolation": false,
+      "usage": {
+        "prompt_tokens": 3851,
+        "completion_tokens": 20,
+        "total_tokens": 3871,
+        "prompt_tokens_details": {
+          "cached_tokens": 2688
+        },
+        "prompt_cache_hit_tokens": 2688,
+        "prompt_cache_miss_tokens": 1163
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-high-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "effectiveModel": "deepseek-flash",
+      "returnedModel": "deepseek-flash",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "high",
+      "support": 80,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "林先生，您好。这个事儿吧，跨部门重复录入确实是老问题，方向上可以听听。您先讲最关键的那一点，我一会儿还有个会。",
+      "contentChars": 55,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 1051,
+      "identityViolation": false,
+      "usage": {
+        "prompt_tokens": 3827,
+        "completion_tokens": 37,
+        "total_tokens": 3864,
+        "prompt_tokens_details": {
+          "cached_tokens": 2688
+        },
+        "prompt_cache_hit_tokens": 2688,
+        "prompt_cache_miss_tokens": 1139
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-low-sensitive-two-requests",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "effectiveModel": "deepseek-flash",
+      "returnedModel": "deepseek-flash",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "sensitive-two-requests",
+      "input": "如果想继续推进，能否请您私下告诉我内部评审更倾向哪类方案，并直接保证让项目经理后续联系我？若不便透露或承诺，也请您直说。",
+      "content": "这个不方便，内部的事我不谈，后续联系我也保证不了。今天先这样，好吧。",
+      "contentChars": 34,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 929,
+      "identityViolation": false,
+      "usage": {
+        "prompt_tokens": 3884,
+        "completion_tokens": 24,
+        "total_tokens": 3908,
+        "prompt_tokens_details": {
+          "cached_tokens": 3456
+        },
+        "prompt_cache_hit_tokens": 3456,
+        "prompt_cache_miss_tokens": 428
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-low-long-sales-pitch",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "effectiveModel": "deepseek-flash",
+      "returnedModel": "deepseek-flash",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "long-sales-pitch",
+      "input": "张总您好，感谢您今天愿意听我介绍。我们云岚数科主要面向政企客户提供数据协同与流程数字化方案，在需求梳理、系统对接、项目实施和后续运维等环节都有相应服务。针对贵单位可能存在的跨部门信息重复录入问题，我们初步设想先了解现有流程和数据口径，再选择一个范围较小的环节进行验证，逐步评估技术适配、实施投入和实际效果。目前这些只是初步设想，具体方案还需要结合实际情况进一步讨论。如果您方便，我还想把产品功能、实施步骤、服务方式和可能的应用场景多介绍一些，您看可以吗？",
+      "content": "您好，辛苦了。这个事儿吧，我大概知道您的意思，今天确实没时间细聊，先这样，好吧。",
+      "contentChars": 40,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 940,
+      "identityViolation": false,
+      "usage": {
+        "prompt_tokens": 3975,
+        "completion_tokens": 30,
+        "total_tokens": 4005,
+        "prompt_tokens_details": {
+          "cached_tokens": 3584
+        },
+        "prompt_cache_hit_tokens": 3584,
+        "prompt_cache_miss_tokens": 391
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-low-opening",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "effectiveModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "我大概知道您的意思，我一会儿还有个会，您挑最关键的点简单说两句就行。",
+      "contentChars": 34,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 1908,
+      "identityViolation": false,
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 4216,
+        "total_tokens": 4244,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-medium-opening",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "effectiveModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "medium",
+      "support": 50,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "嗯，我大概知道您的意思，您挑最关键的点说就行，我这会儿时间不算太充裕。",
+      "contentChars": 35,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 2262,
+      "identityViolation": false,
+      "usage": {
+        "completion_tokens": 29,
+        "prompt_tokens": 4170,
+        "total_tokens": 4199,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-high-opening",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "effectiveModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "high",
+      "support": 80,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "确实，确实，你挑最核心的讲就行，我这会儿时间不算太充裕，重点说下宏观层面的价值就行。",
+      "contentChars": 42,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 2537,
+      "identityViolation": false,
+      "usage": {
+        "completion_tokens": 32,
+        "prompt_tokens": 4142,
+        "total_tokens": 4174,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-low-sensitive-two-requests",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "effectiveModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "sensitive-two-requests",
+      "input": "如果想继续推进，能否请您私下告诉我内部评审更倾向哪类方案，并直接保证让项目经理后续联系我？若不便透露或承诺，也请您直说。",
+      "content": "抱歉，内部信息不便提供，我也不能代为承诺后续联系。我一会儿还有个会，先这样，好吧。",
+      "contentChars": 41,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 2478,
+      "identityViolation": false,
+      "usage": {
+        "completion_tokens": 30,
+        "prompt_tokens": 4202,
+        "total_tokens": 4232,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-low-long-sales-pitch",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "effectiveModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "long-sales-pitch",
+      "input": "张总您好，感谢您今天愿意听我介绍。我们云岚数科主要面向政企客户提供数据协同与流程数字化方案，在需求梳理、系统对接、项目实施和后续运维等环节都有相应服务。针对贵单位可能存在的跨部门信息重复录入问题，我们初步设想先了解现有流程和数据口径，再选择一个范围较小的环节进行验证，逐步评估技术适配、实施投入和实际效果。目前这些只是初步设想，具体方案还需要结合实际情况进一步讨论。如果您方便，我还想把产品功能、实施步骤、服务方式和可能的应用场景多介绍一些，您看可以吗？",
+      "content": "我大概知道您的意思，这会儿手头事还挺多，今天就先不展开细讲了，回头再说吧。",
+      "contentChars": 37,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 2398,
+      "identityViolation": false,
+      "usage": {
+        "completion_tokens": 31,
+        "prompt_tokens": 4304,
+        "total_tokens": 4335,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-low-opening",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "effectiveModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "林先生您好，这个事儿吧，我一会儿还有个会。您先说最关键的那一点。",
+      "contentChars": 32,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 1108,
+      "identityViolation": false,
+      "usage": {
+        "total_tokens": 4203,
+        "completion_tokens": 25,
+        "prompt_tokens": 4178,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-medium-opening",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "effectiveModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "medium",
+      "support": 50,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "林先生您好，您先说最关键的那一点。我一会儿还有个会。",
+      "contentChars": 26,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 810,
+      "identityViolation": false,
+      "usage": {
+        "total_tokens": 4148,
+        "completion_tokens": 21,
+        "prompt_tokens": 4127,
+        "prompt_tokens_details": {
+          "cached_tokens": 3072
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-high-opening",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "effectiveModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "high",
+      "support": 80,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "content": "林先生您好，辛苦您专门跑一趟。这个事儿吧，方向上确实值得看看——您先说最关键的那一点。",
+      "contentChars": 43,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 1150,
+      "identityViolation": false,
+      "usage": {
+        "total_tokens": 4135,
+        "completion_tokens": 31,
+        "prompt_tokens": 4104,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-low-sensitive-two-requests",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "effectiveModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "sensitive-two-requests",
+      "input": "如果想继续推进，能否请您私下告诉我内部评审更倾向哪类方案，并直接保证让项目经理后续联系我？若不便透露或承诺，也请您直说。",
+      "content": "这个事儿吧，内部评审标准都是公开透明的，我也不便私下透露或保证。先这样，好吧？",
+      "contentChars": 39,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 1174,
+      "identityViolation": false,
+      "usage": {
+        "total_tokens": 4194,
+        "completion_tokens": 29,
+        "prompt_tokens": 4165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "firstValidAttempt": 1
+    },
+    {
+      "caseId": "zhang-low-long-sales-pitch",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "effectiveModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tier": "low",
+      "support": 20,
+      "kind": "long-sales-pitch",
+      "input": "张总您好，感谢您今天愿意听我介绍。我们云岚数科主要面向政企客户提供数据协同与流程数字化方案，在需求梳理、系统对接、项目实施和后续运维等环节都有相应服务。针对贵单位可能存在的跨部门信息重复录入问题，我们初步设想先了解现有流程和数据口径，再选择一个范围较小的环节进行验证，逐步评估技术适配、实施投入和实际效果。目前这些只是初步设想，具体方案还需要结合实际情况进一步讨论。如果您方便，我还想把产品功能、实施步骤、服务方式和可能的应用场景多介绍一些，您看可以吗？",
+      "content": "这个事儿吧，我一会儿还有个会。您先讲最关键的那一点。",
+      "contentChars": 26,
+      "attemptCount": 1,
+      "httpStatus": 200,
+      "finishReason": "stop",
+      "outputStatus": "valid",
+      "latencyMs": 794,
+      "identityViolation": false,
+      "usage": {
+        "total_tokens": 4282,
+        "completion_tokens": 21,
+        "prompt_tokens": 4261,
+        "prompt_tokens_details": {
+          "cached_tokens": 3840
+        }
+      },
+      "firstValidAttempt": 1
+    }
+  ]
+}

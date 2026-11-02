@@ -1,0 +1,257 @@
+{
+  "preparedAt": "2026-10-16T03:11:31.833Z",
+  "sourceRevision": 10,
+  "sourcePersisted": true,
+  "sourceUpdatedAt": "2026-10-16T10:59:22.317+08:00",
+  "previousRevision": 9,
+  "sourceComparison": {
+    "base": {
+      "previous": {
+        "sha256": "a1f1de7b2a2256b7afc69cb34f2a8daa285053732d04d9fdc101473f8fd20709",
+        "chars": 1125
+      },
+      "current": {
+        "sha256": "c40fcd1942f6ba4c648092f03b323c67d24a07e122624c2ca5f217ca2bb917c2",
+        "chars": 1537
+      },
+      "changed": true
+    },
+    "low": {
+      "previous": {
+        "sha256": "26918975275df24aa898fc374fd07c5657ba8f784942da3ad855e9e23203cf9c",
+        "chars": 388
+      },
+      "current": {
+        "sha256": "0d326783bc2d15b556bebb871ceb7fe6abc265156f0f0206808d7f46368c942e",
+        "chars": 500
+      },
+      "changed": true
+    },
+    "medium": {
+      "previous": {
+        "sha256": "8ef6a131616768a39d75158d1625b47f892749f58048ef9c34639e21f6349763",
+        "chars": 332
+      },
+      "current": {
+        "sha256": "fc145f16a52d1ffa0f3a9f3a305313b147c85ce1897eb1f5834c1a6bd06719e8",
+        "chars": 438
+      },
+      "changed": true
+    },
+    "high": {
+      "previous": {
+        "sha256": "a78efcc199da1a8b2ce070aca93be9f4219efa3435852fd3e7fde126a70c728f",
+        "chars": 295
+      },
+      "current": {
+        "sha256": "23a61f571874cc436fef07dd2d05d91646e54d90c4db1ca27199091d89d9ab6d",
+        "chars": 396
+      },
+      "changed": true
+    },
+    "visit": {
+      "previous": {
+        "sha256": "c3aca15c9ad2c54fad5b25498df515ce5f2ca2f0aad9f449cd3aa7267add6bac",
+        "chars": 203
+      },
+      "current": {
+        "sha256": "3691b31e0db1a9cde038d4243d5f320eda2861fd628e10a31416ccfa1694004f",
+        "chars": 262
+      },
+      "changed": true
+    }
+  },
+  "changedFields": [
+    "base",
+    "low",
+    "medium",
+    "high",
+    "visit"
+  ],
+  "providerData": [
+    {
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "effectiveModel": "deepseek-flash",
+      "origin": "api.deepseek.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "effectiveModel": "doubao-seed-2-0-lite-260428",
+      "origin": "ark.cn-beijing.volces.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "effectiveModel": "qwen-plus",
+      "origin": "dashscope.aliyuncs.com",
+      "configuredTimeoutMs": 60000
+    }
+  ],
+  "caseCount": 5,
+  "totalModelCalls": 15,
+  "caseInputs": [
+    {
+      "caseId": "zhang-low-opening",
+      "tier": "low",
+      "support": 20,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "inputSha256": "d48bc54b9fecbab92c75b12ad23c16058796a33bc6575f434602ee714857f3d3"
+    },
+    {
+      "caseId": "zhang-medium-opening",
+      "tier": "medium",
+      "support": 50,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "inputSha256": "d48bc54b9fecbab92c75b12ad23c16058796a33bc6575f434602ee714857f3d3"
+    },
+    {
+      "caseId": "zhang-high-opening",
+      "tier": "high",
+      "support": 80,
+      "kind": "opening",
+      "input": "张总您好，我是云岚数科的林先生，今天按预约介绍减少跨部门重复录入的思路。具体成效还需要核验。我想用一分钟说清方案价值，再听听您更关注投入产出还是稳定落地，您看方便吗？",
+      "inputSha256": "d48bc54b9fecbab92c75b12ad23c16058796a33bc6575f434602ee714857f3d3"
+    },
+    {
+      "caseId": "zhang-low-sensitive-two-requests",
+      "tier": "low",
+      "support": 20,
+      "kind": "sensitive-two-requests",
+      "input": "如果想继续推进，能否请您私下告诉我内部评审更倾向哪类方案，并直接保证让项目经理后续联系我？若不便透露或承诺，也请您直说。",
+      "inputSha256": "eba8e57dcecbf041675a6b103a1f17d31471267b700ac11de2063609ae78c407"
+    },
+    {
+      "caseId": "zhang-low-long-sales-pitch",
+      "tier": "low",
+      "support": 20,
+      "kind": "long-sales-pitch",
+      "input": "张总您好，感谢您今天愿意听我介绍。我们云岚数科主要面向政企客户提供数据协同与流程数字化方案，在需求梳理、系统对接、项目实施和后续运维等环节都有相应服务。针对贵单位可能存在的跨部门信息重复录入问题，我们初步设想先了解现有流程和数据口径，再选择一个范围较小的环节进行验证，逐步评估技术适配、实施投入和实际效果。目前这些只是初步设想，具体方案还需要结合实际情况进一步讨论。如果您方便，我还想把产品功能、实施步骤、服务方式和可能的应用场景多介绍一些，您看可以吗？",
+      "inputSha256": "e5facd69a9c21f6848a40954a4693b6c733bbc6e3df88a4f6df472e6c03772e8"
+    }
+  ],
+  "promptHashes": [
+    {
+      "caseId": "zhang-low-opening",
+      "provider": "deepseek",
+      "systemPromptSha256": "c95a26705cadc8e0fa551158d2457d83afbf92611dcfa016d180968bdf3b84a9",
+      "messagesSha256": "44974c2160ddfe7999eac3efb1259b40a7e61505f4e30e00292789daa0a24f14"
+    },
+    {
+      "caseId": "zhang-low-opening",
+      "provider": "doubao",
+      "systemPromptSha256": "c95a26705cadc8e0fa551158d2457d83afbf92611dcfa016d180968bdf3b84a9",
+      "messagesSha256": "44974c2160ddfe7999eac3efb1259b40a7e61505f4e30e00292789daa0a24f14"
+    },
+    {
+      "caseId": "zhang-low-opening",
+      "provider": "qwen",
+      "systemPromptSha256": "c95a26705cadc8e0fa551158d2457d83afbf92611dcfa016d180968bdf3b84a9",
+      "messagesSha256": "44974c2160ddfe7999eac3efb1259b40a7e61505f4e30e00292789daa0a24f14"
+    },
+    {
+      "caseId": "zhang-medium-opening",
+      "provider": "deepseek",
+      "systemPromptSha256": "258310fb23d1aa8f9e4f33966bab39cd17483c52bbddbebffbc4a58bb53b0058",
+      "messagesSha256": "675fe73744375cc6b9c2db2f936f85881a10a949b8301f7ed23a145b9baf32b4"
+    },
+    {
+      "caseId": "zhang-medium-opening",
+      "provider": "doubao",
+      "systemPromptSha256": "258310fb23d1aa8f9e4f33966bab39cd17483c52bbddbebffbc4a58bb53b0058",
+      "messagesSha256": "675fe73744375cc6b9c2db2f936f85881a10a949b8301f7ed23a145b9baf32b4"
+    },
+    {
+      "caseId": "zhang-medium-opening",
+      "provider": "qwen",
+      "systemPromptSha256": "258310fb23d1aa8f9e4f33966bab39cd17483c52bbddbebffbc4a58bb53b0058",
+      "messagesSha256": "675fe73744375cc6b9c2db2f936f85881a10a949b8301f7ed23a145b9baf32b4"
+    },
+    {
+      "caseId": "zhang-high-opening",
+      "provider": "deepseek",
+      "systemPromptSha256": "2e3c9026dbc25c2d4a523d479e00273d5312d1f45647c5b33420fa485f526647",
+      "messagesSha256": "ebc8a641b14053ddfd5b6d47259919af8c668ce210498bf32fa6f4dee9b7fd4a"
+    },
+    {
+      "caseId": "zhang-high-opening",
+      "provider": "doubao",
+      "systemPromptSha256": "2e3c9026dbc25c2d4a523d479e00273d5312d1f45647c5b33420fa485f526647",
+      "messagesSha256": "ebc8a641b14053ddfd5b6d47259919af8c668ce210498bf32fa6f4dee9b7fd4a"
+    },
+    {
+      "caseId": "zhang-high-opening",
+      "provider": "qwen",
+      "systemPromptSha256": "2e3c9026dbc25c2d4a523d479e00273d5312d1f45647c5b33420fa485f526647",
+      "messagesSha256": "ebc8a641b14053ddfd5b6d47259919af8c668ce210498bf32fa6f4dee9b7fd4a"
+    },
+    {
+      "caseId": "zhang-low-sensitive-two-requests",
+      "provider": "deepseek",
+      "systemPromptSha256": "14e623decbe5f765d2f9feebf9b1fba758c86c1d9a29367b296fe337a40bf054",
+      "messagesSha256": "2272a2cc5e41b89a5c870b35b3f98cb653bed060ea1eb5bb7373514278761bad"
+    },
+    {
+      "caseId": "zhang-low-sensitive-two-requests",
+      "provider": "doubao",
+      "systemPromptSha256": "14e623decbe5f765d2f9feebf9b1fba758c86c1d9a29367b296fe337a40bf054",
+      "messagesSha256": "2272a2cc5e41b89a5c870b35b3f98cb653bed060ea1eb5bb7373514278761bad"
+    },
+    {
+      "caseId": "zhang-low-sensitive-two-requests",
+      "provider": "qwen",
+      "systemPromptSha256": "14e623decbe5f765d2f9feebf9b1fba758c86c1d9a29367b296fe337a40bf054",
+      "messagesSha256": "2272a2cc5e41b89a5c870b35b3f98cb653bed060ea1eb5bb7373514278761bad"
+    },
+    {
+      "caseId": "zhang-low-long-sales-pitch",
+      "provider": "deepseek",
+      "systemPromptSha256": "14e623decbe5f765d2f9feebf9b1fba758c86c1d9a29367b296fe337a40bf054",
+      "messagesSha256": "c365b5dc1eed63b7fa13055b10533d8aaa43f703b15db247cd04dd32d61ff02a"
+    },
+    {
+      "caseId": "zhang-low-long-sales-pitch",
+      "provider": "doubao",
+      "systemPromptSha256": "14e623decbe5f765d2f9feebf9b1fba758c86c1d9a29367b296fe337a40bf054",
+      "messagesSha256": "c365b5dc1eed63b7fa13055b10533d8aaa43f703b15db247cd04dd32d61ff02a"
+    },
+    {
+      "caseId": "zhang-low-long-sales-pitch",
+      "provider": "qwen",
+      "systemPromptSha256": "14e623decbe5f765d2f9feebf9b1fba758c86c1d9a29367b296fe337a40bf054",
+      "messagesSha256": "c365b5dc1eed63b7fa13055b10533d8aaa43f703b15db247cd04dd32d61ff02a"
+    }
+  ],
+  "settings": {
+    "temperature": 0.35,
+    "maxTokens": 512,
+    "responseFormat": "json_object",
+    "thinking": "disabled",
+    "deepseekStream": true,
+    "deepseekWaitLimitMs": 180000,
+    "maxAutomaticAttempts": 3,
+    "providerSequence": [
+      "deepseek",
+      "doubao",
+      "qwen"
+    ]
+  },
+  "allowedOrigins": [
+    "api.deepseek.com",
+    "ark.cn-beijing.volces.com",
+    "dashscope.aliyuncs.com"
+  ],
+  "otherNpcRolePromptsIncludedInRequests": false,
+  "persistenceWrites": false,
+  "modelCatalogueGetSent": true,
+  "completionRequestsSent": false,
+  "evidenceDir": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-latest-2026-10-16"
+}

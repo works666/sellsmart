@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目一 · 单单位内部竞标 · 交互原型 v10</title>
+<meta name="description" content="纯前端交互原型：项目一销售攻关实训。无真实后端，使用本地 Mock AI 与 localStorage。">
+<style>
+:root{
+  --bg:#eff3f9;--card:#ffffff;--text:#17223a;--muted:#68758c;--line:#dbe4f0;
+  --blue:#2f6bff;--blue-deep:#2258dd;--cyan:#0ea5d9;--green:#15966f;--amber:#df9416;--red:#d94c60;
+  --violet:#7b4bea;--gold:#d9951a;
+  --glow-blue:rgba(47,107,255,.25);--glow-gold:rgba(223,148,22,.3);
+  --shadow:0 10px 30px rgba(24,43,77,.08);--shadow-lg:0 18px 50px rgba(24,43,77,.13);
+  --r:16px;--ease:cubic-bezier(.22,.9,.28,1);--spring:cubic-bezier(.34,1.56,.5,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--text);background:var(--bg)}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:
+radial-gradient(1100px 520px at 12% -6%,rgba(47,107,255,.075),transparent 60%),
+radial-gradient(900px 480px at 96% 6%,rgba(123,75,234,.055),transparent 55%),
+radial-gradient(760px 440px at 50% 110%,rgba(14,165,217,.05),transparent 62%),
+linear-gradient(180deg,#f5f8fd,#eef2f9 46%,#ebf0f8)}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+::selection{background:rgba(47,107,255,.2)}
+*::-webkit-scrollbar{width:9px;height:9px}
+*::-webkit-scrollbar-thumb{background:#c3d1e6;border-radius:99px;border:2px solid transparent;background-clip:content-box}
+*::-webkit-scrollbar-thumb:hover{background:#a9bcd8;background-clip:content-box}
+*::-webkit-scrollbar-track{background:transparent}
+.app{min-height:100vh;animation:pageIn .5s var(--ease) both}.shell{max-width:1680px;margin:auto;min-height:100vh}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes panelIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes backdropIn{from{opacity:0}to{opacity:1}}
+@keyframes toastIn{from{opacity:0;transform:translateX(26px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes pulseDot{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes barGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes floatFade{0%{opacity:0;transform:translateY(6px)}18%{opacity:1}100%{opacity:0;transform:translateY(-36px)}}
+@keyframes apFlash{0%{box-shadow:0 0 0 0 var(--glow-gold)}100%{box-shadow:0 0 0 16px transparent}}
+
+.topbar{height:68px;background:rgba(255,255,255,.85);backdrop-filter:blur(16px) saturate(1.3);border-bottom:1px solid rgba(214,226,242,.95);display:flex;align-items:center;gap:18px;padding:0 22px;position:sticky;top:0;z-index:30;box-shadow:0 10px 26px rgba(30,47,77,.05)}
+.brand{display:flex;gap:11px;align-items:center;min-width:360px}
+.brand-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(150deg,#4f8dff 0%,#2b64ec 58%,#2250c8 100%);color:#fff;display:grid;place-items:center;font-weight:900;box-shadow:0 7px 18px rgba(47,107,255,.32),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -2px 4px rgba(20,50,120,.35);transition:.3s var(--spring);position:relative;overflow:hidden}
+.brand:hover .brand-icon{transform:translateY(-1px) rotate(-3deg) scale(1.04);box-shadow:0 10px 24px rgba(47,107,255,.42),inset 0 1px 0 rgba(255,255,255,.4)}
+.brand h1{margin:0;font-size:16px;letter-spacing:.01em}
+.brand p{margin:3px 0 0;font-size:10px;color:var(--muted);letter-spacing:.08em}
+.stage-pill{margin:auto;display:flex;align-items:center;gap:11px;padding:9px 15px;border:1px solid #dbe5f2;border-radius:12px;background:linear-gradient(180deg,#fdfefe,#f6f9fd);font-size:11px;font-weight:800;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 5px 16px rgba(24,43,77,.07)}
+.stage-pill .phase-dots{display:inline-flex;gap:4px;margin-right:2px}
+.stage-pill .pdot{width:7px;height:7px;border-radius:50%;background:#ccd9ec;transition:.3s var(--ease)}
+.stage-pill .pdot.done{background:#2b64ec;box-shadow:0 0 5px rgba(47,107,255,.45)}
+.stage-pill .pdot.cur{background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.55);animation:pulseDot 2.2s ease-in-out infinite}
+.stage-pill .sep{width:1px;height:16px;background:#dfe7f2}
+.stage-pill .ap{color:#a06a10;display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:8px;background:linear-gradient(180deg,#fff8e8,#fdf0cf);border:1px solid rgba(223,148,22,.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+.stage-pill .ap strong{font-size:13px;color:#8a5a08}
+.ap.spent-flash{animation:apFlash .6s ease-out}
+.float-ap{position:fixed;z-index:300;font-size:13px;font-weight:900;color:#c07f10;pointer-events:none;animation:floatFade 1s var(--ease) both;text-shadow:0 1px 0 rgba(255,255,255,.8),0 0 12px rgba(245,185,66,.45)}
+.top-actions{min-width:360px;display:flex;justify-content:flex-end;gap:8px}
+.btn{position:relative;overflow:hidden;border:1px solid #d5deeb;background:linear-gradient(180deg,#ffffff,#f5f8fc);color:var(--text);border-radius:10px;padding:9px 13px;font-size:11px;font-weight:800;transition:.22s var(--ease);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 6px rgba(24,43,77,.05)}
+.btn:before{content:"";position:absolute;top:0;left:0;width:46%;height:100%;background:linear-gradient(105deg,transparent,rgba(47,107,255,.12),transparent);transform:translateX(-130%) skewX(-18deg);transition:none}
+.btn:hover:not([disabled]){border-color:#b9cbe6;background:#fff;transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 7px 16px rgba(28,54,102,.1)}
+.btn:hover:not([disabled]):before{animation:sheen .7s var(--ease)}
+.btn:active:not([disabled]){transform:translateY(0) scale(.97)}
+.btn-primary{background:linear-gradient(180deg,#4080ff 0%,#2b64ee 60%,#2355d6 100%);border-color:#2b64ee;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 4px rgba(15,40,110,.25),0 7px 18px rgba(47,107,255,.32)}
+.btn-primary:hover:not([disabled]){background:linear-gradient(180deg,#4a86ff,#2f69f2 60%,#2658dc);box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 0 -2px 4px rgba(15,40,110,.25),0 10px 24px rgba(47,107,255,.42)}
+.btn-violet{background:linear-gradient(180deg,#906bf5,#6d3fe0);border-color:#6d3fe0;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 -2px 4px rgba(60,25,140,.3),0 7px 18px rgba(109,63,224,.35)}
+.btn-green{background:linear-gradient(180deg,#27bd88,#12996b);border-color:#12996b;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 -2px 4px rgba(10,80,55,.3),0 7px 18px rgba(18,153,107,.32)}
+.btn-danger{color:var(--red);border-color:#ffd3da;background:#fff5f7}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:saturate(.4)}
+.btn-sm{padding:6px 9px;font-size:9px}
+.view{padding:20px}
+.card{position:relative;background:linear-gradient(180deg,#ffffff,#fbfdff);border:1px solid #e0e8f2;border-radius:var(--r);box-shadow:0 4px 16px rgba(20,40,80,.05),inset 0 1px 0 rgba(255,255,255,.9);transition:.25s var(--ease)}
+.card:hover{border-color:#ccd9ec;box-shadow:0 12px 30px rgba(20,40,80,.09),inset 0 1px 0 rgba(255,255,255,.9)}
+.eyebrow{font-size:9px;font-weight:900;letter-spacing:.14em;color:var(--blue);text-transform:uppercase}
+.muted{color:var(--muted)}.tiny{font-size:9px}.small{font-size:11px}
+.tag{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:8px;font-weight:800;background:#f1f5fa;color:#586a85;border:1px solid #e2eaf4}
+.tag.blue{background:#eaf2ff;color:#2c5cd0;border-color:#d3e2fc}
+.tag.green{background:#e6f8f1;color:#0f7a59;border-color:#c8ecdf}
+.tag.amber{background:#fff5dd;color:#99650d;border-color:#f7e3b4}
+.notice{border:1px solid #d8e4f6;background:#f4f8fe;color:#41547a;border-radius:10px;padding:10px 12px;font-size:10px;line-height:1.6}
+.notice.amber{border-color:#f2d694;background:#fff9ea;color:#7d5715}
+.notice.green{border-color:#bde5d6;background:#effaf6;color:#14664e}
+.notice.red{border-color:#f9cbd3;background:#fff3f6;color:#96354a}
+
+/* project entry */
+.project-select{max-width:1260px;margin:auto;padding:24px 0 48px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:20px}
+.hero h2{font-size:28px;margin:5px 0 8px;background:linear-gradient(92deg,#1b2a47 35%,#2f6bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;max-width:760px;font-size:12px;line-height:1.75;color:var(--muted)}
+.prototype-badge{border:1px solid #cfdcf4;background:linear-gradient(180deg,#ffffff,#f2f6ff);color:#2c5cd0;border-radius:999px;padding:8px 12px;font-size:10px;font-weight:800;box-shadow:0 5px 16px rgba(47,107,255,.12),inset 0 1px 0 rgba(255,255,255,.9)}
+.project-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.project-card{padding:17px;min-height:184px;position:relative;overflow:hidden;animation:panelIn .5s var(--ease) both}
+.project-card:nth-child(2){animation-delay:.05s}.project-card:nth-child(3){animation-delay:.1s}.project-card:nth-child(4){animation-delay:.15s}
+.project-card:before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,transparent,#2f6bff,transparent);opacity:0;transition:.3s var(--ease)}
+.project-card:not(.disabled):hover{transform:translateY(-4px);border-color:#c6d6ee}
+.project-card:not(.disabled):hover:before{opacity:1}
+.project-card.disabled{opacity:.55;filter:saturate(.35)}
+.project-card .tag{position:absolute;right:13px;top:13px}
+.project-card h3{font-size:16px;margin:12px 0 6px}
+.project-card .budget{font-size:24px;font-weight:900;margin-top:16px;color:#b97a10}
+.project-detail{display:grid;grid-template-columns:1.08fr .92fr;gap:14px;margin-top:15px}
+.project-main,.project-side{padding:21px}.project-main h3{font-size:20px;margin:6px 0 11px}
+.split-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}
+.info-block{background:#f7fafd;border:1px solid #e9eff7;border-radius:11px;padding:12px}
+.info-block strong{font-size:11px;display:block;margin-bottom:6px;color:#33445f}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:9px;padding:5px 8px;border:1px solid #dbe4f0;border-radius:999px;background:#fff;color:#52627c;transition:.2s var(--ease)}
+.chip:hover{border-color:#aec4e6;color:#2c5cd0;background:#f4f8ff}
+.mode-tabs{display:flex;gap:7px;margin:14px 0}
+.mode{flex:1;text-align:left;border:1px solid #dde6f1;border-radius:10px;background:#fff;padding:11px;color:var(--text);transition:.22s var(--ease)}
+.mode:hover{border-color:#bccfe9;transform:translateY(-1px)}
+.mode.active{border-color:#8fb2ff;background:linear-gradient(180deg,#f3f7ff,#e9f0ff);box-shadow:0 0 0 1px #c4d7ff,0 8px 20px rgba(47,107,255,.14),inset 0 1px 0 #fff}
+.mode strong{display:block;font-size:11px}.mode span{display:block;font-size:9px;color:var(--muted);margin-top:3px}
+
+/* game */
+.workspace{display:grid;grid-template-columns:280px 390px minmax(0,1fr);gap:14px;height:calc(100vh - 108px);min-height:680px}.workspace>*>*{animation:panelIn .42s var(--ease) both}
+.context-col,.people-col,.comm-col{min-height:0}.context-col{display:flex;flex-direction:column;gap:11px}
+.context-card{padding:15px}.context-card h3,.people-head h3{font-size:14px;margin:0}.context-card p{font-size:10px;line-height:1.65;color:var(--muted)}
+.budget-box{background:linear-gradient(135deg,#fdf6e4,#fbf0d2);border:1px solid #f0dcae;border-radius:10px;padding:11px;margin:11px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+.budget-box label{font-size:9px;color:#a97e2c}.budget-box strong{display:block;font-size:23px;margin-top:2px;color:#a06a10}
+.goal-box{border:1px solid #f0d28d;background:linear-gradient(160deg,#fff8e6,#fffdf4);border-radius:10px;padding:11px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 5px 14px rgba(180,130,30,.09)}
+.goal-box span{font-size:9px;font-weight:900;color:#956612;letter-spacing:.06em}.goal-box strong{display:block;font-size:13px;margin:6px 0}
+.info-update{padding:14px}.info-update-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.info-update-head strong{font-size:12px}
+.update-list{display:flex;flex-direction:column;gap:7px;max-height:182px;overflow:auto}
+.update-item{border-left:2px solid #7fa4f5;padding:5px 7px 5px 10px;border-radius:0 8px 8px 0;background:linear-gradient(90deg,rgba(47,107,255,.08),rgba(47,107,255,0));animation:fadeSlide .32s var(--ease) both}
+.update-item b{display:block;font-size:9px;color:#3c62b8}.update-item span{display:block;font-size:8px;color:#75839c;line-height:1.5;margin-top:2px}
+.nav-card{padding:12px 14px;display:flex;align-items:center;justify-content:space-between}.nav-card strong{font-size:11px}.nav-card span{display:block;font-size:9px;color:var(--muted);margin-top:2px}
+.people-col{display:flex;flex-direction:column;background:linear-gradient(180deg,#ffffff,#fafcfe);border:1px solid #e0e8f2;border-radius:var(--r);overflow:hidden;box-shadow:0 10px 30px rgba(20,40,80,.07)}
+.people-head{padding:15px 17px 12px;border-bottom:1px solid #e7edf6;background:linear-gradient(180deg,#f6f9ff,#fff)}.people-head p{font-size:9px;color:var(--muted);margin:4px 0 0}
+.org-wrap{flex:1;overflow:auto;padding:16px;background:
+radial-gradient(circle at 50% 4%,rgba(47,107,255,.05),transparent 34%),
+radial-gradient(circle at 82% 60%,rgba(123,75,234,.03),transparent 30%),
+linear-gradient(#fcfdff,#fff)}
+.org-caption{font-size:8px;color:#93a1b8;text-align:center;margin-bottom:10px}
+.org-tree{display:flex;flex-direction:column;align-items:center;min-width:340px;padding-bottom:20px}
+.org-level{display:flex;justify-content:center;gap:15px;width:100%;position:relative}
+.org-connector-v{width:1px;height:18px;background:#ccd7e7}
+.org-branch{width:72%;height:16px;border-top:1px solid #ccd7e7;position:relative}
+.org-branch:before,.org-branch:after{content:"";position:absolute;top:-1px;height:16px;border-left:1px solid #ccd7e7}
+.org-branch:before{left:12%}.org-branch:after{right:12%}
+.person-node{width:164px;border:1px solid #e2e9f3;background:linear-gradient(180deg,#ffffff,#fbfdff);border-radius:13px;padding:10px;text-align:left;color:var(--text);position:relative;box-shadow:0 3px 10px rgba(24,44,84,.06),inset 0 1px 0 #fff;transition:.25s var(--spring)}
+.person-node:before{content:"";position:absolute;inset:0;border-radius:13px;background:radial-gradient(120px 44px at 18% 0%,rgba(47,107,255,.09),transparent 70%);opacity:0;transition:.28s var(--ease)}
+.person-node:hover{border-color:#bccfef;transform:translateY(-2px);box-shadow:0 9px 20px rgba(24,44,84,.11)}
+.person-node:hover:before{opacity:1}
+.person-node.active{border-color:#7fa4f5;background:linear-gradient(180deg,#f4f8ff,#ebf2ff);box-shadow:0 0 0 2px rgba(47,107,255,.14),0 10px 24px rgba(47,107,255,.16);transform:translateY(-1px)}
+.person-node.active:before{opacity:1}
+.person-head{display:grid;grid-template-columns:36px 1fr;gap:9px;align-items:center}
+.person-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(145deg,#f0f4fa,#e2eaf4);color:#5a6c88;display:grid;place-items:center;font-weight:900;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -2px 4px rgba(120,145,185,.25);transition:.28s var(--spring)}
+.person-node.active .person-avatar{background:linear-gradient(145deg,#4f8dff,#2b62e8);color:#fff;box-shadow:0 0 12px rgba(47,107,255,.35),inset 0 1px 0 rgba(255,255,255,.4)}
+.person-name{font-size:11px;font-weight:900}.person-role{font-size:8px;color:var(--muted);margin-top:2px}
+.person-status{font-size:8px;color:#8a99b2;margin-top:5px}
+.intel-list{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.intel-chip{font-size:7.5px;line-height:1.35;color:#2f56a8;background:linear-gradient(180deg,#f0f6ff,#e7efff);border:1px solid #d5e3fd;border-radius:7px;padding:4px 5px;animation:fadeSlide .3s var(--ease) both}
+.intel-more{font-size:7px;color:#8491a3}
+.org-actions{padding:11px 13px;border-top:1px solid #e7edf6;background:#f9fbfd;display:flex;align-items:center;justify-content:space-between;gap:8px}.org-actions span{font-size:8px;color:var(--muted)}
+.comm-col{display:flex;flex-direction:column;background:linear-gradient(180deg,#ffffff,#fafcfe);border:1px solid #e0e8f2;border-radius:var(--r);overflow:hidden;box-shadow:0 14px 34px rgba(20,40,80,.08)}
+.contact-detail{height:75px;padding:12px 16px;display:flex;align-items:center;gap:11px;border-bottom:1px solid #e7edf6;background:linear-gradient(90deg,rgba(47,107,255,.07),transparent 55%)}
+.contact-detail .person-avatar{width:42px;height:42px;background:linear-gradient(145deg,#4f8dff,#2b62e8);color:#fff;box-shadow:0 0 14px rgba(47,107,255,.3),inset 0 1px 0 rgba(255,255,255,.4)}
+.contact-detail h3{font-size:16px;margin:0}.contact-detail p{font-size:9px;color:var(--muted);margin:3px 0 0}.detail-meta{margin-left:auto;display:flex;gap:6px;align-items:center}
+.back-global-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #dbe3ef;background:#fff;color:#52627c;border-radius:10px;padding:7px 9px;font-size:8.5px;font-weight:800;transition:.22s var(--ease);white-space:nowrap}
+.back-global-btn:hover{border-color:#aec4e6;background:#f4f8ff;color:#2f5bb0;transform:translateX(-2px);box-shadow:0 6px 14px rgba(29,56,104,.09)}
+.back-global-btn:active{transform:translateX(0) scale(.98)}
+.back-global-btn .arrow{font-size:13px;line-height:1;margin-top:-1px}
+.action-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:10px 14px;border-bottom:1px solid #e7edf6;background:linear-gradient(180deg,#fdfefe,#f8fafd)}
+.action-btn{border:1px solid #dde6f1;background:linear-gradient(180deg,#ffffff,#f7fafd);border-radius:10px;padding:8px 5px;text-align:center;color:#5a6c88;font-size:9px;font-weight:800;transition:.22s var(--spring);box-shadow:inset 0 1px 0 #fff,0 2px 5px rgba(24,44,84,.05)}
+.action-btn:hover{border-color:#b7cbe9;color:#2c5cd0;transform:translateY(-2px);box-shadow:0 7px 15px rgba(28,54,102,.11),inset 0 1px 0 #fff}
+.action-btn:active{transform:scale(.96)}
+.action-btn.active{border-color:#7fa4f5;background:linear-gradient(180deg,#f0f5ff,#e7efff);color:#2c5cd0;box-shadow:0 0 0 2px rgba(47,107,255,.13),0 7px 18px rgba(47,107,255,.16),inset 0 1px 0 #fff}
+.plan-panel{padding:12px 14px;border-bottom:1px solid #e7edf6;background:linear-gradient(180deg,#fbfdff,#f7fafe)}
+.plan-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}.plan-title strong{font-size:10px}.plan-title span{font-size:8px;color:var(--muted)}
+.plan-row{display:flex;gap:8px}
+.plan-row textarea{flex:1;min-height:58px;resize:vertical;border:1px solid #dbe4f0;border-radius:10px;padding:9px 10px;font-size:10px;line-height:1.55;outline:none;background:#fbfcfe;color:var(--text);transition:.22s var(--ease)}
+.plan-row textarea:hover{border-color:#c2d3ec;background:#fff}
+.plan-row textarea:focus{border-color:#7fa4f5;background:#fff;box-shadow:0 0 0 4px rgba(47,107,255,.12)}
+.plan-result{margin-top:8px;border:1px solid #bde5d6;background:#effaf6;border-radius:9px;padding:8px 9px;font-size:9px;line-height:1.55;color:#14664e}
+.plan-result.warn{border-color:#f0cf87;background:#fff9eb;color:#835b18}
+.workspace-body{flex:1;min-height:0;overflow:auto;background:
+radial-gradient(circle at 70% 0%,rgba(47,107,255,.05),transparent 28%),
+radial-gradient(circle at 20% 90%,rgba(123,75,234,.03),transparent 30%),
+linear-gradient(180deg,#f6f9fd,#f2f6fa);padding:14px}.workspace-body>*{animation:panelIn .3s var(--ease) both}
+.empty-main{height:100%;min-height:510px;display:grid;place-items:center}
+.empty-main-inner{max-width:650px;width:100%;text-align:center}
+.empty-main h2{font-size:22px;margin:7px 0;background:linear-gradient(92deg,#1b2a47 40%,#2f6bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.empty-main p{font-size:10px;color:var(--muted);line-height:1.7;margin:0 auto 18px;max-width:520px}
+.global-plan{position:relative;overflow:hidden;text-align:left;background:linear-gradient(180deg,#ffffff,#f9fbfe);border:1px solid #dbe5f2;border-radius:17px;padding:20px;box-shadow:0 16px 42px rgba(24,43,77,.1),inset 0 1px 0 #fff}
+.global-plan:before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,#2f6bff,#7b4bea,#0ea5d9,#2f6bff);background-size:200% 100%;animation:shimmer 5s linear infinite}
+.global-plan label{font-size:11px;font-weight:900;color:#33445f}
+.global-plan textarea{width:100%;min-height:130px;margin-top:9px;border:1px solid #dbe4f0;border-radius:12px;padding:12px;resize:vertical;font-size:11px;line-height:1.6;outline:none;background:#fbfcfe;color:var(--text);transition:.22s var(--ease)}
+.global-plan textarea:hover{background:#fff;border-color:#c2d3ec}
+.global-plan textarea:focus{background:#fff;border-color:#7fa4f5;box-shadow:0 0 0 4px rgba(47,107,255,.12)}
+.global-plan-foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px}.global-plan-foot span{font-size:8px;color:var(--muted)}
+.workspace-card{max-width:780px;margin:0 auto;background:linear-gradient(180deg,#ffffff,#fafcfe);border:1px solid #e0e8f2;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(20,40,80,.08),inset 0 1px 0 #fff;animation:panelIn .32s var(--ease) both}
+.workspace-card-head{padding:14px 16px;border-bottom:1px solid #e7edf6;background:linear-gradient(180deg,#fbfdff,#fff)}
+.workspace-card-head h2{font-size:15px;margin:0}.workspace-card-head p{font-size:9px;color:var(--muted);margin:4px 0 0;line-height:1.55}
+.thread{min-height:165px;max-height:265px;overflow:auto;padding:14px}
+.message{max-width:82%;border-radius:13px;padding:9px 11px;margin-bottom:8px;font-size:10px;line-height:1.55;animation:panelIn .25s var(--spring) both}
+.message.player{margin-left:auto;background:linear-gradient(180deg,#3d76f0,#2757cd);color:#eef4ff;border-bottom-right-radius:4px;box-shadow:0 5px 14px rgba(39,87,205,.3),inset 0 1px 0 rgba(255,255,255,.25)}
+.message.npc{background:linear-gradient(180deg,#f6f8fb,#eff3f8);color:#3d4c64;border:1px solid #e4eaf3;border-bottom-left-radius:4px;box-shadow:0 3px 8px rgba(24,44,84,.06)}
+.message .meta{font-size:7px;color:#8c99ad;margin-bottom:3px}
+.message-attachment{margin-top:6px;padding:5px 7px;border-radius:6px;background:rgba(255,255,255,.75);border:1px solid rgba(47,107,255,.18);font-size:8px;color:#33589c}
+.composer{border-top:1px solid #e7edf6;padding:12px 14px;background:#fcfdff}
+.composer textarea,.form-area{width:100%;resize:vertical;border:1px solid #dbe4f0;border-radius:10px;padding:10px 11px;font-size:10px;line-height:1.55;outline:none;background:#fbfcfe;color:var(--text);transition:.22s var(--ease)}
+.composer textarea:hover,.form-area:hover{background:#fff;border-color:#c2d3ec}
+.composer textarea:focus,.form-area:focus{background:#fff;border-color:#7fa4f5;box-shadow:0 0 0 4px rgba(47,107,255,.12)}
+.attach-area{margin-top:9px;border:1px dashed #ccd9ec;background:#f8fbfd;border-radius:9px;padding:9px}
+.attach-area strong{font-size:9px;color:#33445f}.attach-area p{font-size:8px;color:var(--muted);margin:3px 0 7px;line-height:1.45}.attach-area textarea{min-height:54px;background:#fff}
+.composer-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px}
+.cost-note{font-size:8px;color:#6c788a}.cost-note strong{color:#99650d}
+.phone-panel{height:100%;min-height:420px;border-radius:16px;background:
+radial-gradient(circle at 50% 46%,rgba(124,83,234,.3),transparent 30%),
+radial-gradient(circle at 50% 52%,rgba(43,98,232,.16),transparent 48%),
+linear-gradient(150deg,#101b31,#16263f 55%,#0c1526);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:inset 0 1px 0 rgba(170,198,245,.1),inset 0 -40px 80px rgba(5,12,26,.5),var(--shadow-lg)}
+.phone-inner{max-width:480px}
+.phone-inner h2{font-size:18px;margin:0;text-shadow:0 2px 16px rgba(77,141,255,.35)}
+.phone-inner p{font-size:10px;color:#a9b9d4}
+.call-avatar{width:82px;height:82px;border-radius:50%;background:linear-gradient(145deg,#b18cff,#6f3fe4);display:grid;place-items:center;margin:18px auto 10px;font-size:32px;font-weight:900;box-shadow:0 0 0 12px rgba(139,92,246,.09),0 0 0 26px rgba(139,92,246,.04),0 16px 34px rgba(80,42,160,.45),inset 0 2px 0 rgba(255,255,255,.3);animation:pulseDot 3.2s ease-in-out infinite}
+.phone-log{margin:12px 0;background:rgba(255,255,255,.07);border:1px solid rgba(170,198,245,.12);border-radius:10px;padding:9px;text-align:left;font-size:9px;line-height:1.55;color:#d5e0f0}
+.wechat-request{padding:22px}
+.wechat-request h3{font-size:15px;margin:0 0 5px}.wechat-request p{font-size:9px;color:var(--muted);line-height:1.6}.wechat-request textarea{min-height:100px}
+.postal-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:14px}
+.postal-box{border:1px solid #e2eaf4;border-radius:10px;padding:11px;background:#f8fbfd;box-shadow:inset 0 1px 0 #fff}
+.postal-box strong{font-size:10px;color:#33445f}.postal-box span{display:block;font-size:8px;color:var(--muted);margin-top:4px;line-height:1.5}
+.visit-choice{padding:15px}
+.visit-choice h3{font-size:15px;margin:0 0 5px}.visit-choice>p{font-size:9px;color:var(--muted);line-height:1.6;margin:0 0 12px}
+.visit-modes{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.visit-mode{border:1px solid #dde6f1;border-radius:12px;background:#fff;padding:12px;text-align:left;color:var(--text);transition:.25s var(--spring);box-shadow:inset 0 1px 0 #fff,0 2px 6px rgba(24,44,84,.05)}
+.visit-mode:hover:not(.disabled){border-color:#b7cbe9;transform:translateY(-3px);box-shadow:0 10px 24px rgba(28,54,102,.12),0 0 0 1px rgba(47,107,255,.18),inset 0 1px 0 #fff}
+.visit-mode.disabled{opacity:.5;filter:saturate(.4)}
+.visit-mode strong{display:block;font-size:11px}.visit-mode span{display:block;font-size:8px;color:var(--muted);line-height:1.5;margin-top:4px}
+.visit-prep{padding:14px}
+.visit-prep h3{font-size:15px;margin:0}.visit-prep p{font-size:9px;color:var(--muted);line-height:1.6}.visit-prep textarea{min-height:140px}
+.meeting-scene{height:100%;min-height:470px;border-radius:16px;position:relative;overflow:hidden;background:
+radial-gradient(circle at 78% 12%,rgba(120,170,255,.13),transparent 26%),
+radial-gradient(circle at 15% 85%,rgba(124,83,234,.12),transparent 32%),
+linear-gradient(180deg,rgba(8,16,30,.2),rgba(3,9,18,.92)),
+linear-gradient(135deg,#33465c,#1b2836 55%,#0d141d);color:#fff;padding:17px;display:flex;flex-direction:column;box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(190,214,250,.08)}
+.meeting-scene:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 46px,rgba(160,195,245,.025) 46px 48px);pointer-events:none}
+.meeting-top{display:flex;justify-content:space-between}.meeting-top h2{font-size:16px;margin:5px 0;text-shadow:0 2px 14px rgba(90,140,230,.4)}
+.meeting-pill{background:rgba(6,14,26,.6);border:1px solid rgba(150,185,240,.25);border-radius:999px;padding:6px 10px;font-size:8px;height:max-content;box-shadow:inset 0 1px 0 rgba(190,214,250,.1)}
+.meeting-pill:before{content:"●";color:#3ecf8e;margin-right:5px;animation:pulseDot 1.8s ease-in-out infinite}
+.meeting-chat{margin-top:auto;max-width:780px;width:100%;align-self:center}
+.npc-stage{display:flex;gap:11px;align-items:flex-end;background:rgba(4,11,21,.72);border:1px solid rgba(150,185,240,.2);border-radius:14px;padding:10px;backdrop-filter:blur(6px);animation:panelIn .35s var(--ease) both}
+.portrait{width:76px;height:102px;border-radius:10px;background:linear-gradient(165deg,#46617e,#1c2c40 70%);border:1px solid rgba(150,185,240,.22);display:grid;place-items:center;font-size:26px;font-weight:900;box-shadow:inset 0 1px 0 rgba(190,214,250,.15),0 8px 20px rgba(2,6,16,.45);position:relative}
+.portrait:after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:44%;height:3px;border-radius:99px;background:#f6bd4f;opacity:.85}
+.speech{background:linear-gradient(180deg,#fdfeff,#eef3fa);color:#27364d;border-radius:13px 13px 13px 4px;padding:11px;flex:1;font-size:10px;line-height:1.6;box-shadow:0 10px 26px rgba(2,6,16,.5)}
+.speech strong{display:block;color:#a06a12;font-size:9px;margin-bottom:3px}
+.player-last{max-width:610px;margin:7px 0 7px auto;background:rgba(43,98,232,.22);border:1px solid rgba(120,164,230,.3);border-radius:9px;padding:7px 9px;font-size:8px;color:#d5e3f8;backdrop-filter:blur(4px)}
+.player-last strong{color:#8fb7ff}
+.meeting-composer{display:flex;gap:7px}
+.meeting-composer textarea{flex:1;border-radius:9px;border:1px solid rgba(160,190,240,.3);padding:9px;resize:none;min-height:52px;background:rgba(6,13,25,.65);color:#fff;outline:none;transition:.22s var(--ease)}
+.meeting-composer textarea:focus{border-color:rgba(130,175,255,.75);box-shadow:0 0 0 4px rgba(77,141,255,.18)}
+.brief-result{padding:18px}
+.brief-result h3{font-size:15px;margin:0 0 5px}.brief-result p{font-size:9px;color:var(--muted);line-height:1.65}
+.analysis-box{margin-top:12px;background:#f7fafd;border:1px solid #e5edf6;border-radius:10px;padding:11px;animation:panelIn .35s var(--ease) both}
+.analysis-box strong{font-size:10px;color:#33445f}.analysis-box ul{padding-left:16px;margin:7px 0 0}
+.analysis-box li{font-size:9px;color:#5e6d84;margin:5px 0;line-height:1.5}
+
+/* result + modal */
+.result-page{max-width:1220px;margin:auto;padding:3px 0 45px}
+.result-hero{position:relative;overflow:hidden;background:radial-gradient(700px 320px at 88% -20%,rgba(246,189,79,.16),transparent 55%),linear-gradient(135deg,#101b31,#16263f 52%,#0c1526);border:1px solid rgba(90,130,200,.35);color:#fff;border-radius:17px;padding:23px;display:flex;justify-content:space-between;gap:20px;box-shadow:var(--shadow-lg)}
+.result-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 42%,rgba(190,214,250,.09) 50%,transparent 58%);animation:sheen 4.2s var(--ease) infinite}
+.result-hero h2{font-size:29px;margin:4px 0;background:linear-gradient(92deg,#fff 45%,#ffd582);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+.score-box strong{display:inline-block;font-size:43px;background:linear-gradient(180deg,#ffe9b8,#f6bd4f);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px rgba(246,189,79,.4))}
+.result-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:11px}
+.result-stat{position:relative;overflow:hidden;background:rgba(255,255,255,.07);border:1px solid rgba(190,214,250,.16);border-radius:10px;padding:10px;animation:panelIn .5s var(--ease) both}
+.result-stat:nth-child(2){animation-delay:.06s}.result-stat:nth-child(3){animation-delay:.12s}.result-stat:nth-child(4){animation-delay:.18s}
+.result-stat span{display:block;font-size:8px;color:#b9c9e4}.result-stat strong{display:block;font-size:16px;margin-top:4px;color:#ffd582}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.result-card{padding:18px}.result-card h3{font-size:13px;margin:0 0 12px}
+.score-row{display:grid;grid-template-columns:92px 1fr 32px;gap:8px;align-items:center;margin:9px 0;font-size:9px;color:#43536d}
+.bar{height:7px;background:#eaeff6;border-radius:999px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(24,44,84,.08)}
+.bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#2b62e8,#4d8dff 70%,#38c8f0);transform-origin:left center;animation:barGrow .9s var(--ease) both;box-shadow:0 0 8px rgba(47,107,255,.35)}
+.attitude-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.attitude{border:1px solid #e5edf6;border-radius:10px;padding:10px;background:#fafcfe}
+.attitude-head{display:flex;gap:8px;align-items:center}.attitude .person-avatar{width:30px;height:30px}
+.evidence-item{border-left:2px solid #27bd88;padding:5px 0 5px 9px;font-size:9px;margin-bottom:8px;color:#43536d}
+.evidence-item small{display:block;color:var(--muted);margin-top:3px}
+.diagnosis{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.result-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.modal-backdrop{position:fixed;inset:0;background:rgba(23,38,66,.4);backdrop-filter:blur(7px);z-index:100;display:grid;place-items:center;padding:18px;animation:backdropIn .2s ease both}
+.modal{width:min(620px,96vw);max-height:86vh;overflow:auto;background:linear-gradient(180deg,#ffffff,#f9fbfe);border:1px solid rgba(255,255,255,.7);border-radius:17px;box-shadow:0 30px 90px rgba(15,30,60,.32),0 0 70px rgba(47,107,255,.14);animation:modalIn .3s var(--spring) both}
+.modal-head{padding:14px 16px;border-bottom:1px solid #e7edf6;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,#f7faff,#fff)}
+.modal-head h3{font-size:14px;margin:0}
+.modal-close{border:0;background:transparent;font-size:20px;color:#8a99b2;transition:.25s var(--ease)}
+.modal-close:hover{color:var(--red);transform:rotate(90deg) scale(1.08)}
+.modal-body{padding:15px}.modal-footer{padding:12px 15px;border-top:1px solid #e7edf6;display:flex;justify-content:flex-end;gap:8px}
+.check-list{display:flex;flex-direction:column;gap:7px;margin:10px 0}
+.check-item{display:flex;justify-content:space-between;align-items:center;border:1px solid #e2eaf4;border-radius:9px;padding:9px 10px;font-size:9px;background:#fafcfe;animation:panelIn .35s var(--ease) both}
+.check-item:nth-child(2){animation-delay:.05s}.check-item:nth-child(3){animation-delay:.1s}.check-item:nth-child(4){animation-delay:.15s}.check-item:nth-child(5){animation-delay:.2s}
+.ok{color:#12996b;font-weight:800;text-shadow:0 0 10px rgba(18,153,107,.3)}.warn{color:#b97a10;font-weight:800;text-shadow:0 0 10px rgba(223,148,22,.28)}
+.toast-root{position:fixed;right:20px;bottom:20px;z-index:200;display:flex;flex-direction:column;gap:7px}
+.toast{position:relative;background:rgba(20,31,54,.94);backdrop-filter:blur(12px);border:1px solid rgba(110,146,208,.32);color:#e5edfa;padding:11px 13px 11px 17px;border-radius:10px;box-shadow:0 16px 38px rgba(1,4,12,.55);font-size:9px;max-width:340px;animation:toastIn .3s var(--spring) both;overflow:hidden}
+.toast:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#79aaff}
+.toast.success{border-color:rgba(62,207,142,.4)}.toast.success:before{background:#3ecf8e}
+.toast.warn{border-color:rgba(246,189,79,.42)}.toast.warn:before{background:#f6bd4f}
+.toast.error{border-color:rgba(251,113,133,.45)}.toast.error:before{background:#fb7185}
+@media(max-width:1180px){.workspace{grid-template-columns:245px 330px minmax(580px,1fr);overflow-x:auto}.brand{min-width:280px}.top-actions{min-width:260px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="app"></div><div id="modal-root"></div><div id="toast-root" class="toast-root"></div>
+<script>
+const MockData = {
+  project:{name:'项目一 · 单单位内部竞标',description:'围绕客户的真实组织需求建立联系，摸清关键人物与内部流程，并用可量化承诺推动项目。关键人物的私人关注点和内部态度不直接展示，需要通过沟通与合理调研逐步判断。',needs:['减少跨部门重复录入','明确交付与验收边界','形成部门级可量化成效','控制实施与合规风险'],challenges:['五名关键人物初始可见','公开信息需主动获得','竞品进度不透明','五阶段推进'],advice:'先形成工作计划，再围绕计划选择人物、沟通方式和需要补足的信息。'},
+  projects:[{id:1,name:'单单位内部竞标',difficulty:'难度 ★',budget:100,status:'可开始'},{id:2,name:'跨区域协同项目',difficulty:'难度 ★★',budget:260,status:'暂未开放'},{id:3,name:'复杂决策链项目',difficulty:'难度 ★★★',budget:500,status:'暂未开放'},{id:4,name:'战略型大客户项目',difficulty:'难度 ★★★★',budget:900,status:'暂未开放'}],
+  phases:[
+    {name:'初识建联',goal:'形成初步策略与触点',hint:'先想清楚要解决什么，再决定找谁、怎么联系。'},
+    {name:'需求澄清',goal:'确认问题与决策链',hint:'把零散信息转成可以验证的问题和下一步。'},
+    {name:'方案推进',goal:'用证据推动关键人',hint:'围绕人物顾虑准备材料与拜访方案。'},
+    {name:'竞争博弈',goal:'识别异议与竞争压力',hint:'重点关注实施风险、验收与组织价值。'},
+    {name:'提交决策',goal:'检查证据并提交项目',hint:'确认关键人物、价值证据和风险处理是否闭环。'}
+  ],
+  npcs:[
+    {
+      id:'P1-001',stableId:'P1-001',parentId:null,displayLevel:0,displayOrder:1,
+      name:'张建国',title:'主管副总经理',category:'高层',firstCallMiss:false,
+      public:{facts:['项目一的主管副总经理，负责关键项目决策与最终方向把关。','公开工作信息显示其关注项目稳定性、投入产出和组织协同。','在项目决策中通常会综合评估实施风险、交付确定性与长期价值。'],clues:['决策沟通更适合先讲稳定性、可量化收益和风险边界。'],source:'单位公开职务信息与项目背景整理'},
+      keywords:['张建国','主管副总经理','副总经理','决策','稳定性','投入产出','组织协同','实施风险','交付确定性','长期价值'],
+      hiddenBehavior:'时间非常紧，对供应商保持审慎；只有在关键风险、价格合理性和现场承诺都被验证后才会提高支持度。',
+      meetingTasks:[{type:'提问',content:'先说清楚：这个项目最终要解决什么问题，结果由谁负责？'},{type:'质疑',content:'你给出的投入产出依据是什么？如果数据不成立，方案是否还能站得住？'},{type:'挖坑',content:'如果实施延期或最终效果没有达到承诺，具体由哪位领导承担责任？'}]
+    },
+    {
+      id:'P1-002',stableId:'P1-002',parentId:'P1-001',displayLevel:1,displayOrder:1,
+      name:'李明辉',title:'项目经理',category:'中层',firstCallMiss:false,
+      public:{facts:['项目经理，负责方案推进、需求澄清和跨部门协调。','公开工作信息显示其重视方案逻辑、数据完整性和可落地的实施安排。','其意见会直接影响主管副总经理对项目可执行性的判断。'],clues:['沟通时先给出一页痛点转方案的结构，再补充数据、里程碑和可验收结果。'],source:'项目角色信息与公开岗位职责整理'},
+      keywords:['李明辉','项目经理','方案','需求澄清','跨部门','数据','逻辑','实施安排','里程碑','可验收'],
+      hiddenBehavior:'理性、严谨且时间宝贵；若材料逻辑跳跃或承诺缺少验证方式，会迅速降低信任并要求重新整理。',
+      meetingTasks:[{type:'提问',content:'请把需求、方案、里程碑和验收结果按顺序讲清楚。'},{type:'质疑',content:'你目前的数据能否支撑这个结论，还是只是经验判断？'},{type:'挖坑',content:'如果跨部门协作卡住，最终由客户领导协调，还是由你们承担推进责任？'}]
+    },
+    {
+      id:'P1-003',stableId:'P1-003',parentId:'P1-001',displayLevel:1,displayOrder:2,
+      name:'王德福',title:'招采办主任',category:'采购',firstCallMiss:false,
+      public:{facts:['招采办主任，负责采购流程、供应商材料和合规边界把关。','公开采购信息显示其关注流程留痕、合同边界和供应商响应规范。','涉及预算、验收和供应商承诺的内容需要保持书面可追溯。'],clues:['可直接询问预算口径、验收依据和供应商材料边界，但要避免模糊承诺。'],source:'公开采购公告与岗位职责整理'},
+      keywords:['王德福','招采办主任','招采','采购','预算','供应商','合同','验收','合规','流程留痕','书面'],
+      hiddenBehavior:'愿意交流，但会持续追问底价、合规性与可验证的验收标准；含糊其辞或越过流程会触发明显防备。',
+      meetingTasks:[{type:'提问',content:'预算口径、交付边界和验收依据分别是什么？'},{type:'质疑',content:'这些承诺如何形成书面留痕，出了偏差按什么条款处理？'},{type:'挖坑',content:'如果领导要求先推进后补流程，你是否会接受？请直接回答。'}]
+    },
+    {
+      id:'P1-004',stableId:'P1-004',parentId:'P1-002',displayLevel:2,displayOrder:1,
+      name:'赵晓晨',title:'项目员工1',category:'一线使用者',firstCallMiss:true,
+      public:{facts:['项目员工1，是系统的一线使用者，参与实际业务操作和反馈。','公开工作信息显示其更接近日常流程、材料处理和真实使用痛点。','一线体验反馈会帮助项目团队判断方案是否真的减负。'],clues:['适合从日常操作、重复录入和真实使用体验切入，不宜要求其代替领导做决策。'],source:'项目角色信息与一线使用场景整理'},
+      keywords:['赵晓晨','项目员工1','一线','使用者','实际操作','材料处理','重复录入','减负','使用体验','流程'],
+      hiddenBehavior:'对被额外加工作量敏感，不愿轻易透露负面信息；只有在被尊重、问题具体且承诺不追责时才会分享真实痛点。',
+      meetingTasks:[{type:'提问',content:'你们具体准备怎么减少我们日常的重复录入？'},{type:'质疑',content:'以前也有人说能减负，最后还是让一线多填表，这次有什么不同？'}]
+    },
+    {
+      id:'P1-005',stableId:'P1-005',parentId:'P1-001',displayLevel:2,displayOrder:2,
+      name:'刘思琪',title:'办公室员工6',category:'办公室',firstCallMiss:false,
+      public:{facts:['办公室员工6，接近日常行政协作与内部信息流转。','公开工作信息显示其熟悉联系人状态、会议安排和沟通习惯。','她可以帮助判断合适的接触窗口，但不直接代替项目决策。'],clues:['适合礼貌询问合适的拜访窗口和转达路径，避免打探未公开的内部评价。'],source:'项目角色信息与办公室协作场景整理'},
+      keywords:['刘思琪','办公室员工6','办公室','信息流转','联系人','会议安排','沟通习惯','拜访窗口','转达','协作'],
+      hiddenBehavior:'开朗但重视边界，愿意提供礼貌性的转达帮助；如果感到被套话、被绕过流程或让同事为难，会减少回应。',
+      meetingTasks:[{type:'提问',content:'你希望我帮你转达什么，具体要找哪位负责人？'},{type:'质疑',content:'这件事为什么不能按正式流程沟通，而需要我额外协调？'}]
+    }
+  ],
+  replies:{
+    'P1-001':{email:['邮件收到。请先用一页说明项目价值、实施风险和需要我决策的事项。','如果稳定性与投入产出能被验证，我会继续看下一步。'],phone:['你好，我时间有限，请直接讲项目价值和风险控制。','你们的承诺能不能落到现场和结果上？'],wechat:['工作微信通过了，正式事项请保留书面记录。'],meeting:['我更关心最终成果、实施风险和责任边界，不是功能数量。','如果关键承诺能现场验证，项目才有继续推进的基础。']},
+    'P1-002':{email:['收到。请把痛点、方案、数据和验收方式按顺序写清楚。','材料结构清楚后，再约时间讨论实施安排。'],phone:['你好，请用两分钟说明解决什么问题、怎么衡量效果。','如果数据和里程碑不完整，后续讨论会比较困难。'],wechat:['可以加，先把议题和需要确认的问题发过来。'],meeting:['方案不能只停在概念，要说明里程碑、责任人和可验收结果。','这部分逻辑补完整，我才好向张总汇报。']},
+    'P1-003':{email:['材料收到了。请补充预算口径、交付边界、验收依据和留痕方式。'],phone:['你好，涉及招采的内容请尽量留书面材料，先说清合规边界。'],wechat:['工作微信通过了，正式承诺还是请走邮件。'],meeting:['供应商材料必须可追溯，验收标准也要提前写清楚。','如果预算与承诺之间说不明白，流程无法继续。']},
+    'P1-004':{email:['我可以从实际操作角度看看，但请不要只给宣传材料。','如果能减少重复录入，最好把具体步骤和前后差异标出来。'],phone:['你好，我现在手头有事，请直接说重点。','实际操作里最麻烦的是材料反复填，你们怎么处理？'],wechat:['你好，工作微信通过了。涉及流程的问题可以具体问。'],meeting:['如果最后还是要我们重复填很多次，系统就没有减负。','你们先听听一线怎么做，再讨论方案怎么调整。']},
+    'P1-005':{email:['邮件收到。我可以帮你确认合适的转达路径，但正式事项请说明清楚。'],phone:['你好，如果是拜访安排，请把来意和希望沟通的人写明白。'],wechat:['可以沟通，正式材料还是按单位流程发送。'],meeting:['我可以帮忙看看合适的时间窗口，但不能替别人做决定。','沟通请保持边界，别让同事觉得被绕过了。']}
+  },
+  competitorEvents:['ABC竞品正在强调既有客情和低价优势，部分联系人开始询问价格与交付确定性。','ABC竞品在采购侧强化了“成熟案例与验收稳定”的说法。','客户内部开始比较两家方案的实施风险与组织价值。'],
+  result:{score:84,compliancePenalty:2,won:true,breakdown:[{label:'五维能力',value:83,weight:'40%'},{label:'对公价值',value:89,weight:'30%'},{label:'个人合理收益',value:76,weight:'20%'},{label:'决策链支持',value:87,weight:'10%'}],dimensions:[{label:'决策流程识别',value:88},{label:'关键人关系经营',value:80},{label:'价值量化呈现',value:86},{label:'异议处理',value:78},{label:'需求提问',value:84}],attitudes:[{id:'P1-001',pleasant:76,support:84},{id:'P1-002',pleasant:83,support:88},{id:'P1-003',pleasant:72,support:79},{id:'P1-004',pleasant:86,support:82},{id:'P1-005',pleasant:81,support:75}],evidence:[{text:'围绕一线操作整理了减少重复录入的具体步骤与使用反馈。',source:'赵晓晨'},{text:'交付边界、验收依据和流程留痕形成了可追溯清单。',source:'王德福'},{text:'方案、里程碑与量化结果可以支持项目经理向上汇报。',source:'李明辉'},{text:'拜访窗口与转达路径安排得体，未绕过内部流程。',source:'刘思琪'},{text:'关键承诺覆盖稳定性、投入产出与实施风险。',source:'张建国'}]}
+};
+
+const PrototypeApi = {
+  sleep:(ms=500)=>new Promise(r=>setTimeout(r,ms)),
+  async analyzePlan({text,npcId}){
+    const t=text.trim();
+    if(t.length<18) return {needsDetail:true,revealDetails:[]};
+    const researchish=/(了解|调研|信息|资料|背景|履历|角色|职责|负责人|关注|兴趣|偏好|个人|采购|决策|公开|谁负责|汇报|关系|经历|这个人|匹配|确认)/.test(t);
+    const candidates=npcId
+      ? MockData.npcs.filter(n=>n.id===npcId)
+      : MockData.npcs.filter(n=>n.keywords.some(k=>t.includes(k)));
+    const matches=candidates.map(target=>{
+      const matchedKeywords=target.keywords.filter(k=>t.includes(k));
+      return {npcId:target.id,name:target.name,matchedKeywords,facts:target.public.facts,clues:target.public.clues};
+    }).filter(match=>match.matchedKeywords.length || (npcId && researchish));
+    return {needsDetail:false,questions:[],matched:matches,revealDetails:matches};
+  },
+  async researchPublicInfo(npc){await this.sleep(620);return npc.public;},
+  async sendNpcMessage({npcId,channel,turn=0}){
+    await this.sleep(channel==='work_phone'?560:760);
+    const target=MockData.npcs.find(n=>n.id===npcId);
+    if(channel==='meeting'&&target?.meetingTasks?.length){
+      const task=target.meetingTasks[Math.min(turn,target.meetingTasks.length-1)];
+      return {content:task.content,taskType:task.type,npcTaskCompleted:turn>=target.meetingTasks.length-1};
+    }
+    const list=MockData.replies[npcId]?.[channel==='work_phone'?'phone':channel]||['收到。'];
+    return {content:list[Math.min(turn,list.length-1)]||list[0]};
+  },
+  async requestWechat({npcId,reason}){await this.sleep(720);return {accepted:reason.trim().length>=12,npcId};},
+  async createInvitation({npcId,message,phase}){await this.sleep(620);return {id:`appt-${Date.now()}`,npcId,status:'accepted',phase,location:'客户单位会议室',message};},
+  async sendPostal(payload){await this.sleep(620);return {id:`post-${Date.now()}`,status:'sent',...payload};},
+  async analyzeBriefVisit({npcId,text}){await this.sleep(700);return {summary:`已根据你对 ${MockData.npcs.find(n=>n.id===npcId)?.name} 的拜访方案生成模拟评估。`,strengths:['目标表达较明确','能围绕人物角色组织沟通'],risks:['仍需准备更可验证的量化证据','需要考虑对方可能提出的实施边界问题']};},
+  async submitProject(){await this.sleep(800);return MockData.result;}
+};
+
+(() => {
+const STORAGE_KEY='project1_interactive_prototype_v10';
+const LEGACY_STORAGE_KEY='project1_interactive_prototype_v9';
+const app=document.getElementById('app'),modalRoot=document.getElementById('modal-root'),toastRoot=document.getElementById('toast-root');
+const npcIds=new Set(MockData.npcs.map(n=>n.id));
+const blankConversations=()=>Object.fromEntries(MockData.npcs.map(n=>[n.id,{email:[],work_phone:[],wechat:[],meeting:[],postal:[]}]))
+const normalizeNpcMap=(value,fallback={})=>Object.fromEntries(MockData.npcs.map(n=>[n.id,value&&Object.prototype.hasOwnProperty.call(value,n.id)?value[n.id]:fallback[n.id]]));
+const initialState=()=>({
+  screen:'projects',playMode:'solo',phase:1,actionPoints:28,totalSpent:0,
+  selectedNpcId:null,workspaceMode:'overview',channel:null,phoneActive:false,phoneAttempts:{},
+  wechat:{},conversations:blankConversations(),
+  appointments:[],meeting:null,visitPreparations:{},completedVisits:[],postal:[],
+  workPlans:{global:'',byNpc:{}},planAnalysis:{global:null,byNpc:{}},submittedPlans:{global:null,byNpc:{}},publicIntel:{},
+  infoUpdates:[{created:'项目开始',body:'项目已进入第 1 阶段。你可以先描述整体工作计划，也可以从人物结构图选择对象。'}],
+  notifications:[],competitorEventsSeen:[],result:null,
+  coachForceSimulation:false,lastBriefResult:null
+});
+let state=loadState();
+function normalizeConversations(value){
+ const raw=value&&typeof value==='object'?value:{};
+ const result=blankConversations();
+ MockData.npcs.forEach(n=>{
+  const saved=raw[n.id]&&typeof raw[n.id]==='object'?raw[n.id]:{};
+  Object.keys(result[n.id]).forEach(channel=>{result[n.id][channel]=Array.isArray(saved[channel])?saved[channel]:[]});
+ });
+ return result;
+}
+function normalizeNpcArrays(value){
+ const result={};
+ MockData.npcs.forEach(n=>{result[n.id]=Array.isArray(value?.[n.id])?value[n.id]:[]});
+ return result;
+}
+function normalizeState(saved){
+ const base=initialState(),raw=saved&&typeof saved==='object'?saved:{};
+ const next={...base,...raw};
+ next.selectedNpcId=npcIds.has(raw.selectedNpcId)?raw.selectedNpcId:null;
+ next.conversations=normalizeConversations(raw.conversations);
+ next.wechat=normalizeNpcMap(raw.wechat,base.wechat);
+ next.phoneAttempts=normalizeNpcMap(raw.phoneAttempts,base.phoneAttempts);
+ next.visitPreparations=normalizeNpcMap(raw.visitPreparations,base.visitPreparations);
+ next.publicIntel=normalizeNpcArrays(raw.publicIntel);
+ next.workPlans={...base.workPlans,...(raw.workPlans||{}),byNpc:normalizeNpcMap(raw.workPlans?.byNpc,base.workPlans.byNpc)};
+ next.planAnalysis={...base.planAnalysis,...(raw.planAnalysis||{}),byNpc:normalizeNpcMap(raw.planAnalysis?.byNpc,base.planAnalysis.byNpc)};
+ next.submittedPlans={...base.submittedPlans,...(raw.submittedPlans||{}),byNpc:normalizeNpcMap(raw.submittedPlans?.byNpc,base.submittedPlans.byNpc)};
+ next.meeting=raw.meeting&&npcIds.has(raw.meeting.npcId)?{...raw.meeting,maxTurns:20,npcTasksCompleted:Array.isArray(raw.meeting.npcTasksCompleted)?raw.meeting.npcTasksCompleted:[]}:null;
+ if(next.result&&!Array.isArray(next.result.attitudes)||next.result?.attitudes?.some(a=>!npcIds.has(a.id)))next.result=null;
+ return next;
+}
+function loadState(){
+ try{
+  const current=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+  const legacy=current||JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY)||'null');
+  const normalized=legacy?normalizeState(legacy):initialState();
+  if(!current&&legacy)localStorage.setItem(STORAGE_KEY,JSON.stringify(normalized));
+  return normalized;
+ }catch{return initialState()}
+}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function patch(x,renderNow=true){state={...state,...x};save();if(renderNow)render()}
+function npc(id=state.selectedNpcId){return MockData.npcs.find(n=>n.id===id)}
+function phaseMeta(){return MockData.phases[state.phase-1]}
+function esc(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function toast(t,tone='default'){const e=document.createElement('div');e.className=`toast ${tone}`;e.textContent=t;toastRoot.appendChild(e);setTimeout(()=>e.remove(),2600)}
+function spend(p,reason){
+ if(state.actionPoints<p){toast(`行动点不足：${reason}`,'error');return false}
+ state.actionPoints-=p;state.totalSpent+=p;save();
+ const badge=document.getElementById('ap-badge');
+ if(badge){badge.classList.remove('spent-flash');void badge.offsetWidth;badge.classList.add('spent-flash');
+  const f=document.createElement('span');f.className='float-ap';f.textContent=`-${p} ✦`;
+  const r=badge.getBoundingClientRect();f.style.left=(r.left+r.width/2)+'px';f.style.top=(r.top-6)+'px';
+  document.body.appendChild(f);setTimeout(()=>f.remove(),1000)}
+ return true
+}
+function addUpdate(body){state.infoUpdates.push({created:`第${state.phase}阶段`,body});if(state.infoUpdates.length>12)state.infoUpdates=state.infoUpdates.slice(-12)}
+function hasInvite(id){return state.appointments.some(a=>a.npcId===id&&a.status==='accepted')}
+function contactStatus(id){
+  if(state.completedVisits.some(v=>v.npcId===id))return '已完成拜访';
+  if(hasInvite(id))return '已有拜访预约';
+  if(state.wechat[id]==='accepted')return '已添加工作微信';
+  const c=state.conversations[id];if(c&&Object.values(c).some(a=>a.length))return '已有沟通记录';
+  return '尚未有效接触';
+}
+function detectInvite(text){return /(拜访|见面|当面|到贵单位|约.*时间|约个时间|线下沟通|登门)/.test(text)}
+function detectFarewell(text){return /(告辞|先走一步|今天先到这里|这次先到这里|本次先到这里|不打扰了|改天再聊|下次再聊|回头再沟通|感谢.*时间|谢谢.*接待)/.test(text)}
+function topbar(){
+  if(state.screen==='projects')return '';
+  return `<header class="topbar"><div class="brand"><div class="brand-icon">▣</div><div><h1>项目一 · 单单位内部竞标</h1><p>销售作战台 · 难度 ★</p></div></div><div class="stage-pill"><span class="phase-dots">${[1,2,3,4,5].map(i=>`<i class="pdot ${i<state.phase?'done':i===state.phase?'cur':''}"></i>`).join('')}</span><span>第 ${state.phase} 阶段 · ${phaseMeta().name}</span><span class="sep"></span><span class="ap" id="ap-badge">✦ 行动点 <strong>${state.actionPoints}</strong></span></div><div class="top-actions"><button class="btn" data-action="reset">重置演示</button>${state.screen==='game'?`<button class="btn" data-action="end-phase">${state.phase===5?'进入提交检查':'结束本阶段'}</button><button class="btn btn-primary" data-action="submit">提交项目</button>`:''}</div></header>`
+}
+function render(){
+ app.innerHTML=`<div class="app"><div class="shell">${topbar()}${state.screen==='projects'?renderProjects():state.screen==='result'?renderResult():renderGame()}</div></div>`;
+ bind();
+}
+function renderProjects(){
+ return `<main class="view project-select"><div class="hero"><div><div class="eyebrow">Interactive Frontend Prototype</div><h2>销售攻关实训 · 项目入口</h2><p>纯前端交互原型。当前优先验证项目一：工作计划 → 人物调研 → 多渠道沟通 → 自然语言邀约 → 拜访准备 / 实战模拟 → 阶段提交。所有能力均由本地 Mock 占位。</p></div><div class="prototype-badge"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#3ecf8e;margin-right:6px;animation:pulseDot 2s ease-in-out infinite;box-shadow:0 0 8px rgba(62,207,142,.7)"></span>v10 · Polished UI</div></div><section class="project-grid">${MockData.projects.map(p=>`<article class="card project-card ${p.id===1?'':'disabled'}"><span class="tiny muted">PROJECT 0${p.id}</span><span class="tag ${p.id===1?'green':''}">${p.status}</span><h3>${p.name}</h3><div class="small muted">${p.difficulty}</div><div class="budget">${p.budget}<span class="small muted"> 万预算</span></div>${p.id===1?'<button class="btn btn-primary" data-action="select-project" style="margin-top:15px;width:100%">查看项目一</button>':'<button class="btn" disabled style="margin-top:15px;width:100%">暂未开放</button>'}</article>`).join('')}</section><section class="project-detail"><article class="card project-main"><div class="eyebrow">PROJECT 01</div><h3>${MockData.project.name}</h3><p class="small muted" style="line-height:1.8">${MockData.project.description}</p><div class="split-list"><div class="info-block"><strong>客户需求</strong><div class="chips">${MockData.project.needs.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div><div class="info-block"><strong>项目特点</strong><div class="chips">${MockData.project.challenges.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div></div><div class="notice" style="margin-top:11px"><strong>策略提示：</strong>${MockData.project.advice}</div></article><article class="card project-side"><div class="eyebrow">START MODE</div><h3 style="font-size:15px;margin:7px 0">选择演示模式</h3><div class="mode-tabs"><button class="mode ${state.playMode==='solo'?'active':''}" data-action="mode" data-mode="solo"><strong>单机演示</strong><span>完整验证项目一玩家流程</span></button><button class="mode ${state.playMode==='multiplayer'?'active':''}" data-action="mode" data-mode="multiplayer"><strong>多人占位</strong><span>暂不接实时同步</span></button></div><div class="info-block"><strong>本轮重点</strong><div class="small muted" style="line-height:1.7">人物区采用树形关系结构；右侧统一放置邮件、电话、微信、邮寄、拜访，并加入工作计划与信息披露入口。</div></div><button class="btn btn-primary" data-action="start" style="width:100%;margin-top:13px;padding:11px">开始项目一</button></article></section></main>`
+}
+function renderGame(){return `<main class="view"><div class="workspace">${renderContext()}${renderPeople()}${renderComm()}</div></main>`}
+function renderContext(){
+ const p=phaseMeta();const updates=[...state.infoUpdates].reverse();
+ return `<aside class="context-col"><section class="card context-card"><h3>项目背景</h3><p>${MockData.project.description}</p><div class="budget-box"><label>公开预算</label><strong>100 万</strong></div><div class="goal-box"><span>本阶段建议目标</span><strong>${p.goal}</strong><div class="tiny muted">${p.hint}</div></div></section><section class="card info-update"><div class="info-update-head"><strong>信息更新</strong><span class="tag blue">${updates.length}</span></div><div class="update-list">${updates.map(x=>`<div class="update-item"><b>${esc(x.created)}</b><span>${esc(x.body)}</span></div>`).join('')}</div></section><section class="card nav-card"><div><strong>行动点</strong><span>累计消耗 ${state.totalSpent} · 当前剩余 ${state.actionPoints}</span></div><span class="tag blue">${state.actionPoints}/28</span></section><section class="card nav-card"><div><strong>竞品情报</strong><span>竞品推进状态不可直接查看，只能在沟通中判断。</span></div><span>›</span></section>${state.competitorEventsSeen.length?`<section class="card context-card"><div class="eyebrow" style="color:#c35e37">近期压力</div><p>${esc(state.competitorEventsSeen.at(-1))}</p></section>`:''}</aside>`
+}
+function personNode(id){
+ const n=npc(id),intel=state.publicIntel[id]||[];
+ return `<button class="person-node ${state.selectedNpcId===id?'active':''}" data-select-npc="${id}"><div class="person-head"><div class="person-avatar">${n.name[0]}</div><div><div class="person-name">${n.name}</div><div class="person-role">${n.title}</div></div></div><div class="person-status">${contactStatus(id)}</div>${intel.length?`<div class="intel-list">${intel.slice(0,2).map(f=>`<div class="intel-chip">${esc(f)}</div>`).join('')}${intel.length>2?`<div class="intel-more">另有 ${intel.length-2} 条公开信息</div>`:''}</div>`:''}</button>`
+}
+function renderPeople(){
+ const levels=[...new Set(MockData.npcs.map(n=>n.displayLevel))].sort((a,b)=>a-b);
+ const tree=levels.map((level,index)=>{
+   const people=MockData.npcs.filter(n=>n.displayLevel===level).sort((a,b)=>a.displayOrder-b.displayOrder);
+   return `${index?'<div class="org-connector-v"></div>':''}<div class="org-level" data-level="${level}">${people.map(n=>personNode(n.id)).join('')}</div>`;
+ }).join('');
+ return `<section class="people-col"><div class="people-head"><h3>项目人物结构</h3><p>五名人物按主档中的层级、顺序与关联展示；公开信息逐步显示在对应人物旁。</p></div><div class="org-wrap"><div class="org-caption">点击人物进入详情；再次点击同一人物可返回总体计划</div><div class="org-tree">${tree}</div></div><div class="org-actions"><span>工作计划按人物关键词匹配，并持续沉淀已披露 facts / clues。</span>${state.selectedNpcId?`<button class="btn btn-sm" data-action="research">搜索公开信息 · 2点</button>`:''}</div></section>`
+}
+function renderComm(){
+ if(!state.selectedNpcId)return `<section class="comm-col"><div class="workspace-body">${renderGlobalPlan()}</div></section>`;
+ const n=npc(),intel=(state.publicIntel[n.id]||[]).length;
+ return `<section class="comm-col"><div class="contact-detail"><div class="person-avatar">${n.name[0]}</div><div><h3>${n.name}</h3><p>${n.title} · ${contactStatus(n.id)}</p></div><div class="detail-meta"><button class="back-global-btn" data-action="back-global" title="返回总体工作计划（Esc）"><span class="arrow">←</span><span>总体计划</span></button><span class="tag ${intel?'blue':''}">公开信息 ${intel}</span>${hasInvite(n.id)?'<span class="tag green">已邀约</span>':''}</div></div><div class="action-strip">${actionBtn('email','✉ 邮件')}${actionBtn('work_phone','☎ 电话')}${actionBtn('wechat','◎ 微信')}${actionBtn('postal','▤ 邮寄')}${actionBtn('visit','↗ 拜访')}</div>${renderNpcPlan()}<div class="workspace-body">${renderWorkspaceBody()}</div></section>`
+}
+function actionBtn(mode,label){return `<button class="action-btn ${state.workspaceMode===mode?'active':''}" data-workspace="${mode}">${label}</button>`}
+function renderGlobalPlan(){
+ const a=state.planAnalysis.global;
+ return `<div class="empty-main"><div class="empty-main-inner"><div class="eyebrow">PROJECT STRATEGY</div><h2>请描述您的工作计划</h2><p>你可以先不选择任何联系人，直接说明这一阶段想怎么推进。原型会判断计划是否足够具体；如果计划涉及人物调研，则从本地人物主档中匹配并披露对应线索。不会再额外生成“AI 总结”。</p><div class="global-plan"><label>整体工作计划（可选）</label><textarea id="global-plan" placeholder="例如：我想先确认项目真正的业务痛点，再了解采购与业务部门分别关心什么，之后选择一位合适的联系人建立第一触点……">${esc(state.workPlans.global||'')}</textarea><div class="global-plan-foot"><span>草稿不扣点；有效计划提交消耗 1 点。过于简单被退回不扣点；相同内容重复查看不重复扣点。</span><button class="btn btn-primary" data-action="analyze-global-plan">提交计划 · 1点</button></div>${a?renderPlanAnalysis(a):''}</div></div></div>`
+}
+function renderNpcPlan(){
+ const id=state.selectedNpcId,a=state.planAnalysis.byNpc[id];
+ const n=npc(id),keywords=n?.keywords?.slice(0,4).join('、')||'岗位、职责、关注点';
+ return `<div class="plan-panel"><div class="plan-title"><strong>针对 ${n.name} 的工作计划（可选）</strong><span>本地关键词匹配 / 信息披露 · 1点</span></div><div class="plan-row"><textarea id="npc-plan" placeholder="例如：围绕${keywords}，先确认公开背景与岗位关注点，再决定先邮件还是电话建立第一触点……">${esc(state.workPlans.byNpc[id]||'')}</textarea><button class="btn" data-action="analyze-npc-plan">提交计划 · 1点</button></div>${a?renderPlanAnalysis(a):''}</div>`
+}
+function renderPlanAnalysis(a){
+ if(a.needsDetail)return `<div class="plan-result warn">计划描述过于简单，请进一步细化。</div>`;
+ const matches=a.matched||[];
+ const disclosed=(a.disclosed||[]).flatMap(x=>x.facts||[]);
+ return `<div class="plan-result"><strong>计划已记录${a.charged===false?'':' · 1 行动点'}</strong>${matches.length?`<div style="margin-top:4px">关键词命中：${matches.map(x=>`${esc(x.name)}（${esc((x.matchedKeywords||[]).join('、'))}）`).join('；')}</div>`:'<div style="margin-top:4px">暂未命中人物关键词，计划仍已保存。</div>'}${disclosed.length?`<div style="margin-top:4px">已披露并写入人物公开信息：${disclosed.map(x=>esc(x)).join('；')}</div>`:''}</div>`
+}
+function renderWorkspaceBody(){
+ if(state.meeting)return renderMeeting();
+ if(state.workspaceMode==='email')return renderMessageWorkspace('email');
+ if(state.workspaceMode==='work_phone')return renderPhone();
+ if(state.workspaceMode==='wechat')return renderWechat();
+ if(state.workspaceMode==='postal')return renderPostal();
+ if(state.workspaceMode==='visit')return renderVisit();
+ if(state.workspaceMode==='visitPrep')return renderVisitPrep();
+ if(state.workspaceMode==='briefVisit')return renderBriefVisit();
+ if(state.workspaceMode==='briefResult')return renderBriefResult();
+ return renderOverview();
+}
+function renderOverview(){
+ const n=npc(),intel=state.publicIntel[n.id]||[];
+ return `<div class="workspace-card"><div class="workspace-card-head"><h2>${n.name} · 联系人概览</h2><p>选择上方邮件、电话、微信、邮寄或拜访开始行动。搜索公开信息与工作计划提交都可能更新人物结构图。</p></div><div style="padding:14px"><div class="notice">当前状态：${contactStatus(n.id)}</div><div class="split-list" style="margin-top:10px"><div class="info-block"><strong>已获公开信息</strong><div class="small muted">${intel.length?intel.map(x=>`• ${esc(x)}`).join('<br>'):'尚未获得。可点击人物结构下方“搜索公开信息”。'}</div></div><div class="info-block"><strong>拜访状态</strong><div class="small muted">${hasInvite(n.id)?'已获得邀约，可直接进入拜访准备。':'尚无邀约；仍可选择“拜访”并决定是否直接登门。'}</div></div></div></div></div>`
+}
+function channelLabel(ch){return ch==='email'?'邮件':ch==='wechat'?'微信':ch==='work_phone'?'电话':'沟通'}
+function renderMessageWorkspace(channel){
+ const n=npc(),arr=state.conversations[n.id][channel],isWechat=channel==='wechat';
+ const base=1;
+ return `<div class="workspace-card"><div class="workspace-card-head"><h2>${isWechat?'工作微信':'邮件'} · ${n.name}</h2><p>${isWechat?'微信正文与附件均使用自然语言描述；有附件时额外消耗行动点。':'邮件正文与附件均可直接自然语言描述；无需预先建立“准备材料”。'}</p></div><div class="thread">${arr.length?arr.map(m=>`<div class="message ${m.role}"><div class="meta">${m.role==='player'?'你':n.name} · ${esc(m.channel||channelLabel(channel))}</div>${esc(m.text)}${m.attachment?`<div class="message-attachment">附件：${esc(m.attachment)}</div>`:''}</div>`).join(''):'<div class="notice">还没有沟通记录。</div>'}</div><div class="composer"><textarea id="message-text" rows="4" placeholder="${isWechat?'输入工作微信内容…':'输入邮件正文…'}"></textarea><div class="attach-area"><strong>附加材料（可选）</strong><p>直接自然语言描述本次附带的材料或文件内容。填写后，本次发送将额外消耗 1 行动点。</p><textarea id="attachment-text" rows="2" placeholder="例如：附上 1 页流程对比与一份验收边界清单，重点标注重复录入减少的位置……"></textarea></div><div class="composer-foot"><span class="cost-note">本次预计消耗 <strong>1 行动点</strong></span><button class="btn btn-primary" data-action="send-message">发送${isWechat?'微信':'邮件'} · 1点</button></div></div></div>`
+}
+function renderWechat(){
+ const n=npc();
+ if(state.wechat[n.id]==='accepted')return renderMessageWorkspace('wechat');
+ if(state.wechat[n.id]==='pending')return `<div class="workspace-card"><div class="wechat-request"><div class="eyebrow" style="color:#15966f">WECHAT REQUEST</div><h3>工作微信申请已发送</h3><p>等待 ${n.name} 处理申请。</p><div class="notice green">本地 Mock 会自动更新申请结果。</div></div></div>`;
+ return `<div class="workspace-card"><div class="wechat-request"><div class="eyebrow" style="color:#15966f">WECHAT REQUEST</div><h3>申请添加 ${n.name} 的工作微信</h3><p>申请操作使用自然语言描述。请说明添加原因、工作背景或希望后续沟通的事项；AI / 后端会判断是否接受。</p>${state.wechat[n.id]==='rejected'?'<div class="notice amber" style="margin-bottom:10px">上一条申请说明未被接受，你可以调整理由后再次申请。</div>':''}<textarea class="form-area" id="wechat-reason" placeholder="例如：王老师您好，我是本项目供应方负责人。后续有几项流程细节希望向您确认，如果方便，想添加您的工作微信用于项目沟通……"></textarea><div class="composer-foot"><span class="cost-note">发送申请 · <strong>1 行动点</strong></span><button class="btn btn-green" data-action="request-wechat">发送微信申请</button></div></div></div>`
+}
+function renderPhone(){
+ const n=npc(),arr=state.conversations[n.id].work_phone;
+ return `<div class="phone-panel"><div class="phone-inner"><h2>与 ${n.name} 的工作电话</h2><p>电话可能无人接听；接通后可以输入自然语言对话。</p><div class="call-avatar">${n.name[0]}</div><strong>${n.name}</strong><div class="tiny" style="color:#c6d1df;margin-top:3px">${n.title}</div>${arr.length?`<div class="phone-log">${arr.slice(-4).map(x=>`${x.role==='player'?'你':n.name}：${esc(x.text)}`).join('<br>')}</div>`:''}${state.phoneActive?`<div class="meeting-composer" style="margin-top:11px"><textarea id="phone-text" placeholder="输入你在电话中要说的话…"></textarea><button class="btn btn-violet" data-action="phone-say">发送</button><button class="btn" data-action="end-call">挂断</button></div>`:`<button class="btn btn-violet" data-action="call" style="margin-top:14px">拨打电话 · 1 行动点</button>`}</div></div>`
+}
+function renderPostal(){
+ const n=npc();
+ return `<div class="workspace-card"><div class="workspace-card-head"><h2>邮寄材料 · ${n.name}</h2><p>适合发送需要留存的纸质材料或正式资料。当前原型只模拟“描述要邮寄什么”，不接真实物流。</p></div><div class="postal-grid"><div class="postal-box"><strong>收件对象</strong><span>${n.name} · ${n.title}<br>客户单位（Mock 地址）</span></div><div class="postal-box"><strong>预计成本</strong><span>2 行动点<br>包含包装、寄送与记录</span></div></div><div class="composer"><label class="tiny" style="font-weight:800">请自然语言描述邮寄内容</label><textarea id="postal-text" rows="5" placeholder="例如：邮寄一份装订版实施方案，附 2 页验收边界说明和一页项目里程碑摘要……"></textarea><div class="composer-foot"><span class="cost-note">邮寄 · <strong>2 行动点</strong></span><button class="btn btn-primary" data-action="send-postal">确认邮寄</button></div></div></div>`
+}
+function renderVisit(){
+ const n=npc(),invited=hasInvite(n.id);
+ if(!invited)return `<div class="workspace-card"><div class="visit-choice"><div class="eyebrow" style="color:#9c6a17">VISIT</div><h3>拜访 ${n.name}</h3><p>当前没有已接受的邀约。你仍然可以发起拜访，但系统会先确认是否选择直接登门。</p><div class="notice amber">未邀约直接登门可能带来额外关系与合规风险，真实产品应由规则和 NPC 状态判断后果。</div><button class="btn btn-primary" data-action="direct-visit-confirm" style="margin-top:12px">继续拜访</button></div></div>`;
+ return renderVisitModeChoice();
+}
+function renderVisitModeChoice(){
+ const n=npc(),forced=state.coachForceSimulation;
+ return `<div class="workspace-card"><div class="visit-choice"><div class="eyebrow" style="color:#9c6a17">VISIT MODE</div><h3>选择与 ${n.name} 的拜访方式</h3><p>已有邀约。你可以进行实际模拟，也可以用自然语言简述完整拜访方案交给 AI 评估。教练端可以强制实际模拟。</p>${forced?'<div class="notice red">教练已设置：本局拜访必须进行实际模拟。</div>':''}<div class="visit-modes" style="margin-top:11px"><button class="visit-mode" data-action="visit-sim"><strong>实际模拟</strong><span>进入面对面多轮沟通，逐轮输入现场发言。</span></button><button class="visit-mode ${forced?'disabled':''}" data-action="visit-brief" ${forced?'disabled':''}><strong>简述拜访方案</strong><span>用自然语言说明目标、话术、材料与预期结果，由 AI 做模拟评估。</span></button></div></div></div>`
+}
+function renderVisitPrep(){
+ const n=npc(),existing=state.visitPreparations[n.id]||'';
+ return `<div class="workspace-card"><div class="visit-prep"><div class="eyebrow" style="color:#9c6a17">VISIT PREPARATION</div><h3>进入准备 · ${n.name}</h3><p>本地 Mock 已返回邀约成功。请简述你准备如何开展这次拜访。这里用于记录拜访前的策略输入。</p><textarea class="form-area" id="visit-prep-text" placeholder="例如：先确认对方最关心的流程问题，再用一页流程对比说明减负点；如果对方追问实施边界，就用验收清单说明我们与客户各自负责的事项……">${esc(existing)}</textarea><div class="composer-foot"><span class="cost-note">准备本身不额外扣点；实际拜访 / 简述方案按原型规则计费。</span><button class="btn btn-primary" data-action="save-visit-prep">保存并选择拜访方式</button></div></div></div>`
+}
+function renderBriefVisit(){
+ const n=npc(),prep=state.visitPreparations[n.id]||'';
+ return `<div class="workspace-card"><div class="visit-prep"><div class="eyebrow" style="color:#7b4bea">BRIEF VISIT PLAN</div><h3>简述与 ${n.name} 的拜访方案</h3><p>请用自然语言说明你会怎么开场、确认哪些问题、使用什么材料、如何处理异议，以及希望形成什么下一步。</p>${prep?`<div class="notice">已保存准备：${esc(prep)}</div>`:''}<textarea class="form-area" id="brief-visit-text" placeholder="尽量完整描述你的拜访流程。"></textarea><div class="composer-foot"><span class="cost-note">Mock AI 将对方案做总结与风险提示。</span><button class="btn btn-violet" data-action="submit-brief-visit">提交方案</button></div></div></div>`
+}
+function renderBriefResult(){
+ const r=state.lastBriefResult,n=npc();
+ if(!r)return renderVisitModeChoice();
+ return `<div class="workspace-card"><div class="brief-result"><div class="eyebrow" style="color:#7b4bea">AI VISIT REVIEW</div><h3>${n.name} · 拜访方案模拟结果</h3><p>${esc(r.summary)}</p><div class="analysis-box"><strong>做得较好的部分</strong><ul>${r.strengths.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="analysis-box"><strong>需要补强</strong><ul>${r.risks.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><button class="btn" data-action="overview" style="margin-top:12px">返回联系人概览</button></div></div>`
+}
+function renderMeeting(){
+ const m=state.meeting,n=npc(m.npcId),arr=state.conversations[n.id].meeting,lastNpc=[...arr].reverse().find(x=>x.role==='npc'),lastPlayer=[...arr].reverse().find(x=>x.role==='player');
+ const taskTotal=n.meetingTasks?.length||0,taskDone=m.npcTasksCompleted?.length||0;
+ return `<div class="meeting-scene"><div class="meeting-top"><div><div class="eyebrow">线下拜访现场</div><h2>${m.location}</h2><div class="tiny" style="color:#c9d3df">第 ${m.turn+1} 轮 · NPC任务 ${taskDone}/${taskTotal} · 超过${m.maxTurns}轮自动结束</div></div><div class="meeting-pill">正在会面 · ${n.name}</div></div><div class="meeting-chat">${lastNpc?`<div class="npc-stage"><div class="portrait">${n.name[0]}</div><div class="speech"><strong>${n.name} · ${n.title}</strong>${esc(lastNpc.text)}</div></div>`:'<div class="notice" style="background:rgba(255,255,255,.92)">拜访开始。任一条件满足即结束：NPC完成提问 / 质疑 / 挖坑任务、对话超过20轮、或你主动告辞。</div>'}${lastPlayer?`<div class="player-last"><strong>你刚刚说：</strong>${esc(lastPlayer.text)}</div>`:''}<div class="meeting-composer"><textarea id="meeting-input" placeholder="输入现场发言；也可以直接表达告辞…"></textarea><button class="btn btn-primary" data-action="meeting-send">发送</button><button class="btn" data-action="end-visit">主动告辞</button></div></div></div>`
+}
+function renderResult(){
+ const r=state.result||MockData.result;
+ return `<main class="view result-page"><section class="result-hero"><div><div class="eyebrow" style="color:#b9cdfc">PROJECT 01 · 赛后复盘</div><h2>${r.won?'中标':'本场未中标'}</h2><div class="small" style="color:#c7d2df;max-width:690px;line-height:1.7">这里是 Mock 复盘，用来确认信息结构。正式开发时由真实结算 API 和 AI 诊断返回。</div><div class="result-stats">${r.breakdown.map(x=>`<div class="result-stat"><span>${x.label} · ${x.weight}</span><strong>${x.value}</strong></div>`).join('')}</div></div><div class="score-box"><div class="tiny" style="color:#c6d1df">最终得分</div><strong>${r.score}</strong><span style="color:#c6d1df"> / 100</span></div></section><div class="result-grid"><section class="card result-card"><h3>五维销售能力</h3>${r.dimensions.map(x=>scoreRow(x.label,x.value)).join('')}</section><section class="card result-card"><h3>人物态度揭示</h3><div class="attitude-grid">${r.attitudes.map(a=>{const n=npc(a.id);return `<div class="attitude"><div class="attitude-head"><div class="person-avatar">${n.name[0]}</div><div><strong class="small">${n.name}</strong><div class="tiny muted">${n.title}</div></div></div>${scoreRow('愉悦度',a.pleasant,true)}${scoreRow('支持度',a.support,true)}</div>`}).join('')}</div></section></div><section class="card result-card" style="margin-top:12px"><h3>价值证据账本</h3>${r.evidence.map(e=>`<div class="evidence-item">✓ ${esc(e.text)}<small>来源：${esc(e.source)}</small></div>`).join('')}</section><div class="result-actions"><button class="btn" data-action="restart">重新开局</button><button class="btn" data-action="back-projects">回到项目入口</button></div></main>`
+}
+function scoreRow(l,v,c=false){return `<div class="score-row" style="${c?'grid-template-columns:52px 1fr 28px;margin:6px 0':''}"><span>${l}</span><div class="bar"><span style="width:${v}%"></span></div><strong>${v}</strong></div>`}
+
+function bind(){
+ document.querySelectorAll('[data-action]').forEach(e=>e.addEventListener('click',handleAction));
+ document.querySelectorAll('[data-select-npc]').forEach(e=>e.addEventListener('click',()=>selectNpc(e.dataset.selectNpc)));
+ document.querySelectorAll('[data-workspace]').forEach(e=>e.addEventListener('click',()=>chooseWorkspace(e.dataset.workspace)));
+ if(state.screen==='result'){
+  const el=document.querySelector('.score-box strong');
+  if(el){const target=parseInt(el.textContent,10)||0,t0=performance.now();
+   const tick=t=>{const k=Math.min(1,(t-t0)/900),ease=1-Math.pow(1-k,3);
+    el.textContent=Math.round(target*ease);if(k<1)requestAnimationFrame(tick)};
+   el.textContent='0';requestAnimationFrame(tick)}
+ }
+ const gp=document.getElementById('global-plan');
+ if(gp)gp.addEventListener('input',()=>{state.workPlans.global=gp.value;save()});
+ const np=document.getElementById('npc-plan');
+ if(np)np.addEventListener('input',()=>{if(state.selectedNpcId){state.workPlans.byNpc[state.selectedNpcId]=np.value;save()}});
+ const at=document.getElementById('attachment-text');
+ if(at)at.addEventListener('input',updateMessageCost);
+ updateMessageCost();
+}
+function updateMessageCost(){
+ const att=document.getElementById('attachment-text');
+ const btn=document.querySelector('[data-action="send-message"]');
+ const note=document.querySelector('.composer-foot .cost-note');
+ if(!att||!btn)return;
+ const cost=att.value.trim()?2:1;
+ const label=state.workspaceMode==='wechat'?'微信':'邮件';
+ btn.textContent=`发送${label} · ${cost}点`;
+ if(note)note.innerHTML=`本次预计消耗 <strong>${cost} 行动点</strong>${cost===2?'（含附件 +1）':''}`;
+}
+function selectNpc(id){
+ if(state.selectedNpcId===id){return backToGlobalPlan()}
+ state.selectedNpcId=id;state.workspaceMode='overview';state.channel=null;state.phoneActive=false;save();render()
+}
+function backToGlobalPlan(){
+ state.selectedNpcId=null;
+ state.workspaceMode='overview';
+ state.channel=null;
+ state.phoneActive=false;
+ state.meeting=null;
+ save();
+ render();
+}
+function chooseWorkspace(mode){
+ if(mode==='visit'){
+   state.phoneActive=false;
+   if(!hasInvite(state.selectedNpcId)){state.workspaceMode='visit';save();render();return directVisitConfirm()}
+   if(!state.visitPreparations[state.selectedNpcId]){state.workspaceMode='visitPrep';save();render();return}
+   state.workspaceMode='visit';save();render();return
+ }
+ state.workspaceMode=mode;state.channel=mode;state.phoneActive=false;save();render();
+}
+async function analyzePlan(scope){
+ const id=scope==='global'?null:state.selectedNpcId;
+ const el=document.getElementById(scope==='global'?'global-plan':'npc-plan'),text=el?.value.trim()||'';
+ if(!text){toast('工作计划可以不填；如果要提交，请先输入一些内容。','warn');return}
+ if(scope==='global')state.workPlans.global=text;else state.workPlans.byNpc[id]=text;
+
+ const res=await PrototypeApi.analyzePlan({text,npcId:id});
+
+ // 内容过于简单：只提示细化，不扣点，也不给引导问题。
+ if(res.needsDetail){
+   if(scope==='global')state.planAnalysis.global=res;else state.planAnalysis.byNpc[id]=res;
+   save();render();toast('计划描述过于简单，请进一步细化。','warn');return;
+ }
+
+ // 同一份完全相同的有效计划重复查看，不重复扣点。
+ const previous=scope==='global'?state.submittedPlans.global:state.submittedPlans.byNpc[id];
+ const isRepeat=previous===text;
+ if(!isRepeat && !spend(1,'提交工作计划'))return;
+
+ const disclosed=[];
+ (res.revealDetails||[]).forEach(d=>{
+   const target=npc(d.npcId);
+   if(!target)return;
+   const candidates=[...(d.facts||[]),...(d.clues||[]).map(clue=>`线索：${clue}`)];
+   const current=state.publicIntel[d.npcId]||[];
+   const newly=candidates.filter(item=>!current.includes(item));
+   if(newly.length){
+     state.publicIntel[d.npcId]=[...current,...newly];
+     disclosed.push({npcId:d.npcId,name:target.name,facts:newly});
+     newly.forEach(item=>addUpdate(`工作计划触发信息披露：获得 ${target.name} 的人物信息——${item}`));
+   }
+ });
+
+ const result={...res,disclosed,charged:!isRepeat};
+ if(scope==='global'){
+   state.planAnalysis.global=result;
+   state.submittedPlans.global=text;
+ }else{
+   state.planAnalysis.byNpc[id]=result;
+   state.submittedPlans.byNpc[id]=text;
+ }
+ save();render();
+
+ if(disclosed.length){
+   const names=[...new Set(disclosed.map(d=>d.name))];
+   openModal(
+     '信息披露',
+     `<div class="notice green">已获得新的可披露人物信息。</div>
+      <div class="info-block" style="margin-top:10px">
+        <strong>已更新人物</strong>
+        <div class="small muted">${names.map(n=>esc(n)).join('、')}</div>
+      </div>
+      <div class="tiny muted" style="margin-top:10px;line-height:1.6">具体信息已同步到人物结构图，请到对应联系人节点查看。</div>`
+   );
+ } else {
+   toast(`计划已记录${isRepeat?'（未重复扣点）':'，消耗 1 行动点'}`,'success');
+ }
+}
+async function research(){
+ const n=npc();if(!n||!spend(2,'搜索公开信息'))return;
+ toast('正在搜索公开信息…');const data=await PrototypeApi.researchPublicInfo(n);
+ const old=state.publicIntel[n.id]||[];state.publicIntel[n.id]=[...new Set([...old,...data.facts])];
+ addUpdate(`获得 ${n.name} 的公开信息 ${data.facts.length} 条，已显示在人物结构图旁。`);
+ save();render();openModal(`${n.name} · 公开信息`,`<div class="notice">来源：${esc(data.source)}。这些只是公开可获得的信息，不代表隐藏态度。</div>${data.facts.map(x=>`<div class="info-block" style="margin-top:8px">${esc(x)}</div>`).join('')}<div class="notice amber" style="margin-top:8px"><strong>可匹配线索</strong><br>${data.clues.map(x=>esc(x)).join('<br>')}<br><span class="tiny">线索只有在工作计划关键词命中时才会持续写入人物信息。</span></div>`);
+}
+async function sendMessage(){
+ const n=npc(),ch=state.workspaceMode;if(!['email','wechat'].includes(ch))return;
+ const text=document.getElementById('message-text')?.value.trim()||'',att=document.getElementById('attachment-text')?.value.trim()||'';
+ if(!text){toast('先输入要发送的内容','warn');return}
+ const cost=1+(att?1:0);if(!spend(cost,`${channelLabel(ch)}发送`))return;
+ const arr=state.conversations[n.id][ch];arr.push({role:'player',channel:channelLabel(ch),text,attachment:att||null});
+ save();render();const turn=arr.filter(x=>x.role==='npc').length;const res=await PrototypeApi.sendNpcMessage({npcId:n.id,channel:ch,turn});arr.push({role:'npc',channel:channelLabel(ch),text:res.content});addUpdate(`${n.name} 已回复你的${channelLabel(ch)}。`);save();render();toast(`${channelLabel(ch)}已发送，消耗 ${cost} 行动点`,'success');
+ if(detectInvite(text))await inviteSuccess(text);
+}
+async function requestWechat(){
+ const n=npc(),reason=document.getElementById('wechat-reason')?.value.trim()||'';
+ if(reason.length<8){toast('请用自然语言说明添加工作微信的原因','warn');return}
+ if(!spend(1,'申请工作微信'))return;
+ state.wechat[n.id]='pending';save();render();
+ const res=await PrototypeApi.requestWechat({npcId:n.id,reason});
+ if(res.accepted){state.wechat[n.id]='accepted';state.conversations[n.id].wechat.push({role:'npc',channel:'微信',text:MockData.replies[n.id]?.wechat?.[0]||'工作微信已通过。'});addUpdate(`${n.name} 已通过工作微信申请。`);save();render();toast('工作微信申请已通过','success')}
+ else{state.wechat[n.id]='rejected';save();render();toast('对方暂未通过工作微信申请','warn')}
+}
+async function inviteSuccess(text){
+ const n=npc();if(hasInvite(n.id))return;
+ const appt=await PrototypeApi.createInvitation({npcId:n.id,message:text,phase:state.phase});state.appointments.push(appt);addUpdate(`${n.name} 已接受邀约。可以进入拜访准备。`);save();render();
+ openModal('邀约已接受',`<div class="notice green">AI 判断 ${n.name} 已接受本阶段拜访邀约。</div><div class="info-block" style="margin-top:10px"><strong>下一步</strong><div class="small muted">建议先简述你准备如何开展这次拜访，再选择实际模拟或简述拜访方案。</div></div>`,`<button class="btn" data-modal-close>稍后准备</button><button class="btn btn-primary" id="go-prep">进入准备</button>`);
+ document.getElementById('go-prep').onclick=()=>{closeModal();state.workspaceMode='visitPrep';save();render()}
+}
+function directVisitConfirm(){
+ const n=npc();
+ openModal('未进行邀约',`<div class="notice amber">您未进行邀约，是否选择直接登门拜访 ${n.name}？</div><div class="small muted" style="margin-top:10px;line-height:1.7">当前仅展示直接登门的原型交互及风险提示。</div>`,`<button class="btn" data-modal-close>取消</button><button class="btn btn-primary" id="confirm-door">选择直接登门</button>`);
+ document.getElementById('confirm-door').onclick=()=>{closeModal();state.appointments.push({id:`door-${Date.now()}`,npcId:n.id,status:'accepted',phase:state.phase,location:'客户单位 · 直接登门',direct:true});addUpdate(`你选择未邀约直接登门拜访 ${n.name}。`);state.workspaceMode='visitPrep';save();render()}
+}
+function saveVisitPrep(){
+ const text=document.getElementById('visit-prep-text')?.value.trim()||'';if(text.length<12){toast('请至少简述一下拜访准备，再继续。','warn');return}
+ state.visitPreparations[state.selectedNpcId]=text;state.workspaceMode='visit';save();render();toast('拜访准备已保存','success')
+}
+function startVisitSimulation(){
+ const n=npc(),appt=state.appointments.find(a=>a.npcId===n.id&&a.status==='accepted');if(!appt){toast('当前没有可执行的拜访','warn');return}
+ if(!spend(3,'实际拜访'))return;
+ state.meeting={npcId:n.id,appointmentId:appt.id,location:appt.location||'客户单位会议室',turn:0,maxTurns:20,npcTasksCompleted:[]};save();render();toast('进入实际拜访模拟','success')
+}
+async function submitBriefVisit(){
+ const n=npc(),text=document.getElementById('brief-visit-text')?.value.trim()||'';if(text.length<30){toast('拜访方案过于简单，请再细化一些。','warn');return}
+ if(!spend(2,'简述拜访方案'))return;
+ const r=await PrototypeApi.analyzeBriefVisit({npcId:n.id,text});state.lastBriefResult=r;state.workspaceMode='briefResult';state.completedVisits.push({npcId:n.id,type:'brief',phase:state.phase});const appt=state.appointments.find(a=>a.npcId===n.id&&a.status==='accepted');if(appt)appt.status='completed';addUpdate(`已完成与 ${n.name} 的“简述拜访方案”模拟评估。`);save();render();toast('AI 拜访方案评估已完成','success')
+}
+async function sendPostal(){
+ const n=npc(),text=document.getElementById('postal-text')?.value.trim()||'';if(text.length<8){toast('请描述要邮寄的材料','warn');return}
+ if(!spend(2,'邮寄材料'))return;
+ const item=await PrototypeApi.sendPostal({npcId:n.id,text,phase:state.phase});state.postal.push(item);state.conversations[n.id].postal.push({role:'player',channel:'邮寄',text});addUpdate(`已向 ${n.name} 邮寄材料：${text.slice(0,24)}${text.length>24?'…':''}`);save();render();toast('邮寄记录已创建（2 行动点）','success')
+}
+function callNpc(){
+ const n=npc();if(!spend(1,'拨打电话'))return;
+ state.phoneAttempts[n.id]=(state.phoneAttempts[n.id]||0)+1;
+ if(state.phoneAttempts[n.id]===1&&n.firstCallMiss){state.conversations[n.id].work_phone.push({role:'npc',channel:'电话',text:'本次电话无人接听。'});addUpdate(`拨打 ${n.name} 工作电话未接通。`);save();render();toast('电话无人接听','warn');return}
+ state.phoneActive=true;state.conversations[n.id].work_phone.push({role:'npc',channel:'电话',text:MockData.replies[n.id]?.phone?.[0]||'你好。'});save();render();toast('电话已接通','success')
+}
+async function phoneSay(){
+ const n=npc(),text=document.getElementById('phone-text')?.value.trim()||'';if(!text)return;
+ const arr=state.conversations[n.id].work_phone;arr.push({role:'player',channel:'电话',text});const turn=arr.filter(x=>x.role==='npc').length;const res=await PrototypeApi.sendNpcMessage({npcId:n.id,channel:'work_phone',turn});arr.push({role:'npc',channel:'电话',text:res.content});save();render();if(detectInvite(text))await inviteSuccess(text)
+}
+async function meetingSend(){
+ const m=state.meeting,n=npc(m.npcId),text=document.getElementById('meeting-input')?.value.trim()||'';if(!text)return;
+ const arr=state.conversations[n.id].meeting;arr.push({role:'player',channel:'拜访',text});m.turn+=1;
+ if(detectFarewell(text)){
+  arr.push({role:'npc',channel:'拜访',text:'好的，今天先到这里。后续事项请按我们刚才确认的方式推进。'});save();render();await PrototypeApi.sleep(500);return finishVisit('player_farewell');
+ }
+ save();render();
+ const res=await PrototypeApi.sendNpcMessage({npcId:n.id,channel:'meeting',turn:m.turn-1});
+ arr.push({role:'npc',channel:'拜访',text:res.content,taskType:res.taskType||null});
+ if(res.taskType&&!m.npcTasksCompleted.includes(res.taskType))m.npcTasksCompleted.push(res.taskType);
+ save();render();
+ if(res.npcTaskCompleted){await PrototypeApi.sleep(650);return finishVisit('npc_task_completed')}
+ if(m.turn>m.maxTurns){await PrototypeApi.sleep(650);return finishVisit('max_rounds')}
+}
+function finishVisit(endReason){
+ const m=state.meeting;if(!m)return;
+ const labels={npc_task_completed:'NPC已完成本次任务（提问 / 质疑 / 挖坑）',max_rounds:'对话轮次已超过20轮',player_farewell:'玩家主动提出告辞'};
+ const n=npc(m.npcId),appt=state.appointments.find(a=>a.id===m.appointmentId);if(appt)appt.status='completed';
+ state.completedVisits.push({npcId:n.id,type:'simulated',phase:state.phase,endReason,turns:m.turn,npcTasksCompleted:[...(m.npcTasksCompleted||[])]});
+ state.meeting=null;state.workspaceMode='overview';addUpdate(`已完成与 ${n.name} 的实际拜访模拟：${labels[endReason]}。`);save();render();
+ openModal('拜访结束',`<div class="notice green">${labels[endReason]}</div><div class="small muted" style="margin-top:10px">本次共进行 ${m.turn} 轮对话。</div>`,`<button class="btn btn-primary" data-modal-close>确认</button>`);toast('拜访已结束','success')
+}
+function endVisit(){
+ finishVisit('player_farewell')
+}
+function showEndPhase(){
+ if(state.phase===5)return showSubmission();
+ const open=state.appointments.filter(a=>a.status==='accepted');
+ openModal(`结束第 ${state.phase} 阶段`,`<div class="notice amber">结束阶段前请检查未完成事项。</div><div class="check-list"><div class="check-item"><span>当前无进行中的拜访</span><span class="${!state.meeting?'ok':'warn'}">${!state.meeting?'✓ 已处理':'! 请注意'}</span></div><div class="check-item"><span>已邀约但未完成的拜访</span><span class="${open.length?'warn':'ok'}">${open.length?`! ${open.length} 项`:'✓ 已处理'}</span></div><div class="check-item"><span>当前行动点</span><strong>${state.actionPoints}</strong></div></div>`,`<button class="btn" data-modal-close>取消</button><button class="btn btn-primary" id="next-phase">确认进入下一阶段</button>`);
+ document.getElementById('next-phase').onclick=advancePhase
+}
+function advancePhase(){
+ state.phase+=1;state.actionPoints=Math.min(28,state.actionPoints+8);state.selectedNpcId=null;state.workspaceMode='overview';state.phoneActive=false;if(state.phase>=3&&state.competitorEventsSeen.length<MockData.competitorEvents.length)state.competitorEventsSeen.push(MockData.competitorEvents[state.competitorEventsSeen.length]);addUpdate(`已进入第 ${state.phase} 阶段 · ${phaseMeta().name}。`);save();closeModal();render();toast('已进入下一阶段','success')
+}
+function showSubmission(){
+ const contacted=MockData.npcs.filter(n=>Object.values(state.conversations[n.id]).some(a=>a.length)).length,visits=state.completedVisits.length,plans=(state.workPlans.global?1:0)+Object.values(state.workPlans.byNpc).filter(Boolean).length;
+ openModal('项目提交检查',`${state.phase<5?'<div class="notice red">当前未到第 5 阶段；原型仍允许查看提交体验。</div>':'<div class="notice green">已进入最终阶段。</div>'}<div class="check-list"><div class="check-item"><span>已形成沟通记录的联系人</span><strong>${contacted} / ${MockData.npcs.length}</strong></div><div class="check-item"><span>已完成拜访 / 拜访方案</span><strong>${visits} 次</strong></div><div class="check-item"><span>已输入并分析的工作计划</span><strong>${plans} 份</strong></div><div class="check-item"><span>已获得公开信息的人物</span><strong>${Object.entries(state.publicIntel).filter(([id,items])=>npcIds.has(id)&&items.length).length} 人</strong></div><div class="check-item"><span>累计消耗行动点</span><strong>${state.totalSpent}</strong></div></div>`,`<button class="btn" data-modal-close>继续行动</button><button class="btn btn-primary" id="confirm-submit">确认提交项目</button>`);
+ document.getElementById('confirm-submit').onclick=submitProject
+}
+async function submitProject(){const r=await PrototypeApi.submitProject();state.result=r;state.screen='result';save();closeModal();render();toast('Mock 复盘已生成','success')}
+
+async function handleAction(e){
+ const a=e.currentTarget.dataset.action;
+ if(a==='select-project')document.querySelector('.project-detail')?.scrollIntoView({behavior:'smooth'});
+ if(a==='mode')patch({playMode:e.currentTarget.dataset.mode});
+ if(a==='start'){if(state.playMode==='multiplayer'){toast('多人模式当前只保留入口','warn');return}patch({screen:'game'})}
+ if(a==='reset')openConfirm('重置原型','会清除浏览器本地的 v10 演示进度。',()=>{state=initialState();save();closeModal();render()});
+ if(a==='analyze-global-plan')return analyzePlan('global');
+ if(a==='analyze-npc-plan')return analyzePlan('npc');
+ if(a==='research')return research();
+ if(a==='back-global')return backToGlobalPlan();
+ if(a==='send-message')return sendMessage();
+ if(a==='request-wechat')return requestWechat();
+ if(a==='send-postal')return sendPostal();
+ if(a==='call')return callNpc();
+ if(a==='phone-say')return phoneSay();
+ if(a==='end-call'){state.phoneActive=false;save();render()}
+ if(a==='direct-visit-confirm')return directVisitConfirm();
+ if(a==='save-visit-prep')return saveVisitPrep();
+ if(a==='visit-sim')return startVisitSimulation();
+ if(a==='visit-brief'){state.workspaceMode='briefVisit';save();render()}
+ if(a==='submit-brief-visit')return submitBriefVisit();
+ if(a==='meeting-send')return meetingSend();
+ if(a==='end-visit')return endVisit();
+ if(a==='overview'){state.workspaceMode='overview';save();render()}
+ if(a==='end-phase')return showEndPhase();
+ if(a==='submit')return showSubmission();
+ if(a==='restart'){state=initialState();state.screen='game';save();render()}
+ if(a==='back-projects'){state=initialState();save();render()}
+}
+function openModal(title,body,footer='<button class="btn btn-primary" data-modal-close>知道了</button>'){modalRoot.innerHTML=`<div class="modal-backdrop"><div class="modal"><div class="modal-head"><h3>${title}</h3><button class="modal-close" data-modal-close>×</button></div><div class="modal-body">${body}</div><div class="modal-footer">${footer}</div></div></div>`;modalRoot.querySelectorAll('[data-modal-close]').forEach(x=>x.onclick=closeModal);modalRoot.querySelector('.modal-backdrop')?.addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))closeModal()})}
+function closeModal(){modalRoot.innerHTML=''}
+function openConfirm(title,text,fn){openModal(title,`<div class="notice red">${text}</div>`,`<button class="btn" data-modal-close>取消</button><button class="btn btn-danger" id="generic-confirm">确认</button>`);document.getElementById('generic-confirm').onclick=fn}
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape' && state.screen==='game' && state.selectedNpcId && !modalRoot.innerHTML){
+   backToGlobalPlan();
+ }
+});
+render();
+})();
+</script>
+</body>
+</html>

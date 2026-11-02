@@ -1,0 +1,261 @@
+{
+  "createdAt": "2026-10-15T04:00:06.426Z",
+  "sampleType": "15 one-turn direct prompt samples for Zhang Jianguo only; not a full game UI visit",
+  "runId": "quick-15",
+  "plannedCases": 15,
+  "completedCases": 15,
+  "outputStatusCounts": {
+    "request_error": 5,
+    "valid": 10
+  },
+  "providers": [
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "origin": "api.deepseek.com"
+    },
+    {
+      "provider": "doubao",
+      "model": "doubao-seed-2-0-lite-260428",
+      "origin": "ark.cn-beijing.volces.com"
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen-plus",
+      "origin": "dashscope.aliyuncs.com"
+    }
+  ],
+  "supportTiers": {
+    "low": 20,
+    "medium": 50,
+    "high": 80
+  },
+  "casesPerProvider": 5,
+  "settings": {
+    "temperature": 0.35,
+    "maxTokens": 3000,
+    "jsonMode": true,
+    "thinking": "disabled",
+    "retries": 0
+  },
+  "softLengthReferenceChars": {
+    "low": 40,
+    "medium": 55,
+    "high": 75
+  },
+  "savedConfigRevision": 8,
+  "reportPath": "D:\\WeiXun\\project_20260811_095926\\outputs\\2026-10-15-Excel版张建国三模型快测.md",
+  "records": [
+    {
+      "caseId": "deepseek-P1-001-low-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "opening",
+      "tier": "low",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    },
+    {
+      "caseId": "deepseek-P1-001-medium-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "opening",
+      "tier": "medium",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    },
+    {
+      "caseId": "deepseek-P1-001-high-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "opening",
+      "tier": "high",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    },
+    {
+      "caseId": "deepseek-P1-001-low-sensitive-refusal",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "sensitive-refusal",
+      "tier": "low",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    },
+    {
+      "caseId": "doubao-P1-001-medium-opening",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "kind": "opening",
+      "tier": "medium",
+      "outputStatus": "valid",
+      "contentChars": 31,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "doubao-P1-001-low-opening",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "kind": "opening",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 26,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "doubao-P1-001-high-opening",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "kind": "opening",
+      "tier": "high",
+      "outputStatus": "valid",
+      "contentChars": 33,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "doubao-P1-001-low-sensitive-refusal",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "kind": "sensitive-refusal",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 25,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "qwen-P1-001-low-opening",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "kind": "opening",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 38,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "doubao-P1-001-low-long-pitch",
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "returnedModel": "doubao-seed-2-0-lite-260428",
+      "kind": "long-pitch",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 36,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "qwen-P1-001-medium-opening",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "kind": "opening",
+      "tier": "medium",
+      "outputStatus": "valid",
+      "contentChars": 26,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "qwen-P1-001-high-opening",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "kind": "opening",
+      "tier": "high",
+      "outputStatus": "valid",
+      "contentChars": 39,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "qwen-P1-001-low-sensitive-refusal",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "kind": "sensitive-refusal",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 37,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "qwen-P1-001-low-long-pitch",
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "returnedModel": "qwen-plus",
+      "kind": "long-pitch",
+      "tier": "low",
+      "outputStatus": "valid",
+      "contentChars": 36,
+      "overSoftReference": false,
+      "identityViolation": false,
+      "httpStatus": 200,
+      "finishReason": "stop"
+    },
+    {
+      "caseId": "deepseek-P1-001-low-long-pitch",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "long-pitch",
+      "tier": "low",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    }
+  ],
+  "finishedAt": "2026-10-15T04:00:06.449Z"
+}

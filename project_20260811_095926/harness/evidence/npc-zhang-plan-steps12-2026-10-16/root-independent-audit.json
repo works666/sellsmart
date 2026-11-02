@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "sourceRevision": 10,
+  "sourceExcelUnchanged": true,
+  "records": 48,
+  "singleRecords": 39,
+  "multiRecords": 9,
+  "canonicalAttemptLogs": 48,
+  "originalAttempts": 49,
+  "correctedMultiAttempts": 9,
+  "actualCompletionCalls": 58,
+  "initialDeepseekWhitespaceResponses": 3,
+  "silenceProvidersT040": [],
+  "allInputsMatchWorkbookVerbatim": true,
+  "singleSessionsIndependent": true,
+  "multiHistoryIncludesExactRawJsonAssistantAndDecodedText": true,
+  "channelAndTierPromptsMatchSourceConfig": true,
+  "sameSystemPromptsAcrossModels": true,
+  "rawResponsesIndependentlyParsed": true,
+  "noOtherNpcTested": true
+}

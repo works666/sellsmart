@@ -1,0 +1,7 @@
+{
+  "earlierDiagnosticRun": "v5-conflict-2x2",
+  "difference": "Only frozen userData npc.title had extra 高层领导; system hashes exact. Earlier 8 responses retained as within-variant controls.",
+  "correctedTitle": "主管副总经理",
+  "source": "projects/src/lib/designer/project-one-five-person.ts and original v5 runner prepareMessages",
+  "oldFrozenCopy": "frozen-v5-messages-initial-title-variant.json"
+}

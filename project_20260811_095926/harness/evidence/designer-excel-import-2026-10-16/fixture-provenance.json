@@ -1,0 +1,9 @@
+{
+  "recordedBeforeOriginalWasRestored": true,
+  "currentOriginalRecoveryEvidence": "recovered-original.json",
+  "originalFileAvailable": false,
+  "archivedSourceSha256": "8de831fd8d19c2d0a14be4fee7e24f831d2658766c21d372b07c16e42853b43f",
+  "fixtureReconstructedFromArchivedText": true,
+  "exactPromptFieldsVerified": 35,
+  "notOriginalWorkbookBytes": true
+}

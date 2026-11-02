@@ -1,0 +1,477 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import { getAiProviderConfig, type AiProvider, type ChatMessage } from '../project_20260811_095926/projects/src/lib/ai/client';
+import { hasNpcSpeakerIdentityViolation } from '../project_20260811_095926/projects/src/lib/ai/npc-speaker-identity';
+import { PROJECT_ONE_FIVE_PERSON_NPCS } from '../project_20260811_095926/projects/src/lib/designer/project-one-five-person';
+
+type Provider = Extract<AiProvider, 'deepseek' | 'doubao' | 'qwen'>;
+type Json = Record<string, unknown>;
+type ProviderConfig = { provider: Provider; configuredModel: string; requestedModel: string; origin: string; configuredTimeoutMs: number };
+type PlannedCase = {
+  caseId: string; phase: 'multi'; sequenceId: 'M01'; conversationKey: 'multi:M01'; sourceId: string;
+  sourceRow: number; turn: number; tier: string; tierLabel: string; support: number; pleasantness: number;
+  channel: string; channelLabel: string; focus: string; input: string; inputSha256: string;
+  expected: string; risk: string; encounterFacts: string[]; allowEmpty: boolean;
+  systemPromptSha256: string; messagesSha256WithMultiPlaceholders: string;
+  messageRoles: string[]; historyBeforeTurn: Array<{ turn: number; sourceId: string; input: string; assistantContentPlaceholder: string }>;
+  promptMessages: ChatMessage[];
+};
+type Parsed = { outputStatus: string; valid: boolean; decodedContent: string | null; apiMessageContent: string | null; returnedModel: string | null; finishReason: string | null; usage: unknown; reasoningContentChars: number | null };
+type AttemptRecord = Json & { provider: Provider; caseId: string; attempt: number; valid: boolean; outputStatus: string; decodedContent: string | null; apiMessageContent: string | null; httpStatus: number | null; latencyMs: number };
+
+const providers: Provider[] = ['deepseek', 'doubao', 'qwen'];
+const allowedHosts: Record<Provider, string> = { deepseek: 'api.deepseek.com', doubao: 'ark.cn-beijing.volces.com', qwen: 'dashscope.aliyuncs.com' };
+const maxAttempts = 3;
+const deepseekTimeoutMs = 180_000;
+const npc = PROJECT_ONE_FIVE_PERSON_NPCS['P1-001'];
+const scriptDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
+const projectRoot = path.join(scriptDir, '..', 'project_20260811_095926');
+const evidenceDir = path.join(projectRoot, 'harness/evidence/npc-zhang-plan-steps12-2026-10-16');
+const initialDir = path.join(evidenceDir, 'initial-run');
+const childDir = path.join(evidenceDir, 'json-assistant-history');
+const require = createRequire(path.join(projectRoot, 'projects/package.json'));
+const dotenv = require('dotenv') as { config: (options: { path: string; quiet?: boolean; override?: boolean }) => unknown };
+dotenv.config({ path: path.join(projectRoot, 'projects/.env.local'), quiet: true, override: false });
+const execute = process.argv.includes('--execute');
+const runId = 'zhang-steps12-json-history-20261016';
+
+function hash(value: string | Buffer): string { return crypto.createHash('sha256').update(value).digest('hex'); }
+function chars(value: string): number { return Array.from(value).length; }
+function writeJson(target: string, value: unknown): void { fs.writeFileSync(target, JSON.stringify(value, null, 2) + '\n', 'utf8'); }
+function readJson(target: string): Json { return JSON.parse(fs.readFileSync(target, 'utf8').replace(/^\uFEFF/, '')) as Json; }
+function obj(value: unknown, label: string): Json {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${label}_SHAPE`);
+  return value as Json;
+}
+function ndjson(target: string): Json[] {
+  return fs.readFileSync(target, 'utf8').split(/\r?\n/).filter(Boolean).map((line) => obj(JSON.parse(line), path.basename(target)));
+}
+function shaFile(target: string): string { return hash(fs.readFileSync(target)); }
+function verifyArchive(): void {
+  const checks = readJson(path.join(initialDir, 'archive-checksums.json'));
+  const rows = checks.files as Array<{ file: string; sha256: string; bytes: number; byteExact: boolean }>;
+  for (const row of rows) {
+    const target = path.join(initialDir, row.file);
+    const bytes = fs.readFileSync(target);
+    if (bytes.length !== row.bytes || shaFile(target) !== row.sha256 || !row.byteExact) throw new Error(`INITIAL_RUN_ARCHIVE_CHANGED:${row.file}`);
+  }
+}
+function providerConfigs(initialManifest: Json): ProviderConfig[] {
+  const prior = initialManifest.providers as Array<Json>;
+  if (!Array.isArray(prior)) throw new Error('INITIAL_PROVIDER_CONFIGS_MISSING');
+  return providers.map((provider) => {
+    const old = prior.find((row) => row.provider === provider);
+    if (!old || typeof old.configuredModel !== 'string' || typeof old.requestedModel !== 'string' || typeof old.origin !== 'string') throw new Error(`INITIAL_PROVIDER_INFO_MISSING:${provider}`);
+    const env = getAiProviderConfig(provider);
+    const url = new URL(env.baseUrl);
+    if (url.protocol !== 'https:' || url.hostname.toLowerCase() !== allowedHosts[provider] || old.origin !== allowedHosts[provider]) throw new Error(`PROVIDER_ORIGIN_NOT_ALLOWLISTED:${provider}`);
+    if (env.model !== old.configuredModel) throw new Error(`CONFIGURED_MODEL_CHANGED:${provider}`);
+    return { provider, configuredModel: old.configuredModel, requestedModel: old.requestedModel, origin: old.origin, configuredTimeoutMs: env.timeoutMs };
+  });
+}
+function loadCases(plan: Json): PlannedCase[] {
+  const items = (plan.testCases as PlannedCase[]).filter((item) => item.phase === 'multi' && item.sequenceId === 'M01');
+  if (items.length !== 3 || items.map((item) => item.sourceId).join(',') !== 'T027,T028,T029') throw new Error('MULTI_CASE_PLAN_INVALID');
+  const expectedRoles = [['system', 'user'], ['system', 'user', 'assistant', 'user'], ['system', 'user', 'assistant', 'user', 'assistant', 'user']];
+  for (const [index, item] of items.entries()) {
+    if (item.channel !== 'visit' || item.tier !== 'low' || item.support !== 20 || item.allowEmpty) throw new Error(`MULTI_CASE_CONTEXT_INVALID:${item.caseId}`);
+    if (JSON.stringify(item.messageRoles) !== JSON.stringify(expectedRoles[index])) throw new Error(`MULTI_CASE_ROLE_TEMPLATE_INVALID:${item.caseId}`);
+  }
+  return items;
+}
+function loadProviderConfigsAndEvidence() {
+  verifyArchive();
+  const initialManifest = readJson(path.join(initialDir, 'manifest.json'));
+  const initialPlan = readJson(path.join(initialDir, 'prepared-plan.json'));
+  const initialResults = readJson(path.join(initialDir, 'final-results.json'));
+  const originalRequests = ndjson(path.join(initialDir, 'requests.ndjson'));
+  const originalResponses = ndjson(path.join(initialDir, 'responses.ndjson'));
+  const cases = loadCases(initialPlan);
+  const configs = providerConfigs(initialManifest);
+  const revision = Number(initialManifest.sourceRevision);
+  if (!Number.isInteger(revision) || revision !== 10) throw new Error('INITIAL_PROMPT_REVISION_NOT_R10');
+  return { initialManifest, initialPlan, initialResults, originalRequests, originalResponses, cases, configs, revision };
+}
+function endpoint(provider: Provider): URL {
+  const config = getAiProviderConfig(provider);
+  const base = new URL(config.baseUrl);
+  if (base.protocol !== 'https:' || base.hostname.toLowerCase() !== allowedHosts[provider]) throw new Error(`PROVIDER_ORIGIN_NOT_ALLOWLISTED:${provider}`);
+  const pathname = base.pathname.replace(/\/+$/, '');
+  const url = pathname.endsWith('/chat/completions') ? base : new URL(`${pathname}/chat/completions`, base.origin);
+  url.search = ''; url.hash = '';
+  return url;
+}
+function messagesWithRawAssistantHistory(testCase: PlannedCase, selectedApiMessages: Map<string, string>): ChatMessage[] {
+  const messages = testCase.promptMessages.map((message) => ({ ...message }));
+  for (const message of messages) {
+    if (message.role !== 'assistant' || !message.content.startsWith('{{actual_selected_content:')) continue;
+    const key = message.content.slice('{{actual_selected_content:'.length, -2);
+    const rawJson = selectedApiMessages.get(key);
+    if (!rawJson) throw new Error(`MISSING_PREVIOUS_API_ASSISTANT_CONTENT:${key}`);
+    let parsed: unknown;
+    try { parsed = JSON.parse(rawJson); } catch { throw new Error(`PRIOR_API_ASSISTANT_CONTENT_NOT_JSON:${key}`); }
+    if (!parsed || typeof parsed !== 'object' || typeof (parsed as Json).content !== 'string') throw new Error(`PRIOR_API_ASSISTANT_CONTENT_SHAPE:${key}`);
+    message.content = rawJson;
+  }
+  if (messages.some((message) => message.content.startsWith('{{actual_selected_content:'))) throw new Error(`UNRESOLVED_HISTORY_PLACEHOLDER:${testCase.caseId}`);
+  const roles = messages.map((message) => message.role);
+  if (JSON.stringify(roles) !== JSON.stringify(testCase.messageRoles)) throw new Error(`ACTUAL_MESSAGE_ROLES_INVALID:${testCase.caseId}`);
+  return messages;
+}
+function parseSse(raw: string): Parsed {
+  let apiMessageContent = ''; let returnedModel: string | null = null; let finishReason: string | null = null;
+  let usage: unknown = null; let reasoningContentChars = 0; let sawEvent = false;
+  for (const line of raw.split(/\r?\n/)) {
+    if (!line.startsWith('data:')) continue;
+    const value = line.slice(5).trim();
+    if (!value || value === '[DONE]') continue;
+    let event: Json;
+    try { event = obj(JSON.parse(value), 'SSE_EVENT'); } catch { continue; }
+    sawEvent = true;
+    if (typeof event.model === 'string') returnedModel = event.model;
+    if (event.usage !== undefined) usage = event.usage;
+    const choice = Array.isArray(event.choices) ? event.choices[0] as Json | undefined : undefined;
+    if (!choice) continue;
+    if (typeof choice.finish_reason === 'string') finishReason = choice.finish_reason;
+    const delta = choice.delta && typeof choice.delta === 'object' ? choice.delta as Json : null;
+    const text = delta?.content;
+    if (typeof text === 'string') apiMessageContent += text;
+    else if (Array.isArray(text)) apiMessageContent += text.map((part) => part && typeof part === 'object' && (part as Json).type === 'text' ? String((part as Json).text ?? '') : '').join('');
+    if (typeof delta?.reasoning_content === 'string') reasoningContentChars += chars(delta.reasoning_content);
+  }
+  if (!sawEvent) return { outputStatus: 'blank_sse', valid: false, decodedContent: null, apiMessageContent: null, returnedModel, finishReason, usage, reasoningContentChars };
+  if (!apiMessageContent.trim()) return { outputStatus: 'blank_content', valid: false, decodedContent: null, apiMessageContent, returnedModel, finishReason, usage, reasoningContentChars };
+  return parseContentString(apiMessageContent, { returnedModel, finishReason, usage, reasoningContentChars });
+}
+function parseContentString(apiMessageContent: string, meta: Pick<Parsed, 'returnedModel' | 'finishReason' | 'usage' | 'reasoningContentChars'>): Parsed {
+  let result: unknown;
+  try { result = JSON.parse(apiMessageContent); } catch { return { ...meta, outputStatus: 'invalid_json', valid: false, decodedContent: null, apiMessageContent }; }
+  if (!result || typeof result !== 'object' || Array.isArray(result) || Object.keys(result).length !== 1 || typeof (result as Json).content !== 'string') {
+    return { ...meta, outputStatus: 'invalid_shape', valid: false, decodedContent: null, apiMessageContent };
+  }
+  const decodedContent = (result as { content: string }).content;
+  if (!decodedContent.trim()) return { ...meta, outputStatus: 'blank_content', valid: false, decodedContent: null, apiMessageContent };
+  return { ...meta, outputStatus: 'valid', valid: true, decodedContent, apiMessageContent };
+}
+function parseNonStreaming(raw: string): Parsed {
+  let response: Json;
+  try { response = obj(JSON.parse(raw), 'COMPLETION_RESPONSE'); } catch { return { outputStatus: 'invalid_json', valid: false, decodedContent: null, apiMessageContent: null, returnedModel: null, finishReason: null, usage: null, reasoningContentChars: null }; }
+  const choice = Array.isArray(response.choices) ? response.choices[0] as Json | undefined : undefined;
+  const message = choice?.message && typeof choice.message === 'object' ? choice.message as Json : null;
+  const rawContent = message?.content;
+  const apiMessageContent = typeof rawContent === 'string' ? rawContent : Array.isArray(rawContent)
+    ? rawContent.map((part) => part && typeof part === 'object' && (part as Json).type === 'text' ? String((part as Json).text ?? '') : '').join('') : null;
+  const meta = {
+    returnedModel: typeof response.model === 'string' ? response.model : null,
+    finishReason: typeof choice?.finish_reason === 'string' ? choice.finish_reason : null,
+    usage: response.usage ?? null,
+    reasoningContentChars: typeof message?.reasoning_content === 'string' ? chars(message.reasoning_content) : 0,
+  };
+  if (apiMessageContent === null) return { ...meta, outputStatus: 'invalid_shape', valid: false, decodedContent: null, apiMessageContent: null };
+  if (!apiMessageContent.trim()) return { ...meta, outputStatus: 'blank_content', valid: false, decodedContent: null, apiMessageContent };
+  return parseContentString(apiMessageContent, meta);
+}
+function safeError(error: unknown): string {
+  if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)) return 'TIMEOUT';
+  if (error instanceof TypeError) return 'NETWORK_ERROR';
+  return 'REQUEST_ERROR';
+}
+function providerBaseRequest(provider: Provider, firstCase: PlannedCase, evidence: ReturnType<typeof loadProviderConfigsAndEvidence>): Json {
+  const prior = evidence.originalRequests.find((row) => row.provider === provider && row.caseId === firstCase.caseId && row.attempt === 1);
+  if (!prior) throw new Error(`INITIAL_TEMPLATE_REQUEST_MISSING:${provider}`);
+  const body = obj(prior.body, 'INITIAL_TEMPLATE_BODY');
+  if (body.model !== evidence.configs.find((config) => config.provider === provider)?.requestedModel) throw new Error(`REQUESTED_MODEL_DRIFT:${provider}`);
+  if (!Array.isArray(body.messages) || JSON.stringify((body.messages as ChatMessage[]).map((message) => message.role)) !== JSON.stringify(['system', 'user'])) {
+    throw new Error(`INITIAL_TEMPLATE_MESSAGES_INVALID:${provider}`);
+  }
+  return body;
+}
+function makeBody(provider: Provider, baseBody: Json, messages: ChatMessage[]): Json {
+  return { ...baseBody, messages, stream: provider === 'deepseek' };
+}
+function writeProgress(evidence: ReturnType<typeof loadProviderConfigsAndEvidence>, records: Json[], childManifest: Json): void {
+  writeJson(path.join(childDir, 'final-results.json'), {
+    sourceRevision: evidence.revision, runId, historyAssistantFormat: 'raw API message.content JSON string',
+    plannedOutputs: 9, completedOutputs: records.length, providers: evidence.configs, records,
+  });
+  writeJson(path.join(childDir, 'manifest.json'), childManifest);
+}
+async function executeAttempt(
+  provider: Provider, providerConfig: ProviderConfig, testCase: PlannedCase, attempt: number,
+  messages: ChatMessage[], body: Json,
+): Promise<AttemptRecord> {
+  const runtimeConfig = getAiProviderConfig(provider);
+  const url = endpoint(provider);
+  const requestBody = JSON.stringify(body);
+  const startedAt = new Date().toISOString(); const started = Date.now();
+  const requestMeta: Json = {
+    runId, provenance: 'json-assistant-history', sourceRevision: 10,
+    provider, caseId: testCase.caseId, phase: 'multi', sequenceId: 'M01',
+    conversationId: `${runId}:M01:${provider}`, turn: testCase.turn, sourceId: testCase.sourceId, sourceRow: testCase.sourceRow,
+    attempt, configuredModel: providerConfig.configuredModel, requestedModel: providerConfig.requestedModel,
+    origin: providerConfig.origin, endpointPath: url.pathname, temperature: body.temperature, maxTokens: body.max_tokens,
+    responseFormat: body.response_format, thinking: 'disabled', stream: provider === 'deepseek',
+    assistantHistoryFormat: 'raw API message.content JSON string',
+    requestBodySha256: hash(requestBody), systemPromptSha256: testCase.systemPromptSha256,
+    messagesSha256: hash(JSON.stringify(messages)), roles: messages.map((message) => message.role), body,
+  };
+  fs.appendFileSync(path.join(childDir, 'requests.ndjson'), JSON.stringify(requestMeta) + '\n', 'utf8');
+  let httpStatus: number | null = null; let requestId: string | null = null;
+  let responseBodyText: string | null = null; const chunks: string[] = []; let decoder: TextDecoder | null = null;
+  let parsed: Parsed = { outputStatus: 'request_error', valid: false, decodedContent: null, apiMessageContent: null, returnedModel: null, finishReason: null, usage: null, reasoningContentChars: null };
+  let requestErrorCode: string | null = null;
+  try {
+    const response = await fetch(url, {
+      method: 'POST', headers: { authorization: `Bearer ${runtimeConfig.apiKey}`, 'content-type': 'application/json' },
+      body: requestBody, signal: AbortSignal.timeout(provider === 'deepseek' ? deepseekTimeoutMs : providerConfig.configuredTimeoutMs),
+    });
+    httpStatus = response.status;
+    requestId = response.headers.get('x-request-id') ?? response.headers.get('request-id') ?? response.headers.get('x-tt-logid');
+    if (provider === 'deepseek' && response.body) {
+      decoder = new TextDecoder(); const reader = response.body.getReader();
+      while (true) { const chunk = await reader.read(); if (chunk.done) break; chunks.push(decoder.decode(chunk.value, { stream: true })); }
+      chunks.push(decoder.decode()); responseBodyText = chunks.join(''); parsed = parseSse(responseBodyText);
+    } else {
+      responseBodyText = await response.text(); parsed = parseNonStreaming(responseBodyText);
+    }
+    if (!response.ok) parsed = { ...parsed, outputStatus: 'http_error', valid: false, decodedContent: null };
+  } catch (error) {
+    requestErrorCode = safeError(error);
+    if (provider === 'deepseek') {
+      if (decoder) chunks.push(decoder.decode());
+      responseBodyText = chunks.join('');
+      if (responseBodyText) parsed = parseSse(responseBodyText);
+    }
+  }
+  const finishedAt = new Date().toISOString(); const latencyMs = Date.now() - started;
+  const result: AttemptRecord = {
+    runId, provenance: 'json-assistant-history', sourceRevision: 10,
+    provider, caseId: testCase.caseId, phase: 'multi', sequenceId: 'M01',
+    conversationId: `${runId}:M01:${provider}`, turn: testCase.turn, sourceId: testCase.sourceId, sourceRow: testCase.sourceRow,
+    attempt, configuredModel: providerConfig.configuredModel, requestedModel: providerConfig.requestedModel,
+    returnedModel: parsed.returnedModel, npcId: npc.id, npcName: npc.name,
+    tier: testCase.tier, support: testCase.support, pleasantness: 50, channel: testCase.channel,
+    input: testCase.input, httpStatus, requestId, requestErrorCode, outputStatus: parsed.outputStatus, valid: parsed.valid,
+    responseBodyText, responseJson: provider === 'deepseek' ? null : responseBodyText ? (() => { try { return JSON.parse(responseBodyText); } catch { return null; } })() : null,
+    responseContentRaw: parsed.apiMessageContent, decodedContent: parsed.decodedContent,
+    apiMessageContent: parsed.apiMessageContent, finishReason: parsed.finishReason, usage: parsed.usage,
+    reasoningContentChars: parsed.reasoningContentChars, contentChars: parsed.decodedContent === null ? null : chars(parsed.decodedContent.trim()),
+    identityViolation: parsed.valid && parsed.decodedContent ? hasNpcSpeakerIdentityViolation(npc, parsed.decodedContent) : false,
+    startedAt, finishedAt, latencyMs,
+  };
+  fs.appendFileSync(path.join(childDir, 'responses.ndjson'), JSON.stringify(result) + '\n', 'utf8');
+  return result;
+}
+function recordForCase(
+  evidence: ReturnType<typeof loadProviderConfigsAndEvidence>, provider: Provider, config: ProviderConfig,
+  testCase: PlannedCase, attempts: AttemptRecord[], selected: AttemptRecord | null,
+  selectedHistory: Map<string, { apiMessageContent: string; decodedContent: string }>, outputStatus?: string,
+): Json {
+  const priorTurns = testCase.historyBeforeTurn.map((turn) => {
+    const previous = selectedHistory.get(`multi:M01:${turn.sourceId}`);
+    return { turn: turn.turn, sourceId: turn.sourceId, input: turn.input,
+      assistantApiContent: previous?.apiMessageContent ?? null, assistantDecodedContent: previous?.decodedContent ?? null };
+  });
+  const last = attempts.at(-1);
+  return {
+    sourceRevision: evidence.revision, provider, caseId: testCase.caseId, phase: 'multi', sequenceId: 'M01',
+    conversationId: `${runId}:M01:${provider}`, turn: testCase.turn, sourceId: testCase.sourceId, sourceRow: testCase.sourceRow,
+    channel: testCase.channel, channelLabel: testCase.channelLabel, tier: testCase.tier, tierLabel: testCase.tierLabel,
+    support: testCase.support, pleasantness: testCase.pleasantness, kind: testCase.focus,
+    input: testCase.input, content: selected?.decodedContent ?? null,
+    assistantApiContent: selected?.apiMessageContent ?? null,
+    contentChars: selected?.decodedContent === undefined || selected?.decodedContent === null ? null : chars(selected.decodedContent.trim()),
+    outputStatus: outputStatus ?? selected?.outputStatus ?? last?.outputStatus ?? 'not_run',
+    attemptCount: attempts.length, firstValidAttempt: selected?.attempt ?? null,
+    configuredModel: config.configuredModel, requestedModel: config.requestedModel,
+    effectiveModel: config.requestedModel, returnedModel: selected?.returnedModel ?? last?.returnedModel ?? null,
+    httpStatus: selected?.httpStatus ?? last?.httpStatus ?? null,
+    finishReason: selected?.finishReason ?? last?.finishReason ?? null,
+    latencyMs: attempts.reduce((sum, attempt) => sum + attempt.latencyMs, 0),
+    identityViolation: selected ? selected.identityViolation : last?.identityViolation ?? null,
+    previousTurns: priorTurns, planExpected: testCase.expected, planRisk: testCase.risk,
+    provenance: 'json-assistant-history', runId, evidenceDirectory: 'json-assistant-history',
+  };
+}
+function makeChildPlan(evidence: ReturnType<typeof loadProviderConfigsAndEvidence>): Json {
+  return {
+    preparedAt: new Date().toISOString(), runId, provenance: 'json-assistant-history',
+    sourceRevision: evidence.revision, sourcePersisted: true,
+    sourceUpdatedAt: evidence.initialManifest.sourceUpdatedAt,
+    historyAssistantFormat: 'Use prior provider API message.content exactly as returned: JSON string {"content":"NPC正文"}; retain decoded text separately for report.',
+    sequencePolicy: 'Per provider start M01 at turn 1; after each selected valid output send the next fixed Excel input. A failed prior turn blocks later turns; never synthesize or borrow another provider reply.',
+    testCases: evidence.cases.map((testCase) => ({ ...testCase,
+      messageRoles: testCase.messageRoles,
+      promptMessages: testCase.promptMessages,
+      assistantPlaceholdersResolvedAtExecution: testCase.historyBeforeTurn.map((turn) => turn.assistantContentPlaceholder),
+    })),
+    providers: evidence.configs,
+    settings: { temperature: 0.35, maxTokens: 512, responseFormat: 'json_object', thinking: 'disabled', deepseekStream: true, deepseekTimeoutMs, maxAttempts, providerSequence: providers, eachProviderSequential: true, providersParallel: true },
+    allowedOrigins: Object.values(allowedHosts), persistenceWrites: false,
+    completionRequestsSent: false, plannedOutputs: 9,
+  };
+}
+function prepare(evidence: ReturnType<typeof loadProviderConfigsAndEvidence>) {
+  for (const filename of ['requests.ndjson', 'responses.ndjson']) {
+    const target = path.join(childDir, filename);
+    if (fs.existsSync(target) && fs.statSync(target).size > 0) throw new Error('JSON_HISTORY_RUN_ALREADY_STARTED');
+  }
+  fs.mkdirSync(childDir, { recursive: true });
+  const plan = makeChildPlan(evidence);
+  writeJson(path.join(childDir, 'prepared-plan.json'), plan);
+  writeJson(path.join(childDir, 'manifest.json'), {
+    runId, provenance: 'json-assistant-history', sourceRevision: evidence.revision,
+    sourcePersisted: true, sourceUpdatedAt: evidence.initialManifest.sourceUpdatedAt,
+    providers: evidence.configs, settings: plan.settings, plannedOutputs: 9,
+    historyAssistantFormat: plan.historyAssistantFormat,
+    modelCompletionRequestsSent: false, modelCompletionAttempts: 0, retries: 0,
+    executionStatus: 'prepared_no_requests', allowedOrigins: Object.values(allowedHosts),
+  });
+  fs.writeFileSync(path.join(childDir, 'requests.ndjson'), '', 'utf8');
+  fs.writeFileSync(path.join(childDir, 'responses.ndjson'), '', 'utf8');
+  fs.copyFileSync(fileURLToPath(import.meta.url), path.join(childDir, 'run-script.ts.txt'));
+  return plan;
+}
+function writeNdjson(target: string, rows: Json[]): void { fs.writeFileSync(target, rows.map((row) => JSON.stringify(row)).join('\n') + (rows.length ? '\n' : ''), 'utf8'); }
+function combineBaseEvidence(evidence: ReturnType<typeof loadProviderConfigsAndEvidence>, newRecords: Json[]) {
+  const originalRecords = evidence.initialResults.records as Json[];
+  const singleRecords = originalRecords.filter((row) => row.phase === 'single');
+  if (singleRecords.length !== 39 || newRecords.length !== 9) throw new Error(`BASE_RECORD_COUNTS_INVALID:${singleRecords.length}:${newRecords.length}`);
+  const selectedSingleRecords = singleRecords.map((row) => ({ ...row,
+    provenance: 'initial-run', runId: 'zhang-steps12-20261016', evidenceDirectory: 'initial-run',
+  }));
+  const mergedRecords: Json[] = [...selectedSingleRecords, ...newRecords];
+  const originalRequests = evidence.originalRequests;
+  const originalResponses = evidence.originalResponses;
+  const selectedInitialRequests: Json[] = [];
+  const selectedInitialResponses: Json[] = [];
+  for (const record of singleRecords) {
+    const provider = record.provider; const caseId = record.caseId; const attempt = record.firstValidAttempt;
+    const req = originalRequests.find((row) => row.provider === provider && row.caseId === caseId && row.attempt === attempt);
+    const res = originalResponses.find((row) => row.provider === provider && row.caseId === caseId && row.attempt === attempt && row.valid === true);
+    if (!req || !res) throw new Error(`INITIAL_VALID_SINGLE_ATTEMPT_MISSING:${provider}:${caseId}`);
+    selectedInitialRequests.push({ ...req, provenance: 'initial-run', runId: 'zhang-steps12-20261016' });
+    selectedInitialResponses.push({ ...res, provenance: 'initial-run', runId: 'zhang-steps12-20261016' });
+  }
+  const rerunRequests = ndjson(path.join(childDir, 'requests.ndjson'));
+  const rerunResponses = ndjson(path.join(childDir, 'responses.ndjson'));
+  writeNdjson(path.join(evidenceDir, 'requests.ndjson'), [...selectedInitialRequests, ...rerunRequests]);
+  writeNdjson(path.join(evidenceDir, 'responses.ndjson'), [...selectedInitialResponses, ...rerunResponses]);
+  writeJson(path.join(evidenceDir, 'final-results.json'), {
+    sourceRevision: evidence.revision, records: mergedRecords, completedOutputs: mergedRecords.length, plannedOutputs: 48,
+    providers: evidence.configs, provenanceSplit: { initialRunSingles: selectedSingleRecords.length, jsonAssistantHistoryMulti: newRecords.length },
+  });
+  const initialManifest = evidence.initialManifest;
+  const initialAttemptBodies = evidence.originalResponses;
+  const originalBlank = initialAttemptBodies.filter((row) => row.provider === 'deepseek' && row.caseId === 'multi:M01:T028'
+    && typeof row.responseContentRaw === 'string' && !(row.responseContentRaw as string).trim());
+  const childManifest = readJson(path.join(childDir, 'manifest.json'));
+  const statusCounts: Record<string, number> = {};
+  for (const record of mergedRecords) statusCounts[String(record.outputStatus)] = (statusCounts[String(record.outputStatus)] ?? 0) + 1;
+  const mergedManifest = {
+    sourceRevision: evidence.revision, sourcePersisted: true, sourceUpdatedAt: initialManifest.sourceUpdatedAt,
+    executionStatus: mergedRecords.length === 48 && mergedRecords.every((record) => ['valid', 'valid_silence'].includes(String(record.outputStatus))) ? 'complete' : 'partial_or_failed',
+    finalOutputs: mergedRecords.length, plannedOutputs: 48, outputStatusCounts: statusCounts,
+    providers: evidence.configs, promptSource: 'snapshot revision 10; no prompt-config writes',
+    provenance: { initialSingles: 'initial-run', multiTurnRetest: 'json-assistant-history' },
+    initialRun: {
+      runId: 'zhang-steps12-20261016', plannedOutputs: 48,
+      uniqueRequestAttempts: evidence.originalRequests.length,
+      responseAttempts: evidence.originalResponses.length,
+      validFinalRecords: originalRecords.filter((row) => row.outputStatus === 'valid' || row.outputStatus === 'valid_silence').length,
+      blankDeepseekT028Attempts: originalBlank.length,
+      originalDeepseekT029Attempted: evidence.originalRequests.some((row) => row.provider === 'deepseek' && row.caseId === 'multi:M01:T029'),
+      evidenceDirectory: 'initial-run', archiveChecksumFile: 'initial-run/archive-checksums.json',
+    },
+    jsonAssistantHistoryRetest: {
+      runId, plannedOutputs: 9, completionAttemptCount: rerunRequests.length,
+      retries: Math.max(0, rerunRequests.length - 9),
+      validFinalOutputs: newRecords.filter((row) => row.outputStatus === 'valid').length,
+      evidenceDirectory: 'json-assistant-history', historyFormat: 'raw provider API message.content JSON string',
+      systemPromptsAndModelsMatchInitial: true,
+    },
+    mainEvidenceSelection: { requests: '39 selected initial single attempts + all 9 re-test attempts', responses: '39 selected initial single attempts + all 9 re-test attempts' },
+    actualModelCompletionAttemptsAcrossRuns: evidence.originalRequests.length + rerunRequests.length,
+    modelCompletionRequestsSent: true, modelCompletionCatalogueGetSentForRetest: false,
+    allowedOrigins: Object.values(allowedHosts),
+  };
+  writeJson(path.join(evidenceDir, 'manifest.json'), mergedManifest);
+  const combinedPlan = {
+    ...evidence.initialPlan,
+    finalPlanUpdatedAt: new Date().toISOString(),
+    finalProvenance: { singles: 'initial-run', multi: 'json-assistant-history' },
+    multiHistoryAssistantFormat: childManifest.historyAssistantFormat,
+    multiHistoryRoles: ['system,user', 'system,user,assistant,user', 'system,user,assistant,user,assistant,user'],
+    totalOutputs: 48,
+  };
+  writeJson(path.join(evidenceDir, 'prepared-plan.json'), combinedPlan);
+  return mergedManifest;
+}
+async function executeRetest(evidence: ReturnType<typeof loadProviderConfigsAndEvidence>) {
+  const firstCase = evidence.cases[0];
+  const resultRecords: Json[] = [];
+  const childManifest = readJson(path.join(childDir, 'manifest.json'));
+  const providerRun = async (provider: Provider) => {
+    const providerConfig = evidence.configs.find((item) => item.provider === provider)!;
+    const baseBody = providerBaseRequest(provider, firstCase, evidence);
+    const selectedHistory = new Map<string, string>();
+    const selectedForReport = new Map<string, { apiMessageContent: string; decodedContent: string }>();
+    let blockedAfterFailure = false;
+    for (const testCase of evidence.cases) {
+      if (blockedAfterFailure) {
+        resultRecords.push(recordForCase(evidence, provider, providerConfig, testCase, [], null, selectedForReport, 'not_run_previous_turn_unavailable'));
+        writeProgress(evidence, resultRecords, childManifest);
+        continue;
+      }
+      const messages = messagesWithRawAssistantHistory(testCase, selectedHistory);
+      const body = makeBody(provider, baseBody, messages);
+      const attempts: AttemptRecord[] = []; let selected: AttemptRecord | null = null;
+      for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        const result = await executeAttempt(provider, providerConfig, testCase, attempt, messages, body);
+        attempts.push(result);
+        if (result.valid) { selected = result; break; }
+        if (attempt < maxAttempts) await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      const record = recordForCase(evidence, provider, providerConfig, testCase, attempts, selected, selectedForReport);
+      resultRecords.push(record); writeProgress(evidence, resultRecords, childManifest);
+      console.log(JSON.stringify({ runId, provider, caseId: testCase.caseId, outputStatus: record.outputStatus, attemptCount: attempts.length, historyRoles: messages.map((message) => message.role) }));
+      if (!selected?.apiMessageContent || !selected.decodedContent) { blockedAfterFailure = true; continue; }
+      selectedHistory.set(testCase.caseId, selected.apiMessageContent);
+      selectedForReport.set(testCase.caseId, { apiMessageContent: selected.apiMessageContent, decodedContent: selected.decodedContent });
+    }
+  };
+  await Promise.all(providers.map((provider) => providerRun(provider)));
+  const completionRequests = ndjson(path.join(childDir, 'requests.ndjson'));
+  const completionResponses = ndjson(path.join(childDir, 'responses.ndjson'));
+  const finished = {
+    ...childManifest, finishedAt: new Date().toISOString(),
+    modelCompletionRequestsSent: completionRequests.length > 0,
+    modelCompletionAttemptCount: completionRequests.length,
+    responseAttemptCount: completionResponses.length,
+    retries: Math.max(0, completionRequests.length - 9),
+    executionStatus: resultRecords.length === 9 && resultRecords.every((row) => row.outputStatus === 'valid') ? 'complete' : 'partial_or_failed',
+  };
+  writeProgress(evidence, resultRecords, finished);
+  fs.copyFileSync(fileURLToPath(import.meta.url), path.join(childDir, 'run-script.ts.txt'));
+  const mergedManifest = combineBaseEvidence(evidence, resultRecords);
+  console.log(JSON.stringify({ runId, executionStatus: mergedManifest.executionStatus, finalOutputs: 48,
+    statusCounts: mergedManifest.outputStatusCounts, additionalAttempts: completionRequests.length,
+    totalAttemptsAcrossRuns: mergedManifest.actualModelCompletionAttemptsAcrossRuns, evidenceDir }, null, 2));
+}
+async function main() {
+  const evidence = loadProviderConfigsAndEvidence();
+  const childPlan = prepare(evidence);
+  console.log(JSON.stringify({ mode: execute ? 'prepare_then_execute' : 'prepare_dryrun', runId,
+    sourceRevision: evidence.revision, providers: evidence.configs,
+    cases: (childPlan.testCases as PlannedCase[]).map((item) => ({ caseId: item.caseId, turn: item.turn, roles: item.messageRoles })),
+    plannedOutputs: 9, completionRequestsSent: false, childDir }, null, 2));
+  if (execute) await executeRetest(evidence);
+}
+
+main().catch((error: unknown) => {
+  console.error(`ZHANG_JSON_HISTORY_RETEST_FAILED:${error instanceof Error ? error.message : 'UNKNOWN_ERROR'}`);
+  process.exitCode = 1;
+});

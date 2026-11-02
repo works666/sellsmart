@@ -1,0 +1,13 @@
+{
+  "provider": "deepseek",
+  "origin": "api.deepseek.com",
+  "status": 200,
+  "fetchedAt": "2026-10-16T03:10:36.032Z",
+  "configuredModel": "deepseek-v4-flash",
+  "availableModelIds": [
+    "deepseek-flash",
+    "deepseek-v4-pro"
+  ],
+  "effectiveModel": "deepseek-flash",
+  "responseBodySha256": "b86388abe65929c84de3825eee299b8d78bae23e82e300239f3c788569eb5f39"
+}

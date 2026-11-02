@@ -1,0 +1,110 @@
+{
+  "checks": [
+    {
+      "id": "P1-001",
+      "field": "base",
+      "match": true
+    },
+    {
+      "id": "P1-001",
+      "field": "low",
+      "match": true
+    },
+    {
+      "id": "P1-001",
+      "field": "medium",
+      "match": true
+    },
+    {
+      "id": "P1-001",
+      "field": "high",
+      "match": true
+    },
+    {
+      "id": "P1-002",
+      "field": "base",
+      "match": true
+    },
+    {
+      "id": "P1-002",
+      "field": "low",
+      "match": true
+    },
+    {
+      "id": "P1-002",
+      "field": "medium",
+      "match": true
+    },
+    {
+      "id": "P1-002",
+      "field": "high",
+      "match": true
+    },
+    {
+      "id": "P1-003",
+      "field": "base",
+      "match": true
+    },
+    {
+      "id": "P1-003",
+      "field": "low",
+      "match": true
+    },
+    {
+      "id": "P1-003",
+      "field": "medium",
+      "match": true
+    },
+    {
+      "id": "P1-003",
+      "field": "high",
+      "match": true
+    },
+    {
+      "id": "P1-004",
+      "field": "base",
+      "match": true
+    },
+    {
+      "id": "P1-004",
+      "field": "low",
+      "match": true
+    },
+    {
+      "id": "P1-004",
+      "field": "medium",
+      "match": true
+    },
+    {
+      "id": "P1-004",
+      "field": "high",
+      "match": true
+    },
+    {
+      "id": "P1-005",
+      "field": "base",
+      "match": true
+    },
+    {
+      "id": "P1-005",
+      "field": "low",
+      "match": true
+    },
+    {
+      "id": "P1-005",
+      "field": "medium",
+      "match": true
+    },
+    {
+      "id": "P1-005",
+      "field": "high",
+      "match": true
+    },
+    {
+      "id": "shared",
+      "field": "rules",
+      "match": true
+    }
+  ],
+  "passed": true
+}

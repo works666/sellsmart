@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-21T09:12:11.106Z",
+  "results": [
+    {
+      "kind": "proposal",
+      "id": "withdraw-time-only",
+      "texts": [
+        "我建议下周安排一次技术交流会，讨论接口需求。",
+        "取消刚才说的下周时间，技术交流会的提议仍然保留，时间另议。"
+      ],
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "diagnostics": [
+        {
+          "event": "candidate_filtered",
+          "reason": "activity_continuation_not_new_proposal",
+          "activityType": "technical_meeting",
+          "messageId": "sales-2"
+        },
+        {
+          "event": "candidate_accepted",
+          "reason": "sales_proposal_enters_feasibility_without_customer_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_skipped",
+          "reason": "deterministic_candidate_does_not_need_model_classification",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "detection_source": "deterministic_sales_proposal"
+          }
+        },
+        {
+          "event": "model_request",
+          "reason": "customer_activity_semantic_fallback"
+        },
+        {
+          "event": "model_response",
+          "activityType": "technical_meeting",
+          "messageId": "sales-1",
+          "details": {
+            "candidate_count": 1,
+            "initiator": "sales"
+          }
+        }
+      ]
+    }
+  ]
+}

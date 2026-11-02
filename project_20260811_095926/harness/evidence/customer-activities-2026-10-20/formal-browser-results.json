@@ -1,0 +1,128 @@
+{
+  "passed": true,
+  "mockedApi": true,
+  "activityGets": 2,
+  "mutations": [
+    {
+      "action": "start",
+      "taskId": "browser-activity-1",
+      "serverNow": 1792465804193
+    },
+    {
+      "action": "save",
+      "taskId": "browser-activity-1",
+      "draft": "围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。",
+      "serverNow": 1792465805693
+    },
+    {
+      "action": "save",
+      "taskId": "browser-activity-1",
+      "draft": "围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。",
+      "serverNow": 1792465807493
+    },
+    {
+      "action": "save",
+      "taskId": "browser-activity-1",
+      "draft": "围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。",
+      "serverNow": 1792465807793
+    },
+    {
+      "action": "submit",
+      "taskId": "browser-activity-1",
+      "serverNow": 1792466104194
+    },
+    {
+      "action": "start",
+      "taskId": "browser-activity-2",
+      "serverNow": 1792466104194
+    },
+    {
+      "action": "save",
+      "taskId": "browser-activity-2",
+      "draft": "选择同类项目现场，先与项目方确认接待权限和运行效果展示范围。",
+      "serverNow": 1792466104194
+    },
+    {
+      "action": "submit",
+      "taskId": "browser-activity-2",
+      "draft": "选择同类项目现场，先与项目方确认接待权限和运行效果展示范围。",
+      "serverNow": 1792466104194
+    },
+    {
+      "action": "start",
+      "taskId": "browser-activity-3",
+      "serverNow": 1792466104194
+    },
+    {
+      "action": "submit",
+      "taskId": "browser-activity-3",
+      "serverNow": 1792466404195
+    }
+  ],
+  "tasks": [
+    {
+      "id": "browser-activity-1",
+      "conversationId": "browser-conversation",
+      "npcId": "P1-002",
+      "type": "technical_meeting",
+      "summary": "本次活动提议已通过开展条件判断。",
+      "basis": [
+        "我们可以安排相关活动。",
+        "我需要先向上汇报，确认后再答复。"
+      ],
+      "status": "submitted",
+      "createdAt": 1792465804193,
+      "draft": "围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。围绕客户接口适配需求，安排技术负责人演示并确认后续行动。",
+      "startedAt": 1792465804193,
+      "deadlineAt": 1792466104193,
+      "submitReason": "timeout",
+      "submittedAt": 1792466104193,
+      "evaluation": {
+        "overallEvaluation": "方案回应了客户需求，建议补充会后跟进安排。"
+      }
+    },
+    {
+      "id": "browser-activity-2",
+      "conversationId": "browser-conversation",
+      "npcId": "P1-002",
+      "type": "case_site_visit",
+      "summary": "本次活动提议已通过开展条件判断。",
+      "basis": [
+        "我们可以安排相关活动。",
+        "我需要先向上汇报，确认后再答复。"
+      ],
+      "status": "submitted",
+      "createdAt": 1792465804194,
+      "draft": "选择同类项目现场，先与项目方确认接待权限和运行效果展示范围。",
+      "startedAt": 1792466104194,
+      "deadlineAt": 1792466404194,
+      "submitReason": "manual",
+      "submittedAt": 1792466104194,
+      "evaluation": {
+        "overallEvaluation": "方案回应了客户需求，建议补充会后跟进安排。"
+      }
+    },
+    {
+      "id": "browser-activity-3",
+      "conversationId": "browser-conversation",
+      "npcId": "P1-002",
+      "type": "company_visit",
+      "summary": "本次活动提议已通过开展条件判断。",
+      "basis": [
+        "我们可以安排相关活动。",
+        "我需要先向上汇报，确认后再答复。"
+      ],
+      "status": "submitted",
+      "createdAt": 1792465804195,
+      "draft": "",
+      "startedAt": 1792466104194,
+      "deadlineAt": 1792466404194,
+      "submitReason": "timeout",
+      "submittedAt": 1792466404194,
+      "evaluation": {
+        "overallEvaluation": "未提交活动方案，相关指标保持不变。"
+      }
+    }
+  ],
+  "errors": []
+}

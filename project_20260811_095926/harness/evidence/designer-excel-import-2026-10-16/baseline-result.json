@@ -1,0 +1,32 @@
+{
+  "mode": "baseline",
+  "build": "pre-fix local build (root-reported PID 32304)",
+  "parser": "real POST /api/designer/prompt-excel",
+  "persistence": "prompt-config GET intercepted with in-memory baseline; no PUT/DB writes",
+  "externalNetwork": "blocked",
+  "parseResponse": [
+    {
+      "status": 200,
+      "ok": true,
+      "rows": 35,
+      "scopes": [
+        "role_base",
+        "role_low",
+        "role_medium",
+        "role_high",
+        "channel"
+      ],
+      "errorCodes": []
+    }
+  ],
+  "previewVisible": false,
+  "pageErrors": [
+    {
+      "name": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'label')",
+      "stack": "TypeError: Cannot read properties of undefined (reading 'label')\n    at L (http://127.0.0.1:3000/_next/static/chunks/39b105a67c0bcf0e.js:206:2236)\n    at http://127.0.0.1:3000/_next/static/chunks/39b105a67c0bcf0e.js:206:10915\n    at Array.map (<anonymous>)\n    at z (http://127.0.0.1:3000/_next/static/chunks/39b105a67c0bcf0e.js:206:10662)\n    at av (http://127.0.0.1:3000/_next/static/chunks/bd52678f98732cf2.js:1:63272)\n    at oY (http://127.0.0.1:3000/_next/static/chunks/bd52678f98732cf2.js:1:83545)\n    at io (http://127.0.0.1:3000/_next/static/chunks/bd52678f98732cf2.js:1:94977)\n    at sc (http://127.0.0.1:3000/_next/static/chunks/bd52678f98732cf2.js:1:137998)\n    at http://127.0.0.1:3000/_next/static/chunks/bd52678f98732cf2.js:1:137843\n    at ss (http://127.0.0.1:3000/_next/static/chunks/bd52678f98732cf2.js:1:137851)"
+    }
+  ],
+  "previewText": "Application error: a client-side exception has occurred while loading 127.0.0.1 (see the browser console for more information).",
+  "screenshot": "baseline-old-build.png"
+}

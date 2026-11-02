@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "pdf": "D:\\WeiXun\\project_20260811_095926\\output\\pdf\\2026-10-16-新版张建国三模型实测记录.pdf",
+  "pages": 7,
+  "recordCount": 15,
+  "recordsPerProvider": {
+    "deepseek": 5,
+    "doubao": 5,
+    "qwen": 5
+  },
+  "sourceRevision": 10,
+  "sourceUpdatedAt": "2026-10-16T10:59:22.317+08:00",
+  "allCaseIdsPresent": true,
+  "allInputsPresent": true,
+  "allSuccessfulOutputsPresent": true,
+  "finalRecordContentMatchesFirstSuccessfulAttempt": true,
+  "inputOutputChecks": 30,
+  "requestAttemptCount": 15,
+  "responseAttemptCount": 15,
+  "attemptKeysMatchByProviderCaseIdAttempt": true,
+  "sourceFiles": {
+    "final-results.json": "97f1387bd31bf8f97f734235625a025a1584c631c81407bb6d775ad4e125ee03",
+    "requests.ndjson": "66d199f88435b4ef98d58579b9c4f4b1e13d3b002b7b5841db60712cb13d638e",
+    "responses.ndjson": "d51193250d8beec3b2f0da9607c4ad362b68a29f810f812be7b6bcef193d44e9",
+    "snapshot.json": "794d69e9f3e7539d098379b5ef544ad5a577586cfeb1f505af069625abc3fb58",
+    "manifest.json": "52d98469d62aa90cb0cd3e13622a1e3173aa2090c33dfeace142053efa1d43b9"
+  },
+  "pdfSha256": "135a2d959159664d79e3ab313a33743c25f28838e989536cd7c26610f36a534b",
+  "validRecordCount": 15,
+  "failedRecordCount": 0,
+  "retryCount": 0,
+  "visuallyReviewedPages": 7
+}

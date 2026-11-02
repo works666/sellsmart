@@ -1,0 +1,60 @@
+{
+  "runId": "zhang-steps12-json-history-20261016",
+  "provenance": "json-assistant-history",
+  "sourceRevision": 10,
+  "sourcePersisted": true,
+  "sourceUpdatedAt": "2026-10-16T02:59:22.317+00:00",
+  "providers": [
+    {
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "origin": "api.deepseek.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "origin": "ark.cn-beijing.volces.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "origin": "dashscope.aliyuncs.com",
+      "configuredTimeoutMs": 60000
+    }
+  ],
+  "settings": {
+    "temperature": 0.35,
+    "maxTokens": 512,
+    "responseFormat": "json_object",
+    "thinking": "disabled",
+    "deepseekStream": true,
+    "deepseekTimeoutMs": 180000,
+    "maxAttempts": 3,
+    "providerSequence": [
+      "deepseek",
+      "doubao",
+      "qwen"
+    ],
+    "eachProviderSequential": true,
+    "providersParallel": true
+  },
+  "plannedOutputs": 9,
+  "historyAssistantFormat": "Use prior provider API message.content exactly as returned: JSON string {\"content\":\"NPC正文\"}; retain decoded text separately for report.",
+  "modelCompletionRequestsSent": true,
+  "modelCompletionAttempts": 0,
+  "retries": 0,
+  "executionStatus": "complete",
+  "allowedOrigins": [
+    "api.deepseek.com",
+    "ark.cn-beijing.volces.com",
+    "dashscope.aliyuncs.com"
+  ],
+  "finishedAt": "2026-10-16T06:26:13.220Z",
+  "modelCompletionAttemptCount": 9,
+  "responseAttemptCount": 9
+}

@@ -1,0 +1,710 @@
+{
+  "mode": "final",
+  "status": "passed",
+  "build": "post-fix local build (root to confirm before run)",
+  "parser": "real POST /api/designer/prompt-excel; uploads reach the local app parser",
+  "persistence": "GET/PUT /api/designer/prompt-config intercepted with an in-memory mock; no database writes",
+  "externalNetwork": "browser-origin traffic outside http://127.0.0.1:3000 is blocked",
+  "checks": [
+    {
+      "name": "GET loads intentionally different baseline draft",
+      "passed": true,
+      "details": {
+        "baselineLoaded": true
+      }
+    },
+    {
+      "name": "original user workbook is available at archived hash",
+      "passed": true,
+      "details": {
+        "found": true
+      }
+    },
+    {
+      "name": "original user workbook bytes match archived SHA-256",
+      "passed": true,
+      "details": {
+        "sha256": "8de831fd8d19c2d0a14be4fee7e24f831d2658766c21d372b07c16e42853b43f",
+        "expectedSha256": "8de831fd8d19c2d0a14be4fee7e24f831d2658766c21d372b07c16e42853b43f"
+      }
+    },
+    {
+      "name": "unsaved old draft is saveable before parse starts",
+      "passed": true
+    },
+    {
+      "name": "save is disabled while real Excel parsing is in flight",
+      "passed": true
+    },
+    {
+      "name": "import control is disabled while Excel parsing is in flight",
+      "passed": true
+    },
+    {
+      "name": "exact original user workbook: parser accepted expected rows",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "ok": true,
+        "rowCount": 35,
+        "scopeValues": [
+          "role_base",
+          "role_low",
+          "role_medium",
+          "role_high",
+          "channel"
+        ],
+        "validationErrors": []
+      }
+    },
+    {
+      "name": "exact original user workbook: preview renders without pageerror",
+      "passed": true,
+      "details": {
+        "visibleRows": 35,
+        "pageErrorCount": 0
+      }
+    },
+    {
+      "name": "exact original user workbook: labels and communication cells match row scopes",
+      "passed": true,
+      "details": {
+        "countsByDisplayedScope": {
+          "人物基础提示词": 5,
+          "低支持度提示词": 5,
+          "中支持度提示词": 5,
+          "高支持度提示词": 5,
+          "渠道补充": 15
+        },
+        "roleRowsWithDash": 20,
+        "cellMismatchCount": 0,
+        "scopeCountMismatches": []
+      }
+    },
+    {
+      "name": "exact original user workbook: parser reports 20 ignored role-channel warnings with Excel row numbers",
+      "passed": true,
+      "details": {
+        "warningCount": 20,
+        "roleChannelWarningCount": 20,
+        "warningRows": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21
+        ]
+      }
+    },
+    {
+      "name": "exact original user workbook: role-channel warnings are visible in the preview",
+      "passed": true,
+      "details": {
+        "visibleRowCount": 20,
+        "summaryVisible": true,
+        "sampleMessageVisible": true,
+        "previewContainsWarningText": true
+      }
+    },
+    {
+      "name": "old draft remains unchanged before applying the real upload",
+      "passed": true,
+      "details": {
+        "unchanged": true
+      }
+    },
+    {
+      "name": "exact original parsed 35 values match archived target text",
+      "passed": true,
+      "details": {
+        "mismatchCount": 0,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "legacy 20-row workbook is available",
+      "passed": true
+    },
+    {
+      "name": "legacy 20-row template: parser accepted expected rows",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "ok": true,
+        "rowCount": 20,
+        "scopeValues": [
+          "role_base",
+          "channel"
+        ],
+        "validationErrors": []
+      }
+    },
+    {
+      "name": "legacy 20-row template: preview renders without pageerror",
+      "passed": true,
+      "details": {
+        "visibleRows": 20,
+        "pageErrorCount": 0
+      }
+    },
+    {
+      "name": "legacy 20-row template: labels and communication cells match row scopes",
+      "passed": true,
+      "details": {
+        "countsByDisplayedScope": {
+          "人物基础提示词": 5,
+          "渠道补充": 15
+        },
+        "roleRowsWithDash": 5,
+        "cellMismatchCount": 0,
+        "scopeCountMismatches": []
+      }
+    },
+    {
+      "name": "legacy template is preview-only and made no mock writes",
+      "passed": true
+    },
+    {
+      "name": "page errors remain absent after legacy preview",
+      "passed": true,
+      "details": []
+    },
+    {
+      "name": "invalid scope produces a validation result without becoming applicable",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "ok": false,
+        "codes": [
+          "INVALID_SCOPE",
+          "MISSING_ROLE_ROW"
+        ]
+      }
+    },
+    {
+      "name": "invalid scope does not change the old draft",
+      "passed": true
+    },
+    {
+      "name": "unregistered channel is still rejected by strict validation",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "ok": false,
+        "codes": [
+          "UNKNOWN_CHANNEL_ID"
+        ]
+      }
+    },
+    {
+      "name": "invalid channel does not change the old draft",
+      "passed": true
+    },
+    {
+      "name": "corrupt workbook returns real HTTP 400 INVALID_XLSX",
+      "passed": true,
+      "details": {
+        "status": 400,
+        "code": "INVALID_XLSX"
+      }
+    },
+    {
+      "name": "HTTP 400 does not change the old draft",
+      "passed": true
+    },
+    {
+      "name": "reconstructed archived-text fixture: parser accepted expected rows",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "ok": true,
+        "rowCount": 35,
+        "scopeValues": [
+          "role_base",
+          "role_low",
+          "role_medium",
+          "role_high",
+          "channel"
+        ],
+        "validationErrors": []
+      }
+    },
+    {
+      "name": "reconstructed archived-text fixture: preview renders without pageerror",
+      "passed": true,
+      "details": {
+        "visibleRows": 35,
+        "pageErrorCount": 0
+      }
+    },
+    {
+      "name": "reconstructed archived-text fixture: labels and communication cells match row scopes",
+      "passed": true,
+      "details": {
+        "countsByDisplayedScope": {
+          "人物基础提示词": 5,
+          "低支持度提示词": 5,
+          "中支持度提示词": 5,
+          "高支持度提示词": 5,
+          "渠道补充": 15
+        },
+        "roleRowsWithDash": 20,
+        "cellMismatchCount": 0,
+        "scopeCountMismatches": []
+      }
+    },
+    {
+      "name": "reconstructed fixture has 20 role rows and 15 channel rows",
+      "passed": true
+    },
+    {
+      "name": "exact original user workbook before apply: parser accepted expected rows",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "ok": true,
+        "rowCount": 35,
+        "scopeValues": [
+          "role_base",
+          "role_low",
+          "role_medium",
+          "role_high",
+          "channel"
+        ],
+        "validationErrors": []
+      }
+    },
+    {
+      "name": "exact original user workbook before apply: preview renders without pageerror",
+      "passed": true,
+      "details": {
+        "visibleRows": 35,
+        "pageErrorCount": 0
+      }
+    },
+    {
+      "name": "exact original user workbook before apply: labels and communication cells match row scopes",
+      "passed": true,
+      "details": {
+        "countsByDisplayedScope": {
+          "人物基础提示词": 5,
+          "低支持度提示词": 5,
+          "中支持度提示词": 5,
+          "高支持度提示词": 5,
+          "渠道补充": 15
+        },
+        "roleRowsWithDash": 20,
+        "cellMismatchCount": 0,
+        "scopeCountMismatches": []
+      }
+    },
+    {
+      "name": "reuploaded original workbook still matches all archived target text",
+      "passed": true,
+      "details": {
+        "mismatchCount": 0,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "draft remains old before applying the original workbook",
+      "passed": true
+    },
+    {
+      "name": "applying fixture updates all 35 editor values exactly",
+      "passed": true,
+      "details": {
+        "count": 35,
+        "mismatchCount": 0,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "apply preserves omitted P1-001 referral text",
+      "passed": true
+    },
+    {
+      "name": "draft is dirty and save is enabled after apply",
+      "passed": true
+    },
+    {
+      "name": "import is disabled while the first save request is in flight",
+      "passed": true
+    },
+    {
+      "name": "409 keeps the draft dirty and does not show success",
+      "passed": true,
+      "details": {
+        "saveEnabled": true,
+        "notice": "提示词已被其他设计师更新，请刷新后再保存。"
+      }
+    },
+    {
+      "name": "409 leaves editor values intact",
+      "passed": true
+    },
+    {
+      "name": "successful mock save contains all 35 target fields",
+      "passed": true,
+      "details": {
+        "targetCount": 35,
+        "mismatchCount": 0,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "successful mock save preserves omitted referral text",
+      "passed": true
+    },
+    {
+      "name": "successful mock save leaves readonly config and thresholds unchanged",
+      "passed": true,
+      "details": {
+        "mismatchCount": 0,
+        "fields": []
+      }
+    },
+    {
+      "name": "successful mock save increments revision exactly once after 409",
+      "passed": true,
+      "details": {
+        "revision": 8,
+        "attempts": 2
+      }
+    },
+    {
+      "name": "save success clears dirty state",
+      "passed": true
+    },
+    {
+      "name": "refresh reloads all 35 saved values exactly",
+      "passed": true,
+      "details": {
+        "mismatchCount": 0,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "refresh retains omitted referral supplement",
+      "passed": true
+    },
+    {
+      "name": "refresh still leaves readonly fields unchanged",
+      "passed": true
+    },
+    {
+      "name": "explicit-empty fixture parses successfully with 35 rows",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "ok": true,
+        "rowCount": 35
+      }
+    },
+    {
+      "name": "explicit-empty parser preserves an empty email value",
+      "passed": true,
+      "details": {
+        "isEmpty": true
+      }
+    },
+    {
+      "name": "explicit-empty fixture: parser accepted expected rows",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "ok": true,
+        "rowCount": 35,
+        "scopeValues": [
+          "role_base",
+          "role_low",
+          "role_medium",
+          "role_high",
+          "channel"
+        ],
+        "validationErrors": []
+      }
+    },
+    {
+      "name": "explicit-empty fixture: preview renders without pageerror",
+      "passed": true,
+      "details": {
+        "visibleRows": 35,
+        "pageErrorCount": 0
+      }
+    },
+    {
+      "name": "explicit-empty fixture: labels and communication cells match row scopes",
+      "passed": true,
+      "details": {
+        "countsByDisplayedScope": {
+          "人物基础提示词": 5,
+          "低支持度提示词": 5,
+          "中支持度提示词": 5,
+          "高支持度提示词": 5,
+          "渠道补充": 15
+        },
+        "roleRowsWithDash": 20,
+        "cellMismatchCount": 0,
+        "scopeCountMismatches": []
+      }
+    },
+    {
+      "name": "applying explicit-empty fixture clears P1-001 email draft",
+      "passed": true
+    },
+    {
+      "name": "applying explicit-empty fixture keeps P1-001 referral draft",
+      "passed": true
+    },
+    {
+      "name": "second mock save persists empty email and preserves referral",
+      "passed": true
+    },
+    {
+      "name": "second mock save still preserves readonly fields",
+      "passed": true
+    },
+    {
+      "name": "refresh keeps explicitly empty email",
+      "passed": true
+    },
+    {
+      "name": "refresh keeps the omitted referral supplement after empty save",
+      "passed": true
+    },
+    {
+      "name": "no pageerror across final regression",
+      "passed": true,
+      "details": []
+    },
+    {
+      "name": "no external browser requests escaped the local test",
+      "passed": true,
+      "details": {
+        "blockedExternalRequests": 0
+      }
+    }
+  ],
+  "parserRuns": [
+    {
+      "label": "exact original user workbook",
+      "kind": "real-local-parser",
+      "httpStatus": 200,
+      "ok": true,
+      "rowCount": 35,
+      "scopes": [
+        "role_base",
+        "role_low",
+        "role_medium",
+        "role_high",
+        "channel"
+      ],
+      "scopeCounts": {
+        "人物基础提示词": 5,
+        "低支持度提示词": 5,
+        "中支持度提示词": 5,
+        "高支持度提示词": 5,
+        "渠道补充": 15
+      },
+      "invalidErrors": [],
+      "warnings": {
+        "total": 20,
+        "roleChannelIgnored": 20,
+        "rows": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "visibleRowCount": 20
+      }
+    },
+    {
+      "label": "legacy 20-row template",
+      "kind": "real-local-parser",
+      "httpStatus": 200,
+      "ok": true,
+      "rowCount": 20,
+      "scopes": [
+        "role_base",
+        "channel"
+      ],
+      "scopeCounts": {
+        "人物基础提示词": 5,
+        "渠道补充": 15
+      },
+      "invalidErrors": []
+    },
+    {
+      "label": "invalid scope in-memory workbook",
+      "kind": "real-local-parser",
+      "httpStatus": 200,
+      "ok": false,
+      "rowCount": 35,
+      "invalidErrors": [
+        "INVALID_SCOPE",
+        "MISSING_ROLE_ROW"
+      ]
+    },
+    {
+      "label": "invalid channel in-memory workbook",
+      "kind": "real-local-parser",
+      "httpStatus": 200,
+      "ok": false,
+      "rowCount": 35,
+      "invalidErrors": [
+        "UNKNOWN_CHANNEL_ID"
+      ]
+    },
+    {
+      "label": "corrupt workbook",
+      "kind": "real-local-parser",
+      "httpStatus": 400,
+      "code": "INVALID_XLSX",
+      "ok": false
+    },
+    {
+      "label": "reconstructed archived-text fixture",
+      "kind": "real-local-parser",
+      "httpStatus": 200,
+      "ok": true,
+      "rowCount": 35,
+      "scopes": [
+        "role_base",
+        "role_low",
+        "role_medium",
+        "role_high",
+        "channel"
+      ],
+      "scopeCounts": {
+        "人物基础提示词": 5,
+        "低支持度提示词": 5,
+        "中支持度提示词": 5,
+        "高支持度提示词": 5,
+        "渠道补充": 15
+      },
+      "invalidErrors": []
+    },
+    {
+      "label": "exact original user workbook before apply",
+      "kind": "real-local-parser",
+      "httpStatus": 200,
+      "ok": true,
+      "rowCount": 35,
+      "scopes": [
+        "role_base",
+        "role_low",
+        "role_medium",
+        "role_high",
+        "channel"
+      ],
+      "scopeCounts": {
+        "人物基础提示词": 5,
+        "低支持度提示词": 5,
+        "中支持度提示词": 5,
+        "高支持度提示词": 5,
+        "渠道补充": 15
+      },
+      "invalidErrors": []
+    },
+    {
+      "label": "explicit-empty fixture",
+      "kind": "real-local-parser",
+      "httpStatus": 200,
+      "ok": true,
+      "rowCount": 35,
+      "scopes": [
+        "role_base",
+        "role_low",
+        "role_medium",
+        "role_high",
+        "channel"
+      ],
+      "scopeCounts": {
+        "人物基础提示词": 5,
+        "低支持度提示词": 5,
+        "中支持度提示词": 5,
+        "高支持度提示词": 5,
+        "渠道补充": 15
+      },
+      "invalidErrors": [],
+      "explicitEmptyEmail": true
+    }
+  ],
+  "mockPersistence": {
+    "initialRevision": 7,
+    "writes": [
+      {
+        "outcome": "409 conflict",
+        "expectedRevision": 7,
+        "persisted": false
+      },
+      {
+        "outcome": "saved",
+        "expectedRevision": 7,
+        "revision": 8,
+        "targetFieldCount": 35,
+        "preservedOmittedReferral": true,
+        "readonlyFieldsPreserved": true
+      },
+      {
+        "outcome": "saved explicit empty",
+        "expectedRevision": 8,
+        "revision": 9,
+        "emptyEmailPersisted": true,
+        "preservedOmittedReferral": true
+      }
+    ],
+    "databaseWrites": 0,
+    "finalRevision": 9,
+    "putAttempts": 3
+  },
+  "originalWorkbook": {
+    "name": "SellSmart_NPC%E6%8F%90%E7%A4%BA%E8%AF%8D_%E8%87%AA%E7%84%B6%E5%AF%B9%E8%AF%9D%E4%BC%98%E5%8C%96%E7%89%88.xlsx",
+    "path": "C:\\Users\\17628\\Downloads\\SellSmart_NPC%E6%8F%90%E7%A4%BA%E8%AF%8D_%E8%87%AA%E7%84%B6%E5%AF%B9%E8%AF%9D%E4%BC%98%E5%8C%96%E7%89%88.xlsx",
+    "bytes": 14819,
+    "sha256": "8de831fd8d19c2d0a14be4fee7e24f831d2658766c21d372b07c16e42853b43f",
+    "source": "Downloads exact user workbook",
+    "previewRowCount": 35
+  },
+  "screenshots": [
+    "preview-validation.png",
+    "post-save.png"
+  ],
+  "pageErrors": [],
+  "blockedExternalRequests": 0,
+  "persistedRevision": 9,
+  "putAttempts": 3
+}

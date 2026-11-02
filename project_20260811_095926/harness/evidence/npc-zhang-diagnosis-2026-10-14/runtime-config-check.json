@@ -1,0 +1,43 @@
+{
+  "v6": {
+    "hasActionPriority": true,
+    "hasNoAutomaticReferral": true,
+    "hasIdentityRule": true
+  },
+  "httpStatus": 200,
+  "revision": 5,
+  "people": [
+    {
+      "id": "P1-001",
+      "lowChars": 606,
+      "newSixScenarios": true,
+      "hasLiteralUndefined": false
+    },
+    {
+      "id": "P1-002",
+      "lowChars": 229,
+      "newSixScenarios": true,
+      "hasLiteralUndefined": false
+    },
+    {
+      "id": "P1-003",
+      "lowChars": 240,
+      "newSixScenarios": true,
+      "hasLiteralUndefined": false
+    },
+    {
+      "id": "P1-004",
+      "lowChars": 236,
+      "newSixScenarios": true,
+      "hasLiteralUndefined": false
+    },
+    {
+      "id": "P1-005",
+      "lowChars": 231,
+      "newSixScenarios": true,
+      "hasLiteralUndefined": false
+    }
+  ],
+  "customerNewShortRule": true,
+  "channelNoAutoNextStep": true
+}

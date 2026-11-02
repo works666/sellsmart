@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "provider": "deepseek",
+  "revision": 2,
+  "persisted": true,
+  "providers": {
+    "default": {
+      "configured": true,
+      "model": "deepseek-v4-flash"
+    },
+    "deepseek": {
+      "configured": true,
+      "model": "deepseek-v4-flash"
+    },
+    "doubao": {
+      "configured": true,
+      "model": "doubao-seed-2-0-lite-260428"
+    },
+    "qwen": {
+      "configured": true,
+      "model": "qwen-plus"
+    }
+  }
+}

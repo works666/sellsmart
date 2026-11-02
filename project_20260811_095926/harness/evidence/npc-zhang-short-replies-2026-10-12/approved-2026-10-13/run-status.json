@@ -1,0 +1,42 @@
+{
+  "runId": "approved-2026-10-13",
+  "status": "completed_with_one_invalid_json",
+  "plannedCases": 15,
+  "completedCases": 15,
+  "successfulCases": 14,
+  "invalidJsonCases": 1,
+  "requestFailedCases": 0,
+  "withinReferenceLimit": 10,
+  "overReferenceLimit": 4,
+  "providers": {
+    "deepseek": {
+      "configuredModel": "deepseek-v4-flash",
+      "cases": 5,
+      "success": 4,
+      "nonSuccessful": 1
+    },
+    "doubao": {
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "cases": 5,
+      "success": 5,
+      "nonSuccessful": 0
+    },
+    "qwen": {
+      "configuredModel": "qwen-plus",
+      "cases": 5,
+      "success": 5,
+      "nonSuccessful": 0
+    }
+  },
+  "deepseekSensitiveRefusal": {
+    "status": "invalid_json",
+    "rawOutputLength": 18,
+    "rawOutputWhitespaceOnly": true,
+    "retriedAfterParseFailure": false
+  },
+  "rawEvidence": [
+    "summary.json",
+    "responses.ndjson"
+  ],
+  "previousBlockedApprovalRecord": "..\\execution-status.json"
+}

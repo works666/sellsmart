@@ -1,0 +1,843 @@
+{
+  "runId": "npc-visit-matrix-2026-10-08T07-21-23-967Z",
+  "startedAt": "2026-10-08T07:21:23.969Z",
+  "finishedAt": "2026-10-08T07:26:40.383Z",
+  "baseUrl": "http://127.0.0.1:3000",
+  "authentication": "Normal /api/auth/login login + select_role platform_designer; service token used only in-memory as x-session and never persisted.",
+  "dataScope": "Designer preview API and isolated preview sessions only; no formal game session or archive touched.",
+  "parameters": {
+    "supportByTier": {
+      "medium": 50,
+      "low": 20,
+      "high": 80
+    },
+    "pleasantness": {
+      "low": 20,
+      "medium": 50,
+      "high": 50
+    },
+    "people": [
+      {
+        "id": "P1-001",
+        "name": "张建国"
+      },
+      {
+        "id": "P1-002",
+        "name": "李明辉"
+      },
+      {
+        "id": "P1-003",
+        "name": "王德福"
+      },
+      {
+        "id": "P1-004",
+        "name": "赵晓晨"
+      },
+      {
+        "id": "P1-005",
+        "name": "刘思琪"
+      }
+    ]
+  },
+  "totalRequests": 77,
+  "completedCases": 15,
+  "failedCases": 0,
+  "cases": [
+    {
+      "caseId": "medium-P1-001",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tierId": "medium",
+      "outcome": "completed",
+      "support": 50,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "medium-P1-002",
+      "npcId": "P1-002",
+      "npcName": "李明辉",
+      "tierId": "medium",
+      "outcome": "completed",
+      "support": 50,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "medium-P1-003",
+      "npcId": "P1-003",
+      "npcName": "王德福",
+      "tierId": "medium",
+      "outcome": "completed",
+      "support": 50,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": [
+          "提问"
+        ]
+      },
+      "completedTasks": [
+        "提问"
+      ],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "medium-P1-004",
+      "npcId": "P1-004",
+      "npcName": "赵晓晨",
+      "tierId": "medium",
+      "outcome": "completed",
+      "support": 50,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "medium-P1-005",
+      "npcId": "P1-005",
+      "npcName": "刘思琪",
+      "tierId": "medium",
+      "outcome": "completed",
+      "support": 50,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "low-P1-001",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tierId": "low",
+      "outcome": "completed",
+      "support": 20,
+      "pleasantness": 20,
+      "meeting": {
+        "turn": 3,
+        "endReason": "npc_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "serious",
+        "serious",
+        "serious"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "low-P1-002",
+      "npcId": "P1-002",
+      "npcName": "李明辉",
+      "tierId": "low",
+      "outcome": "completed",
+      "support": 20,
+      "pleasantness": 20,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "serious",
+        "serious",
+        "serious"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "low-P1-003",
+      "npcId": "P1-003",
+      "npcName": "王德福",
+      "tierId": "low",
+      "outcome": "completed",
+      "support": 20,
+      "pleasantness": 20,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "serious",
+        "serious",
+        "serious"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "low-P1-004",
+      "npcId": "P1-004",
+      "npcName": "赵晓晨",
+      "tierId": "low",
+      "outcome": "completed",
+      "support": 20,
+      "pleasantness": 20,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "serious",
+        "serious",
+        "serious"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "low-P1-005",
+      "npcId": "P1-005",
+      "npcName": "刘思琪",
+      "tierId": "low",
+      "outcome": "completed",
+      "support": 20,
+      "pleasantness": 20,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "serious",
+        "serious",
+        "serious"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "high-P1-001",
+      "npcId": "P1-001",
+      "npcName": "张建国",
+      "tierId": "high",
+      "outcome": "completed",
+      "support": 80,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "high-P1-002",
+      "npcId": "P1-002",
+      "npcName": "李明辉",
+      "tierId": "high",
+      "outcome": "completed",
+      "support": 80,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "high-P1-003",
+      "npcId": "P1-003",
+      "npcName": "王德福",
+      "tierId": "high",
+      "outcome": "completed",
+      "support": 80,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": [
+          "提问"
+        ]
+      },
+      "completedTasks": [
+        "提问"
+      ],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "high-P1-004",
+      "npcId": "P1-004",
+      "npcName": "赵晓晨",
+      "tierId": "high",
+      "outcome": "completed",
+      "support": 80,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "caseId": "high-P1-005",
+      "npcId": "P1-005",
+      "npcName": "刘思琪",
+      "tierId": "high",
+      "outcome": "completed",
+      "support": 80,
+      "pleasantness": 50,
+      "meeting": {
+        "turn": 3,
+        "endReason": "player_farewell",
+        "meetingEnded": true,
+        "completedTasks": []
+      },
+      "completedTasks": [],
+      "npcExpressions": [
+        "calm",
+        "calm",
+        "calm"
+      ],
+      "stepCount": 5,
+      "visitTurnResponses": 3,
+      "steps": [
+        {
+          "step": "test_adjust_npcs",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "start_visit",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_opening",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_boundary_request",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "step": "visit_turn_player_farewell",
+          "status": 200,
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "rawResponses": "responses.ndjson",
+  "visitTurnRequests": 45,
+  "nonEmptyNpcReplyBodies": 44,
+  "finalNpcFarewellRepliesWithoutBody": 1,
+  "successfulPreviewApiCalls": 75,
+  "previewApiErrors": 0,
+  "successfulAuthCalls": 2,
+  "endReasonCounts": {
+    "player_farewell": 14,
+    "npc_farewell": 1
+  },
+  "responseProviderMetadata": "The public preview response contains no provider/model/source metadata; the service route was called without a mocked invoker. Exact selected provider/model name was not independently queried.",
+  "oralPhraseCounts": {
+    "repliesWithAtLeastOneExactPhrase": 18,
+    "repliesWithAtLeastTwoExactPhrases": 9,
+    "consecutiveResponsePairsRepeatingPoolPhrases": 7,
+    "repliesWithoutExactPhrase": 26
+  },
+  "stackedPhraseCases": [
+    "medium-P1-003 visit_turn_boundary_request",
+    "medium-P1-004 visit_turn_opening",
+    "medium-P1-005 visit_turn_opening",
+    "medium-P1-005 visit_turn_boundary_request",
+    "low-P1-005 visit_turn_boundary_request",
+    "high-P1-003 visit_turn_opening",
+    "high-P1-003 visit_turn_boundary_request",
+    "high-P1-004 visit_turn_opening",
+    "high-P1-005 visit_turn_boundary_request"
+  ],
+  "consecutivePhraseRepeatCases": [
+    "medium-P1-002",
+    "medium-P1-003",
+    "medium-P1-004",
+    "medium-P1-005",
+    "low-P1-002",
+    "high-P1-003",
+    "high-P1-005"
+  ]
+}

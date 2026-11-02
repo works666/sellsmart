@@ -1,0 +1,1452 @@
+{
+  "checkedAt": "2026-10-21T03:36:06.395Z",
+  "passed": true,
+  "source": "Actual persisted config readback",
+  "configRevision": 3,
+  "scenarioCount": 16,
+  "assertions": 240,
+  "noAiCalls": true,
+  "noDatabaseWrites": true,
+  "rows": [
+    {
+      "scenario": "preview_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "preview_initial",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "formal_initial",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_1",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_2",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_3",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_4",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "only_one_improved_5",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_pair_b",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_three",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "case_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_pair_a",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "company_three_b",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_19",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "technical_one_at_54",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "technical_meeting",
+      "proposer": "P1-001",
+      "result": "allow"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "technical_meeting",
+      "proposer": "P1-002",
+      "result": "allow"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "technical_meeting",
+      "proposer": "P1-003",
+      "result": "allow"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "technical_meeting",
+      "proposer": "P1-004",
+      "result": "allow"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "technical_meeting",
+      "proposer": "P1-005",
+      "result": "allow"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "case_site_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "case_site_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "case_site_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "case_site_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "case_site_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "company_visit",
+      "proposer": "P1-001",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "company_visit",
+      "proposer": "P1-002",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "company_visit",
+      "proposer": "P1-003",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "company_visit",
+      "proposer": "P1-004",
+      "result": "reject"
+    },
+    {
+      "scenario": "global_minimum_20",
+      "type": "company_visit",
+      "proposer": "P1-005",
+      "result": "reject"
+    }
+  ]
+}

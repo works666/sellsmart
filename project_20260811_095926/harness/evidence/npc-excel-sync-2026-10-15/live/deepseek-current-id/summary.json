@@ -1,0 +1,110 @@
+{
+  "createdAt": "2026-10-15T04:09:31.525Z",
+  "sampleType": "5 DeepSeek request-failure retries with unchanged prompt/settings and timeout extended to 180 seconds; one-turn only",
+  "runId": "deepseek-current-id",
+  "plannedCases": 5,
+  "completedCases": 5,
+  "outputStatusCounts": {
+    "request_error": 5
+  },
+  "providers": [
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "origin": "api.deepseek.com"
+    }
+  ],
+  "supportTiers": {
+    "low": 20,
+    "medium": 50,
+    "high": 80
+  },
+  "casesPerProvider": 5,
+  "settings": {
+    "temperature": 0.35,
+    "maxTokens": 3000,
+    "jsonMode": true,
+    "thinking": "disabled",
+    "retries": 0
+  },
+  "softLengthReferenceChars": {
+    "low": 40,
+    "medium": 55,
+    "high": 75
+  },
+  "savedConfigRevision": 8,
+  "reportPath": "D:\\WeiXun\\project_20260811_095926\\outputs\\2026-10-15-Excel版张建国三模型快测.md",
+  "records": [
+    {
+      "caseId": "deepseek-P1-001-low-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "opening",
+      "tier": "low",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    },
+    {
+      "caseId": "deepseek-P1-001-medium-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "opening",
+      "tier": "medium",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    },
+    {
+      "caseId": "deepseek-P1-001-high-opening",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "opening",
+      "tier": "high",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    },
+    {
+      "caseId": "deepseek-P1-001-low-sensitive-refusal",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "sensitive-refusal",
+      "tier": "low",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    },
+    {
+      "caseId": "deepseek-P1-001-low-long-pitch",
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "returnedModel": null,
+      "kind": "long-pitch",
+      "tier": "low",
+      "outputStatus": "request_error",
+      "contentChars": null,
+      "overSoftReference": null,
+      "identityViolation": null,
+      "httpStatus": null,
+      "finishReason": null
+    }
+  ],
+  "finishedAt": "2026-10-15T04:09:31.538Z"
+}

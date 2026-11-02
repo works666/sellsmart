@@ -1,0 +1,81 @@
+{
+  "status": "passed",
+  "pdf": "D:\\WeiXun\\project_20260811_095926\\output\\pdf\\2026-10-15-Excel版张建国豆包Qwen实测记录.pdf",
+  "sourceSummary": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-excel-sync-2026-10-15\\live\\quick-15\\summary.json",
+  "sourceResponses": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-excel-sync-2026-10-15\\live\\quick-15\\responses.ndjson",
+  "sourceRequests": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-excel-sync-2026-10-15\\live\\quick-15\\requests.ndjson",
+  "syncAudit": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-excel-sync-2026-10-15\\sync-audit.json",
+  "configRevision": 8,
+  "workbookFieldsMatched": 35,
+  "includedProviders": [
+    "doubao",
+    "qwen"
+  ],
+  "excludedProviders": [
+    "deepseek"
+  ],
+  "recordCount": 10,
+  "recordsPerProvider": {
+    "doubao": 5,
+    "qwen": 5
+  },
+  "statusCounts": {
+    "valid": 10
+  },
+  "inputAndBodyChecks": 20,
+  "inputAndBodyChecksPassed": 20,
+  "missingText": [],
+  "attemptCounts": {
+    "doubao-P1-001-low-opening": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "doubao-P1-001-low-sensitive-refusal": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "doubao-P1-001-low-long-pitch": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "doubao-P1-001-medium-opening": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "doubao-P1-001-high-opening": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "qwen-P1-001-low-opening": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "qwen-P1-001-low-sensitive-refusal": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "qwen-P1-001-low-long-pitch": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "qwen-P1-001-medium-opening": {
+      "attempts": 1,
+      "retries": 0
+    },
+    "qwen-P1-001-high-opening": {
+      "attempts": 1,
+      "retries": 0
+    }
+  },
+  "pages": 3,
+  "renderedPages": 3,
+  "allPagesRendered": true,
+  "recordsDoNotCrossPages": true,
+  "contactSheet": "D:\\WeiXun\\tmp\\pdfs\\zhang-doubao-qwen-2026-10-15-contact\\contact-01.png",
+  "coverImage": "D:\\WeiXun\\tmp\\pdfs\\2026-10-15-Excel版张建国豆包Qwen实测记录-cover.png",
+  "modelPages": {
+    "doubao": "D:\\WeiXun\\tmp\\pdfs\\2026-10-15-Excel版张建国豆包Qwen实测记录-doubao-page.png",
+    "qwen": "D:\\WeiXun\\tmp\\pdfs\\2026-10-15-Excel版张建国豆包Qwen实测记录-qwen-page.png"
+  },
+  "noPriorV5Included": true
+}

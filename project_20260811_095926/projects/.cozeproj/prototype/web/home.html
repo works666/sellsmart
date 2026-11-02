@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>实训工作台 · 政企销售竞标博弈</title>
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+
+    /* ============ Hotspot 样式 ============ */
+    .hotspot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    .hotspot-badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 4px 14px rgba(15,32,51,0.28), 0 0 0 2px rgba(255,255,255,0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      color: #FFFFFF;
+    }
+    .hotspot:hover .hotspot-badge {
+      transform: scale(1.12);
+      box-shadow: 0 10px 24px rgba(15,32,51,0.38), 0 0 0 3px rgba(255,255,255,0.7);
+    }
+    .hotspot-badge i { width: 24px; height: 24px; }
+
+    /* 气泡 */
+    .hotspot-bubble {
+      position: absolute;
+      background: #FFFFFF;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(15,32,51,0.14);
+      border: 1.5px solid #E6EAF2;
+      display: flex;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .hotspot:hover .hotspot-bubble { box-shadow: 0 10px 28px rgba(15,32,51,0.2); }
+    .bubble-color-block {
+      width: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+    .bubble-color-block i { width: 18px; height: 18px; }
+    .bubble-content {
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      justify-content: center;
+    }
+    .bubble-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #152033;
+      line-height: 1.3;
+    }
+    .bubble-desc {
+      font-size: 11px;
+      color: #637089;
+      line-height: 1.3;
+    }
+
+    /* 气泡三角（指向徽标） */
+    .bubble-tail {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+    .tail-down {
+      bottom: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 7px solid #FFFFFF;
+      filter: drop-shadow(0 1px 0 #E6EAF2);
+    }
+    .tail-up {
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 7px solid #FFFFFF;
+    }
+    .tail-left {
+      left: -7px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-right: 7px solid #FFFFFF;
+    }
+    .tail-right {
+      right: -7px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-left: 7px solid #FFFFFF;
+    }
+
+    /* 气泡相对徽标的位置 */
+    .hotspot-bubble--above {
+      left: 50%;
+      bottom: calc(100% + 16px);
+      transform: translateX(-50%);
+    }
+    .hotspot-bubble--below {
+      left: 50%;
+      top: calc(100% + 16px);
+      transform: translateX(-50%);
+    }
+    .hotspot-bubble--left {
+      right: calc(100% + 16px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .hotspot-bubble--right {
+      left: calc(100% + 16px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    /* 反向偏移（避免超出容器） */
+    .hotspot-bubble--above-left {
+      right: 0;
+      bottom: calc(100% + 16px);
+    }
+    .hotspot-bubble--above-right {
+      left: 0;
+      bottom: calc(100% + 16px);
+    }
+    .hotspot-bubble--below-left {
+      right: 0;
+      top: calc(100% + 16px);
+    }
+    .hotspot-bubble--below-right {
+      left: 0;
+      top: calc(100% + 16px);
+    }
+
+    /* 徽标颜色 */
+    .badge-success { background: #16A37B; }
+    .badge-primary { background: #2F6BFF; }
+    .badge-purple  { background: #8B5CF6; }
+    .badge-warning { background: #F59E0B; }
+
+    /* 紫色容器背景（用于辅助卡图标底色） */
+    .purple-soft { background: #8B5CF615; }
+    .text-purple { color: #8B5CF6; }
+
+    /* 脉冲扩散动画 */
+    @keyframes hotspot-pulse {
+      0%   { box-shadow: 0 4px 14px rgba(15,32,51,0.28), 0 0 0 0 rgba(255,255,255,0.55); }
+      70%  { box-shadow: 0 4px 14px rgba(15,32,51,0.28), 0 0 0 14px rgba(255,255,255,0); }
+      100% { box-shadow: 0 4px 14px rgba(15,32,51,0.28), 0 0 0 0 rgba(255,255,255,0); }
+    }
+    .hotspot-badge { animation: hotspot-pulse 2.4s ease-out infinite; }
+    .hotspot:hover .hotspot-badge { animation: none; }
+
+    /* 顶部深色提示条 */
+    .hint-bar {
+      background: linear-gradient(180deg, rgba(15,32,51,0.88) 0%, rgba(15,32,51,0.72) 100%);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    /* 主视觉区容器 */
+    .park-stage {
+      position: relative;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      aspect-ratio: 16 / 9;
+      background: #FFFFFF;
+      border-radius: 1rem;
+      border: 1px solid #E6EAF2;
+      box-shadow: 0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      overflow: hidden;
+    }
+    .park-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      z-index: 1;
+      background: transparent;
+    }
+
+    /* 图例小圆点 */
+    .legend-dot { width: 8px; height: 8px; border-radius: 9999px; display: inline-block; }
+  </style>
+
+
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <header class="bg-surface border-b border-outline-variant/60 sticky top-0 z-40 h-14 flex items-center justify-between px-6">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
+          <i data-lucide="target" class="w-4 h-4 text-on-primary"></i>
+        </div>
+        <span class="font-bold text-base text-on-surface">竞标博弈 · 政企销售实训</span>
+      </div>
+      <nav class="flex items-center gap-1" id="top-nav">
+        <a href="home.html" id="nav-home" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">实训工作台</a>
+        <a href="setup.html" id="nav-setup" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">对局配置</a>
+        <a href="game.html" id="nav-game" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">博弈演练</a>
+        <a href="result.html" id="nav-result" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">复盘中心</a>
+        <a href="knowledge.html" id="nav-knowledge" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">产品知识库</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+        <i data-lucide="circle-dot" class="w-3 h-3 text-success"></i>
+        <span class="text-xs font-medium text-on-surface-variant num">已连接 2 个对局</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+        <span class="text-sm font-semibold text-primary">初</span>
+      </div>
+    </div>
+  </header>
+  <!-- @nav:end 导航组件 -->
+
+  <!-- @main-content:start -->
+  <main class="flex-1 overflow-y-auto bg-background">
+    <div class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+
+      <!-- 欢迎条 + 4 指标卡 -->
+      <section>
+        <div class="flex items-end justify-between mb-5">
+          <div>
+            <h1 class="text-2xl font-bold text-on-surface">早上好，小初</h1>
+            <p class="text-sm text-on-surface-variant mt-1">今天是 2025 年 1 月 15 日 · 你的政企销售竞标实训已就绪</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-start-game" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="play" class="w-4 h-4"></i>快速开局
+            </button>
+            <button id="btn-knowledge" class="bg-surface text-on-surface border border-outline-variant/60 px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4"></i>知识库
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 指标卡 -->
+        <div class="grid grid-cols-4 gap-4">
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-9 h-9 rounded-md bg-primary-container flex items-center justify-center">
+                <i data-lucide="gauge" class="w-4 h-4 text-primary"></i>
+              </div>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success num">+5 本周</span>
+            </div>
+            <div class="text-xs text-on-surface-variant mb-1">综合能力得分</div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-2xl font-bold text-on-surface num">73</span>
+              <span class="text-sm text-on-surface-variant">/ 100</span>
+            </div>
+          </div>
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-9 h-9 rounded-md bg-warning/15 flex items-center justify-center">
+                <i data-lucide="clock" class="w-4 h-4 text-warning"></i>
+              </div>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">本周 12h</span>
+            </div>
+            <div class="text-xs text-on-surface-variant mb-1">累计实训时长</div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-2xl font-bold text-on-surface num">38</span>
+              <span class="text-sm text-on-surface-variant">h</span>
+              <span class="text-2xl font-bold text-on-surface num">24</span>
+              <span class="text-sm text-on-surface-variant">m</span>
+            </div>
+          </div>
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-9 h-9 rounded-md bg-success/15 flex items-center justify-center">
+                <i data-lucide="swords" class="w-4 h-4 text-success"></i>
+              </div>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success num">胜 7 · 负 5</span>
+            </div>
+            <div class="text-xs text-on-surface-variant mb-1">对局数</div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-2xl font-bold text-on-surface num">12</span>
+              <span class="text-sm text-on-surface-variant">场</span>
+            </div>
+          </div>
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-9 h-9 rounded-md bg-error/15 flex items-center justify-center">
+                <i data-lucide="percent" class="w-4 h-4 text-error"></i>
+              </div>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error num">↑ 8%</span>
+            </div>
+            <div class="text-xs text-on-surface-variant mb-1">胜率</div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-2xl font-bold text-on-surface num">58</span>
+              <span class="text-sm text-on-surface-variant">%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 主视觉区：用户最新原图 + 4 hotspot -->
+      <section>
+        <div class="flex items-end justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-semibold text-on-surface">竞标博弈城</h2>
+            <p class="text-xs text-on-surface-variant mt-1">点击建筑徽标或文字气泡进入对应模块</p>
+          </div>
+          <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+            <i data-lucide="mouse-pointer-click" class="w-3.5 h-3.5"></i>
+            <span>4 个功能入口</span>
+          </div>
+        </div>
+
+        <div class="park-stage" id="park-stage">
+
+          <!-- 顶部深色提示条 + 内置图例 -->
+          <div class="hint-bar absolute top-0 left-0 right-0 z-20 px-4 py-2.5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="info" class="w-3.5 h-3.5 text-white/80"></i>
+              <span class="text-xs text-white/90">点击建筑徽标或文字气泡进入对应模块</span>
+            </div>
+            <div class="flex items-center gap-3 text-[11px] text-white/80">
+              <span class="inline-flex items-center gap-1.5"><span class="legend-dot bg-[#16A37B]"></span>能力</span>
+              <span class="inline-flex items-center gap-1.5"><span class="legend-dot bg-[#2F6BFF]"></span>开局</span>
+              <span class="inline-flex items-center gap-1.5"><span class="legend-dot bg-[#8B5CF6]"></span>对局</span>
+              <span class="inline-flex items-center gap-1.5"><span class="legend-dot bg-[#F59E0B]"></span>知识</span>
+            </div>
+          </div>
+
+          <!-- 底层：用户最新原图（已压缩为 366KB JPG / 281KB WebP） -->
+          <div class="park-image">
+            <picture style="position:absolute; inset:0; width:100%; height:100%; display:block;">
+              <source srcset="game-park.webp" type="image/webp" />
+              <source srcset="game-park.jpg" type="image/jpeg" />
+              <img src="game-park.jpg" alt="竞标博弈城低多边形3D等距城市" data-category="建筑城市"
+                   style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block;"
+                   onerror="this.parentNode.parentNode.style.background='#FFE0E0'; this.alt='⚠️ 图片加载失败，请检查 game-park.jpg 文件';" />
+            </picture>
+          </div>
+
+          <!-- 热点-1：个人能力得分（中心超高层摩天楼） -->
+          <a href="result.html" class="hotspot" id="hotspot-ability" style="left: 50%; top: 39%;">
+            <button type="button" class="hotspot-badge badge-success" aria-label="个人能力得分">
+              <i data-lucide="user-round"></i>
+            </button>
+            <div class="hotspot-bubble hotspot-bubble--below" border-[#16A37B]>
+              <div class="bubble-color-block badge-success"><i data-lucide="user-round"></i></div>
+              <div class="bubble-content">
+                <div class="bubble-title">个人能力得分</div>
+                <div class="bubble-desc">综合 <span class="num">73</span> · 六维雷达 · DISC I 型</div>
+              </div>
+              <div class="bubble-tail tail-up"></div>
+            </div>
+          </a>
+
+          <!-- 热点-2：游戏入口（右上高层办公楼） -->
+          <a href="start.html" class="hotspot" id="hotspot-game" style="left: 64%; top: 38%;" data-location="gov">
+            <button type="button" class="hotspot-badge badge-primary" aria-label="游戏入口">
+              <i data-lucide="play"></i>
+            </button>
+            <div class="hotspot-bubble hotspot-bubble--below" border-[#2F6BFF]>
+              <div class="bubble-color-block badge-primary"><i data-lucide="play"></i></div>
+              <div class="bubble-content">
+                <div class="bubble-title">游戏入口</div>
+                <div class="bubble-desc">选择难度 · AI 实时博弈</div>
+              </div>
+              <div class="bubble-tail tail-up"></div>
+            </div>
+          </a>
+
+          <!-- 热点-3：历史对局（左上高层办公楼） -->
+          <a href="#history-section" id="hotspot-history" class="hotspot" style="left: 21%; top: 41%;">
+            <button type="button" class="hotspot-badge badge-purple" aria-label="历史对局">
+              <i data-lucide="history"></i>
+            </button>
+            <div class="hotspot-bubble hotspot-bubble--right" border-[#8B5CF6]>
+              <div class="bubble-color-block badge-purple"><i data-lucide="history"></i></div>
+              <div class="bubble-content">
+                <div class="bubble-title">历史对局</div>
+                <div class="bubble-desc">累计 <span class="num">12</span> 场 · 胜率 <span class="num">58%</span></div>
+              </div>
+              <div class="bubble-tail tail-left"></div>
+            </div>
+          </a>
+
+          <!-- 热点-4：知识库入口（底部中心带太阳能板的多层办公楼） -->
+          <a href="knowledge.html" class="hotspot" id="hotspot-knowledge" style="left: 43%; top: 78%;">
+            <button type="button" class="hotspot-badge badge-warning" aria-label="知识库入口">
+              <i data-lucide="book-open"></i>
+            </button>
+            <div class="hotspot-bubble hotspot-bubble--above" border-[#F59E0B]>
+              <div class="bubble-color-block badge-warning"><i data-lucide="book-open"></i></div>
+              <div class="bubble-content">
+                <div class="bubble-title">知识库入口</div>
+                <div class="bubble-desc"><span class="num">6</span> 个文件 · 智慧政务 v3.2</div>
+              </div>
+              <div class="bubble-tail tail-down"></div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- 4 列辅助信息卡（与 4 个 hotspot 对应） -->
+      <section>
+        <div class="grid grid-cols-4 gap-4">
+
+          <!-- 辅助卡-1：个人能力得分 -->
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-md bg-success/15 flex items-center justify-center">
+                  <i data-lucide="user-round" class="w-4 h-4 text-success"></i>
+                </div>
+                <span class="text-sm font-semibold text-on-surface">个人能力得分</span>
+              </div>
+              <a href="result.html" id="link-ability" class="text-xs text-primary font-medium hover:underline">查看 →</a>
+            </div>
+            <div class="flex items-end gap-2 mb-3">
+              <span class="text-3xl font-bold text-on-surface num">73</span>
+              <span class="text-sm text-on-surface-variant pb-1">/ 100</span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-medium bg-success/15 text-success num mb-1.5">↑ +5</span>
+            </div>
+            <!-- 六维雷达简化为条形 -->
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] text-on-surface-variant w-12 shrink-0">信息采集</span>
+                <div class="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                  <div class="h-full bg-success rounded-full" style="width:82%"></div>
+                </div>
+                <span class="text-[11px] text-on-surface-variant num w-6 text-right">82</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] text-on-surface-variant w-12 shrink-0">方案设计</span>
+                <div class="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                  <div class="h-full bg-success rounded-full" style="width:75%"></div>
+                </div>
+                <span class="text-[11px] text-on-surface-variant num w-6 text-right">75</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] text-on-surface-variant w-12 shrink-0">价格博弈</span>
+                <div class="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                  <div class="h-full bg-success rounded-full" style="width:68%"></div>
+                </div>
+                <span class="text-[11px] text-on-surface-variant num w-6 text-right">68</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] text-on-surface-variant w-12 shrink-0">关系经营</span>
+                <div class="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                  <div class="h-full bg-success rounded-full" style="width:71%"></div>
+                </div>
+                <span class="text-[11px] text-on-surface-variant num w-6 text-right">71</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] text-on-surface-variant w-12 shrink-0">风险控制</span>
+                <div class="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                  <div class="h-full bg-success rounded-full" style="width:70%"></div>
+                </div>
+                <span class="text-[11px] text-on-surface-variant num w-6 text-right">70</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] text-on-surface-variant w-12 shrink-0">复盘总结</span>
+                <div class="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                  <div class="h-full bg-success rounded-full" style="width:72%"></div>
+                </div>
+                <span class="text-[11px] text-on-surface-variant num w-6 text-right">72</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 辅助卡-2：游戏入口 -->
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-md bg-primary-container flex items-center justify-center">
+                  <i data-lucide="play" class="w-4 h-4 text-primary"></i>
+                </div>
+                <span class="text-sm font-semibold text-on-surface">快速开局</span>
+              </div>
+              <a href="setup.html" id="link-setup" class="text-xs text-primary font-medium hover:underline">配置 →</a>
+            </div>
+            <p class="text-xs text-on-surface-variant mb-3 leading-relaxed">选择难度 · AI 实时博弈 · 多角色对手</p>
+            <div class="space-y-2 mb-3">
+              <div class="flex items-center justify-between p-2 bg-surface-container rounded-md">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="baby" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+                  <span class="text-xs text-on-surface">新手关</span>
+                </div>
+                <span class="text-[10px] text-on-surface-variant num">3 步引导</span>
+              </div>
+              <div class="flex items-center justify-between p-2 bg-surface-container rounded-md">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="briefcase" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+                  <span class="text-xs text-on-surface">常规</span>
+                </div>
+                <span class="text-[10px] text-on-surface-variant num">推荐 · Lv.4</span>
+              </div>
+              <div class="flex items-center justify-between p-2 bg-surface-container rounded-md">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="crown" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+                  <span class="text-xs text-on-surface">专家</span>
+                </div>
+                <span class="text-[10px] text-on-surface-variant num">高阶博弈</span>
+              </div>
+            </div>
+            <button id="btn-quick-start" class="w-full bg-primary text-on-primary py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2">
+              <i data-lucide="zap" class="w-3.5 h-3.5"></i>一键进入常规关
+            </button>
+          </div>
+
+          <!-- 辅助卡-3：历史对局 -->
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-md flex items-center justify-center" purple-soft>
+                  <i data-lucide="history" class="w-4 h-4" text-purple></i>
+                </div>
+                <span class="text-sm font-semibold text-on-surface">历史对局</span>
+              </div>
+              <button id="btn-goto-history" class="text-xs text-primary font-medium hover:underline">查看全部 →</button>
+            </div>
+            <div class="flex items-end gap-2 mb-3">
+              <span class="text-3xl font-bold text-on-surface num">12</span>
+              <span class="text-sm text-on-surface-variant pb-1">场</span>
+              <span class="text-sm font-medium pb-1" text-purple>· 胜率 <span class="num">58%</span></span>
+            </div>
+            <!-- 胜负条 -->
+            <div class="flex h-2 rounded-full overflow-hidden mb-3 bg-surface-container">
+              <div class="bg-success" style="width:58%"></div>
+              <div class="bg-error/40" style="width:42%"></div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div class="p-2 bg-surface-container rounded-md">
+                <div class="text-base font-bold text-success num">7</div>
+                <div class="text-[10px] text-on-surface-variant">胜</div>
+              </div>
+              <div class="p-2 bg-surface-container rounded-md">
+                <div class="text-base font-bold text-error num">5</div>
+                <div class="text-[10px] text-on-surface-variant">负</div>
+              </div>
+              <div class="p-2 bg-surface-container rounded-md">
+                <div class="text-base font-bold text-on-surface num">2.4</div>
+                <div class="text-[10px] text-on-surface-variant">均回合</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 辅助卡-4：知识库 -->
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-md bg-warning/15 flex items-center justify-center">
+                  <i data-lucide="book-open" class="w-4 h-4 text-warning"></i>
+                </div>
+                <span class="text-sm font-semibold text-on-surface">产品知识库</span>
+              </div>
+              <a href="knowledge.html" id="link-knowledge-card" class="text-xs text-primary font-medium hover:underline">打开 →</a>
+            </div>
+            <p class="text-xs text-on-surface-variant mb-3 leading-relaxed">智慧政务 v3.2 · 6 个文件已就绪</p>
+            <div class="space-y-1.5 mb-3">
+              <div class="flex items-center gap-2 p-1.5 hover:bg-surface-container/50 rounded transition-colors cursor-pointer">
+                <i data-lucide="file-text" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                <span class="text-xs text-on-surface truncate flex-1">产品白皮书.pdf</span>
+                <span class="text-[10px] text-on-surface-variant num">2.4MB</span>
+              </div>
+              <div class="flex items-center gap-2 p-1.5 hover:bg-surface-container/50 rounded transition-colors cursor-pointer">
+                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                <span class="text-xs text-on-surface truncate flex-1">竞品对照表.xlsx</span>
+                <span class="text-[10px] text-on-surface-variant num">186KB</span>
+              </div>
+              <div class="flex items-center gap-2 p-1.5 hover:bg-surface-container/50 rounded transition-colors cursor-pointer">
+                <i data-lucide="file-text" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                <span class="text-xs text-on-surface truncate flex-1">客户案例集.pdf</span>
+                <span class="text-[10px] text-on-surface-variant num">5.1MB</span>
+              </div>
+              <div class="flex items-center gap-2 p-1.5 hover:bg-surface-container/50 rounded transition-colors cursor-pointer">
+                <i data-lucide="presentation" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                <span class="text-xs text-on-surface truncate flex-1">标准演示稿.pptx</span>
+                <span class="text-[10px] text-on-surface-variant num">8.7MB</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between text-[10px] text-on-surface-variant">
+              <span>最近更新：<span class="num">2</span> 小时前</span>
+              <span class="num">+2</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 历史对局完整表格 -->
+      <section id="history-section">
+        <div class="bg-surface rounded-lg shadow-card overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant/50">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-md flex items-center justify-center" purple-soft>
+                <i data-lucide="history" class="w-4 h-4" text-purple></i>
+              </div>
+              <div>
+                <h3 class="text-base font-semibold text-on-surface">历史对局</h3>
+                <p class="text-xs text-on-surface-variant">累计 <span class="num">12</span> 场 · 胜率 <span class="num">58%</span> · 平均 <span class="num">2.4</span> 回合</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1 bg-surface-container rounded-md p-0.5" id="filter-tabs">
+                <button class="filter-tab px-3 py-1 text-xs font-medium rounded-sm bg-surface text-on-surface shadow-sm" data-filter="all">全部 <span class="num">12</span></button>
+                <button class="filter-tab px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface" data-filter="win">胜 <span class="num">7</span></button>
+                <button class="filter-tab px-3 py-1 text-xs font-medium rounded-sm text-on-surface-variant hover:text-on-surface" data-filter="lose">负 <span class="num">5</span></button>
+              </div>
+              <button id="btn-export" class="bg-surface text-on-surface border border-outline-variant/60 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-surface-container inline-flex items-center gap-1.5">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>导出
+              </button>
+            </div>
+          </div>
+
+          <!-- 表头 -->
+          <div class="grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3 bg-surface-container text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
+            <span>对局</span>
+            <span>对手 / 客户</span>
+            <span>标的</span>
+            <span>结果</span>
+            <span class="text-right">成单额</span>
+            <span class="text-right">利润率</span>
+            <span class="text-right">操作</span>
+          </div>
+
+          <!-- 表体：8 条历史对局 -->
+          <div id="history-table" class="divide-y divide-outline-variant/50">
+
+            <!-- 列表-对局1 -->
+            <div class="history-row grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center" data-result="win">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center text-[10px] font-bold text-primary num">01</span>
+                <span class="text-xs text-on-surface-variant num">01-15</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-on-surface">市政务办 · 王主任</div>
+                <div class="text-xs text-on-surface-variant">决策风格：稳健型</div>
+              </div>
+              <div class="text-sm text-on-surface">智慧政务 v3.2</div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">胜</span>
+              </div>
+              <div class="text-sm font-semibold text-on-surface text-right num">¥3.2M</div>
+              <div class="text-sm text-success text-right num">+28.5%</div>
+              <div class="text-right">
+                <button class="history-detail-btn text-primary text-sm font-medium hover:underline" data-id="01">复盘</button>
+              </div>
+            </div>
+
+            <!-- 列表-对局2 -->
+            <div class="history-row grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center" data-result="lose">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center text-[10px] font-bold text-primary num">02</span>
+                <span class="text-xs text-on-surface-variant num">01-14</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-on-surface">区教育局 · 李科长</div>
+                <div class="text-xs text-on-surface-variant">决策风格：价格敏感</div>
+              </div>
+              <div class="text-sm text-on-surface">教育云平台</div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">负</span>
+              </div>
+              <div class="text-sm text-on-surface-variant text-right num">—</div>
+              <div class="text-sm text-error text-right num">-12.0%</div>
+              <div class="text-right">
+                <button class="history-detail-btn text-primary text-sm font-medium hover:underline" data-id="02">复盘</button>
+              </div>
+            </div>
+
+            <!-- 列表-对局3 -->
+            <div class="history-row grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center" data-result="win">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center text-[10px] font-bold text-primary num">03</span>
+                <span class="text-xs text-on-surface-variant num">01-13</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-on-surface">市卫健委 · 张处长</div>
+                <div class="text-xs text-on-surface-variant">决策风格：技术驱动</div>
+              </div>
+              <div class="text-sm text-on-surface">医疗大数据平台</div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">胜</span>
+              </div>
+              <div class="text-sm font-semibold text-on-surface text-right num">¥5.8M</div>
+              <div class="text-sm text-success text-right num">+32.1%</div>
+              <div class="text-right">
+                <button class="history-detail-btn text-primary text-sm font-medium hover:underline" data-id="03">复盘</button>
+              </div>
+            </div>
+
+            <!-- 列表-对局4 -->
+            <div class="history-row grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center" data-result="win">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center text-[10px] font-bold text-primary num">04</span>
+                <span class="text-xs text-on-surface-variant num">01-12</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-on-surface">市公安局 · 陈副局长</div>
+                <div class="text-xs text-on-surface-variant">决策风格：关系优先</div>
+              </div>
+              <div class="text-sm text-on-surface">雪亮工程二期</div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">胜</span>
+              </div>
+              <div class="text-sm font-semibold text-on-surface text-right num">¥8.6M</div>
+              <div class="text-sm text-success text-right num">+24.8%</div>
+              <div class="text-right">
+                <button class="history-detail-btn text-primary text-sm font-medium hover:underline" data-id="04">复盘</button>
+              </div>
+            </div>
+
+            <!-- 列表-对局5 -->
+            <div class="history-row grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center" data-result="lose">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center text-[10px] font-bold text-primary num">05</span>
+                <span class="text-xs text-on-surface-variant num">01-10</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-on-surface">市交通局 · 刘主任</div>
+                <div class="text-xs text-on-surface-variant">决策风格：保守谨慎</div>
+              </div>
+              <div class="text-sm text-on-surface">智慧交通一期</div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">负</span>
+              </div>
+              <div class="text-sm text-on-surface-variant text-right num">—</div>
+              <div class="text-sm text-error text-right num">-8.5%</div>
+              <div class="text-right">
+                <button class="history-detail-btn text-primary text-sm font-medium hover:underline" data-id="05">复盘</button>
+              </div>
+            </div>
+
+            <!-- 列表-对局6 -->
+            <div class="history-row grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center" data-result="win">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center text-[10px] font-bold text-primary num">06</span>
+                <span class="text-xs text-on-surface-variant num">01-09</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-on-surface">区民政局 · 赵局长</div>
+                <div class="text-xs text-on-surface-variant">决策风格：民生导向</div>
+              </div>
+              <div class="text-sm text-on-surface">民政大数据</div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">胜</span>
+              </div>
+              <div class="text-sm font-semibold text-on-surface text-right num">¥2.1M</div>
+              <div class="text-sm text-success text-right num">+22.0%</div>
+              <div class="text-right">
+                <button class="history-detail-btn text-primary text-sm font-medium hover:underline" data-id="06">复盘</button>
+              </div>
+            </div>
+
+            <!-- 列表-对局7 -->
+            <div class="history-row grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center" data-result="win">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center text-[10px] font-bold text-primary num">07</span>
+                <span class="text-xs text-on-surface-variant num">01-08</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-on-surface">市生态环境局 · 周科长</div>
+                <div class="text-xs text-on-surface-variant">决策风格：标准导向</div>
+              </div>
+              <div class="text-sm text-on-surface">环保监测平台</div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">胜</span>
+              </div>
+              <div class="text-sm font-semibold text-on-surface text-right num">¥4.5M</div>
+              <div class="text-sm text-success text-right num">+26.3%</div>
+              <div class="text-right">
+                <button class="history-detail-btn text-primary text-sm font-medium hover:underline" data-id="07">复盘</button>
+              </div>
+            </div>
+
+            <!-- 列表-对局8 -->
+            <div class="history-row grid grid-cols-[100px_1.2fr_1fr_120px_100px_120px_120px] gap-4 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center" data-result="lose">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-md bg-primary-container flex items-center justify-center text-[10px] font-bold text-primary num">08</span>
+                <span class="text-xs text-on-surface-variant num">01-07</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-on-surface">市国资委 · 吴处长</div>
+                <div class="text-xs text-on-surface-variant">决策风格：风险厌恶</div>
+              </div>
+              <div class="text-sm text-on-surface">国资监管系统</div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">负</span>
+              </div>
+              <div class="text-sm text-on-surface-variant text-right num">—</div>
+              <div class="text-sm text-error text-right num">-15.2%</div>
+              <div class="text-right">
+                <button class="history-detail-btn text-primary text-sm font-medium hover:underline" data-id="08">复盘</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 表尾 -->
+          <div class="flex items-center justify-between px-5 py-3 bg-surface-container/50 text-xs text-on-surface-variant">
+            <span>显示 <span class="num">1-8</span> 共 <span class="num">12</span> 条</span>
+            <div class="flex items-center gap-1">
+              <button class="w-7 h-7 rounded-md hover:bg-surface-container flex items-center justify-center disabled:opacity-40" disabled>
+                <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+              </button>
+              <button class="w-7 h-7 rounded-md bg-primary text-on-primary flex items-center justify-center font-medium num">1</button>
+              <button class="w-7 h-7 rounded-md hover:bg-surface-container flex items-center justify-center num">2</button>
+              <button class="w-7 h-7 rounded-md hover:bg-surface-container flex items-center justify-center">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+  <!-- @main-content:end -->
+
+  <script>
+    // 高亮当前页面导航（统一使用 jQuery 选择器）
+    (function () {
+      const path = window.location.pathname.split('/').pop() || 'home.html';
+      const map = {
+        'home.html':      'nav-home',
+        'setup.html':     'nav-setup',
+        'game.html':      'nav-game',
+        'result.html':    'nav-result',
+        'knowledge.html': 'nav-knowledge'
+      };
+      const id = map[path];
+      if (id) {
+        const $el = $('#' + id);
+        if ($el.length) {
+          $el.removeClass('text-on-surface-variant')
+             .addClass('text-primary bg-primary-container')
+             .attr('aria-current', 'page');
+        }
+      }
+    })();
+  </script>
+
+  <script>
+    $(function () {
+
+      // ========== Hotspot 交互 ==========
+      // 热点的整体逻辑：
+      // 1. 鼠标悬停：徽标 scale(1.12) + 阴影加深 + 气泡边框变主题色（CSS 已实现）
+      // 2. 鼠标悬停：气泡上浮 2px（CSS transform）
+      // 3. 气泡的三角使用 CSS border 实现，方向由 .tail-up/.tail-down/.tail-left/.tail-right 决定
+      // 4. 后续可扩展：hover 改变气泡描边颜色、显示二级提示、动画高亮等
+
+      // 1) 能力得分 hotspot - 点击徽标跳转到 result.html
+      // 当前 a 标签已带 href，可直接跳转；点击徽标时阻止冒泡到外层 a
+      $('#hotspot-ability .hotspot-badge').on('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = 'result.html';
+      });
+
+      // 2) 游戏入口 hotspot - 直接跳转到 start.html（关卡选择页）
+      $('#hotspot-game .hotspot-badge').on('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = 'start.html';
+      });
+
+      // 3) 历史对局 hotspot - 滚动到下方历史对局表格
+      $('#hotspot-history .hotspot-badge').on('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const $target = $('#history-section');
+        if ($target.length) {
+          $target.get(0).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      // 4) 知识库入口 hotspot - 点击徽标跳转到 knowledge.html
+      $('#hotspot-knowledge .hotspot-badge').on('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = 'knowledge.html';
+      });
+
+      // ========== 顶部按钮交互 ==========
+      // 快速开局
+      $('#btn-start-game').on('click', function () {
+        window.location.href = 'start.html';
+      });
+      // 知识库
+      $('#btn-knowledge').on('click', function () {
+        window.location.href = 'knowledge.html';
+      });
+
+      // ========== 辅助卡-2 快速开局按钮 ==========
+      $('#btn-quick-start').on('click', function () {
+        // 打开攻略位置选择弹窗，让玩家选择建筑后再进入 setup
+        openLocationPickerModal();
+      });
+
+      // ========== 辅助卡-3 查看全部历史 ==========
+      $('#btn-goto-history').on('click', function () {
+        const $target = $('#history-section');
+        if ($target.length) $target.get(0).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      // ========== 辅助卡-4 知识库链接 ==========
+      $('#link-knowledge-card').on('click', function (e) {
+        e.preventDefault();
+        window.location.href = 'knowledge.html';
+      });
+
+      // ========== 历史对局：筛选 Tab 切换 ==========
+      // 实现逻辑：
+      // 1. 点击 tab 时切换 active 样式（白底+阴影 vs 透明）
+      // 2. 根据 data-filter 筛选 history-row 的 data-result 属性
+      // 3. all 显示全部；win 只显示胜；lose 只显示负
+      $('#filter-tabs').on('click', '.filter-tab', function () {
+        const $btn = $(this);
+        const filter = $btn.data('filter');
+
+        // 切换激活态样式
+        $('#filter-tabs .filter-tab').removeClass('bg-surface text-on-surface shadow-sm').addClass('text-on-surface-variant');
+        $btn.removeClass('text-on-surface-variant').addClass('bg-surface text-on-surface shadow-sm');
+
+        // 筛选行
+        if (filter === 'all') {
+          $('#history-table .history-row').show();
+        } else {
+          $('#history-table .history-row').each(function () {
+            const r = $(this).data('result');
+            $(this).toggle(r === filter);
+          });
+        }
+      });
+
+      // ========== 历史对局：复盘按钮 ==========
+      // 后续应实现：
+      // 1. 弹出复盘模态框或跳转至 result.html?id=xxx
+      // 2. 模态框内显示：对手风格分析、关键回合回放、AI 评分、改进建议
+      // 3. 支持导出复盘 PDF
+      $('#history-table').on('click', '.history-detail-btn', function (e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        window.location.href = `result.html?id=${id}`;
+      });
+
+      // ========== 导出按钮 ==========
+      // 后续应实现：弹出导出格式选择（CSV/XLSX/PDF），调用后端接口生成文件并下载
+      $('#btn-export').on('click', function () {
+        console.log('导出历史对局：后续应弹出格式选择对话框并调用导出接口');
+      });
+
+      // ========== 翻页按钮 ==========
+      // 后续应实现：
+      // 1. 点击页码按钮加载对应分页数据
+      // 2. 当前页高亮，禁用上/下一页按钮在边界状态
+      // 3. 支持 URL 参数 ?page=N 直接定位
+      $('#history-section').on('click', '.w-7.h-7.rounded-md', function () {
+        if ($(this).prop('disabled')) return;
+        console.log('翻页：后续应加载对应页码的对局数据');
+      });
+
+      // ========== 【新增】游戏开始前：选择攻略位置 ==========
+      // 攻略位置数据：来自等距图，4 栋核心建筑
+      const LOCATION_OPTIONS = [
+        {
+          id: 'gov-center',
+          name: '市政中心大楼',
+          type: 'government',
+          typeLabel: '政府机关',
+          icon: 'landmark',
+          color: '#2F6BFF',
+          bg: '#E8EFFE',
+          difficulty: '中',
+          budget: '¥3-5M',
+          desc: '市政务办·王主任·稳健型决策人，关注合规与政绩',
+          tags: ['政策导向', '周期长', '决策审慎']
+        },
+        {
+          id: 'edu-bureau',
+          name: '区教育局',
+          type: 'public-institution',
+          typeLabel: '事业单位',
+          icon: 'graduation-cap',
+          color: '#16A37B',
+          bg: '#E5F4EE',
+          difficulty: '低',
+          budget: '¥1-3M',
+          desc: '区教育局·李科长·价格敏感，预算紧张，倾向本地化服务',
+          tags: ['预算敏感', '周期短', '流程快']
+        },
+        {
+          id: 'health-bureau',
+          name: '市卫健委',
+          type: 'government',
+          typeLabel: '政府机关',
+          icon: 'heart-pulse',
+          color: '#8B5CF6',
+          bg: '#F0E9FE',
+          difficulty: '高',
+          budget: '¥5-8M',
+          desc: '市卫健委·张处长·技术驱动，关注数据安全与系统集成',
+          tags: ['技术门槛高', '决策周期长', '关注安全']
+        },
+        {
+          id: 'manufacturing',
+          name: '智能制造产业基地',
+          type: 'manufacturing',
+          typeLabel: '制造企业',
+          icon: 'factory',
+          color: '#F59E0B',
+          bg: '#FEF4E0',
+          difficulty: '中',
+          budget: '¥3-6M',
+          desc: '某制造集团·采购总监·成本导向，看重交付能力与案例',
+          tags: ['成本敏感', '交付能力', '案例驱动']
+        }
+      ];
+
+      // 打开攻略位置选择弹窗
+      window.openLocationPickerModal = function () {
+        // 如果已存在则先移除
+        $('#location-picker-modal').remove();
+        // 渲染位置卡片
+        const cards = LOCATION_OPTIONS.map((loc, i) => `
+          <button type="button" data-location-id="${loc.id}" class="location-card group flex flex-col items-start gap-3 p-5 bg-surface border border-outline-variant rounded-xl text-left hover:border-primary hover:shadow-card transition-all">
+            <div class="flex items-center justify-between w-full">
+              <div class="w-11 h-11 rounded-lg flex items-center justify-center" style="background:${loc.bg}; color:${loc.color};">
+                <i data-lucide="${loc.icon}" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-medium" style="background:${loc.bg}; color:${loc.color};">${loc.typeLabel}</span>
+            </div>
+            <div class="w-full">
+              <div class="text-sm font-semibold text-on-surface mb-1">${loc.name}</div>
+              <div class="text-xs text-on-surface-variant leading-relaxed">${loc.desc}</div>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap w-full pt-1">
+              ${loc.tags.map(t => `<span class="text-[10px] px-1.5 py-0.5 bg-surface-container text-on-surface-variant rounded">${t}</span>`).join('')}
+            </div>
+            <div class="flex items-center justify-between w-full pt-2 border-t border-outline-variant/50">
+              <div class="flex items-center gap-3 text-[11px]">
+                <span class="text-on-surface-variant">难度 <span class="font-semibold" style="color:${loc.color};">${loc.difficulty}</span></span>
+                <span class="text-on-surface-variant">预算 <span class="font-mono font-semibold text-on-surface">${loc.budget}</span></span>
+              </div>
+              <span class="text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                选这里 <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </span>
+            </div>
+          </button>
+        `).join('');
+
+        const modalHtml = `
+        <div id="location-picker-modal" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" style="display:none;">
+          <div class="bg-surface rounded-2xl shadow-dialog w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" role="dialog" aria-modal="true">
+            <!-- 头部 -->
+            <div class="px-6 py-5 border-b border-outline-variant flex items-start justify-between">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <i data-lucide="map-pin" class="w-5 h-5 text-primary"></i>
+                  <h3 class="text-base font-semibold text-on-surface">选择本次攻略位置</h3>
+                </div>
+                <p class="text-xs text-on-surface-variant">从竞标博弈城中选一栋建筑作为目标客户，不同位置难度 / 预算 / 决策人风格不同</p>
+              </div>
+              <button type="button" class="modal-close-btn w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container rounded-md transition-colors">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <!-- 卡片网格 -->
+            <div class="px-6 py-5 overflow-y-auto flex-1">
+              <div class="grid grid-cols-2 gap-4">${cards}</div>
+            </div>
+            <!-- 底部 -->
+            <div class="px-6 py-3 border-t border-outline-variant bg-surface-container-lowest flex items-center justify-between">
+              <span class="text-[11px] text-on-surface-variant flex items-center gap-1.5">
+                <i data-lucide="info" class="w-3 h-3"></i>
+                选好后可进入"对局配置"页生成专属场景
+              </span>
+              <button type="button" class="modal-cancel-btn px-3 py-1.5 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">取消</button>
+            </div>
+          </div>
+        </div>`;
+        $('body').append(modalHtml);
+        if (window.lucide) lucide.createIcons();
+        const $modal = $('#location-picker-modal');
+        $modal.fadeIn(180);
+        // 绑定事件
+        $modal.on('click', '.modal-close-btn, .modal-cancel-btn, .bg-black\\/40', function (e) {
+          if (e.target === this || $(this).hasClass('modal-close-btn') || $(this).hasClass('modal-cancel-btn')) {
+            $modal.fadeOut(180, function () { $modal.remove(); });
+          }
+        });
+        $modal.on('click', '.location-card', function () {
+          const locId = $(this).data('location-id');
+          const loc = LOCATION_OPTIONS.find(l => l.id === locId);
+          if (!loc) return;
+          // 跳转到 setup.html 并带上场景参数
+          const params = new URLSearchParams({
+            location: loc.id,
+            type: loc.type,
+            name: loc.name
+          });
+          window.location.href = 'setup.html?' + params.toString();
+        });
+        // ESC 关闭
+        $(document).one('keydown.locationPicker', function (e) {
+          if (e.key === 'Escape') $modal.fadeOut(180, function () { $modal.remove(); });
+        });
+      };
+
+    });
+  </script>
+
+  <script>lucide.createIcons();</script>
+</body>
+
+</html>

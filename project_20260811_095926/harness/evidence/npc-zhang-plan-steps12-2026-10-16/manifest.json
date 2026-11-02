@@ -1,0 +1,72 @@
+{
+  "sourceRevision": 10,
+  "sourcePersisted": true,
+  "sourceUpdatedAt": "2026-10-16T02:59:22.317+00:00",
+  "executionStatus": "complete",
+  "finalOutputs": 48,
+  "plannedOutputs": 48,
+  "outputStatusCounts": {
+    "valid": 48
+  },
+  "providers": [
+    {
+      "provider": "deepseek",
+      "configuredModel": "deepseek-v4-flash",
+      "requestedModel": "deepseek-flash",
+      "origin": "api.deepseek.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "doubao",
+      "configuredModel": "doubao-seed-2-0-lite-260428",
+      "requestedModel": "doubao-seed-2-0-lite-260428",
+      "origin": "ark.cn-beijing.volces.com",
+      "configuredTimeoutMs": 60000
+    },
+    {
+      "provider": "qwen",
+      "configuredModel": "qwen-plus",
+      "requestedModel": "qwen-plus",
+      "origin": "dashscope.aliyuncs.com",
+      "configuredTimeoutMs": 60000
+    }
+  ],
+  "promptSource": "snapshot revision 10; no prompt-config writes",
+  "provenance": {
+    "initialSingles": "initial-run",
+    "multiTurnRetest": "json-assistant-history"
+  },
+  "initialRun": {
+    "runId": "zhang-steps12-20261016",
+    "plannedOutputs": 48,
+    "uniqueRequestAttempts": 49,
+    "responseAttempts": 49,
+    "validFinalRecords": 46,
+    "blankDeepseekT028Attempts": 3,
+    "originalDeepseekT029Attempted": false,
+    "evidenceDirectory": "initial-run",
+    "archiveChecksumFile": "initial-run/archive-checksums.json"
+  },
+  "jsonAssistantHistoryRetest": {
+    "runId": "zhang-steps12-json-history-20261016",
+    "plannedOutputs": 9,
+    "completionAttemptCount": 9,
+    "retries": 0,
+    "validFinalOutputs": 9,
+    "evidenceDirectory": "json-assistant-history",
+    "historyFormat": "raw provider API message.content JSON string",
+    "systemPromptsAndModelsMatchInitial": true
+  },
+  "mainEvidenceSelection": {
+    "requests": "39 selected initial single attempts + all 9 re-test attempts",
+    "responses": "39 selected initial single attempts + all 9 re-test attempts"
+  },
+  "actualModelCompletionAttemptsAcrossRuns": 58,
+  "modelCompletionRequestsSent": true,
+  "modelCompletionCatalogueGetSentForRetest": false,
+  "allowedOrigins": [
+    "api.deepseek.com",
+    "ark.cn-beijing.volces.com",
+    "dashscope.aliyuncs.com"
+  ]
+}

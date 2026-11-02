@@ -1,0 +1,18 @@
+[
+  {
+    "id": "10000000-0000-4000-8000-000000000001",
+    "code": "project-1",
+    "title": "项目一 · 单单位内部竞标",
+    "industry": "通用政企单位",
+    "project_type": "单单位内部竞标",
+    "budget_wan": 100,
+    "duration_months": 5,
+    "technical_risk": "低",
+    "competitor_name": "ABC竞品",
+    "competitor_advantages": "既有客情与价格竞争",
+    "decision_maker_ids": [],
+    "difficulty": 1,
+    "description": "年度办公配套升级采购项目。玩家需要识别决策流程、经营关键人物关系，并完成五阶段竞标博弈。",
+    "created_at": "2026-08-11T08:47:29.47075+00:00"
+  }
+]

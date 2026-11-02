@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "mockedApi": true,
+  "remoteAiCalls": 0,
+  "activityGets": 3,
+  "mutations": [
+    {
+      "action": "start",
+      "taskId": "browser-activity-1",
+      "hasDraft": false
+    },
+    {
+      "action": "save",
+      "taskId": "browser-activity-1",
+      "hasDraft": true
+    },
+    {
+      "action": "save",
+      "taskId": "browser-activity-1",
+      "hasDraft": true
+    },
+    {
+      "action": "save",
+      "taskId": "browser-activity-1",
+      "hasDraft": true
+    },
+    {
+      "action": "submit",
+      "taskId": "browser-activity-1",
+      "hasDraft": false
+    },
+    {
+      "action": "start",
+      "taskId": "browser-activity-2",
+      "hasDraft": false
+    },
+    {
+      "action": "save",
+      "taskId": "browser-activity-2",
+      "hasDraft": true
+    },
+    {
+      "action": "submit",
+      "taskId": "browser-activity-2",
+      "hasDraft": true
+    },
+    {
+      "action": "start",
+      "taskId": "browser-activity-3",
+      "hasDraft": false
+    },
+    {
+      "action": "submit",
+      "taskId": "browser-activity-3",
+      "hasDraft": false
+    }
+  ],
+  "tasks": [
+    {
+      "id": "browser-activity-1",
+      "type": "technical_meeting",
+      "status": "submitted",
+      "submitReason": "timeout",
+      "evaluation": {
+        "overallEvaluation": "本次方案有助于推进后续活动沟通。"
+      }
+    },
+    {
+      "id": "browser-activity-2",
+      "type": "case_site_visit",
+      "status": "submitted",
+      "submitReason": "manual",
+      "evaluation": {
+        "overallEvaluation": "本次方案有助于推进后续活动沟通。"
+      }
+    },
+    {
+      "id": "browser-activity-3",
+      "type": "company_visit",
+      "status": "submitted",
+      "submitReason": "timeout",
+      "evaluation": {
+        "overallEvaluation": "方案已提交，但内容为空，本次未推进。"
+      }
+    }
+  ],
+  "errors": []
+}

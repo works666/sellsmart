@@ -1,0 +1,25 @@
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Local harness scratch data
+harness/local/
+harness/tmp/
+/tmp/
+
+# Editors and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs and caches outside the application folder
+*.log
+*.tmp
+*.temp
+.cache/

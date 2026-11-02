@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>对局配置 · 政企销售竞标博弈</title>
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+    /* 隐藏文件上传原生控件 */
+    .upload-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  </style>
+
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans min-h-screen flex flex-col">
+
+  <!-- @nav:start 导航组件 -->
+  <header class="bg-surface border-b border-outline-variant/60 sticky top-0 z-40 h-14 flex items-center justify-between px-6">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
+          <i data-lucide="target" class="w-4 h-4 text-on-primary"></i>
+        </div>
+        <span class="font-bold text-base text-on-surface">竞标博弈 · 政企销售实训</span>
+      </div>
+      <nav class="flex items-center gap-1" id="top-nav">
+        <a href="home.html" id="nav-home" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">实训工作台</a>
+        <a href="setup.html" id="nav-setup" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">对局配置</a>
+        <a href="game.html" id="nav-game" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">博弈演练</a>
+        <a href="result.html" id="nav-result" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">复盘中心</a>
+        <a href="knowledge.html" id="nav-knowledge" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">产品知识库</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+        <i data-lucide="circle-dot" class="w-3 h-3 text-success"></i>
+        <span class="text-xs font-medium text-on-surface-variant num">已连接 2 个对局</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+        <span class="text-sm font-semibold text-primary">初</span>
+      </div>
+    </div>
+  </header>
+  <!-- @nav:end 导航组件 -->
+
+  <!--
+    对局配置页布局：
+    左侧 240px 步骤条（可折叠） + 右侧主内容区（flex-1，垂直 flex 布局）
+    右侧内部：上方为配置卡片（flex-1, overflow-y-auto），下方为固定操作栏（shrink-0）
+  -->
+  <!-- @main-content:start -->
+  <main class="flex-1 flex" style="height: calc(100vh - 3.5rem);">
+    <div class="flex flex-1 min-h-0 w-full">
+
+      <!-- 步骤条 -->
+      <aside id="step-aside" class="w-60 shrink-0 bg-surface border-r border-outline-variant/60 overflow-y-auto scrollbar-hide transition-all">
+        <div class="p-5">
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="text-sm font-semibold text-on-surface">配置向导</h2>
+            <button id="btn-toggle-step" class="text-on-surface-variant hover:text-on-surface p-1 rounded hover:bg-surface-container transition-colors" title="折叠步骤条">
+              <i data-lucide="panel-left-close" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p class="text-xs text-on-surface-variant mb-5">4 步完成对局设定</p>
+
+          <div class="space-y-0" id="step-list">
+            <!-- 步骤1 - 当前进行中 -->
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-primary-container cursor-pointer transition-colors step-item" id="step-item-1" data-step="1">
+              <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center text-sm font-semibold shrink-0 num">1</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-semibold text-primary">选择产品</div>
+                <div class="text-xs text-primary/70 mt-0.5">进行中 · 必选</div>
+              </div>
+              <i data-lucide="package" class="w-4 h-4 text-primary shrink-0 mt-0.5"></i>
+            </div>
+            <div class="ml-7 h-3 border-l-2 border-dashed border-outline-variant/60"></div>
+
+            <!-- 步骤2 - 待配置 -->
+            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container cursor-pointer transition-colors step-item" id="step-item-2" data-step="2">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-sm font-semibold shrink-0 num">2</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium text-on-surface">选择难度</div>
+                <div class="text-xs text-on-surface-variant mt-0.5">默认 L3</div>
+              </div>
+              <i data-lucide="gauge" class="w-4 h-4 text-on-surface-variant shrink-0 mt-0.5"></i>
+            </div>
+            <div class="ml-7 h-3 border-l-2 border-dashed border-outline-variant/60"></div>
+
+            <!-- 步骤3 - 待配置 -->
+            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container cursor-pointer transition-colors step-item" id="step-item-3" data-step="3">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-sm font-semibold shrink-0 num">3</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium text-on-surface">选择模式</div>
+                <div class="text-xs text-on-surface-variant mt-0.5">方案预判 / 实时对话</div>
+              </div>
+              <i data-lucide="message-square" class="w-4 h-4 text-on-surface-variant shrink-0 mt-0.5"></i>
+            </div>
+            <div class="ml-7 h-3 border-l-2 border-dashed border-outline-variant/60"></div>
+
+            <!-- 步骤4 - 待配置 -->
+            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container cursor-pointer transition-colors step-item" id="step-item-4" data-step="4">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-sm font-semibold shrink-0 num">4</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium text-on-surface">选择场景</div>
+                <div class="text-xs text-on-surface-variant mt-0.5">4 个真实案例</div>
+              </div>
+              <i data-lucide="map" class="w-4 h-4 text-on-surface-variant shrink-0 mt-0.5"></i>
+            </div>
+          </div>
+
+          <!-- 配置预览 -->
+          <div class="mt-6 pt-5 border-t border-outline-variant/60">
+            <h3 class="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-3">当前配置</h3>
+            <div class="bg-surface-container rounded-md p-3 space-y-2 text-xs">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-on-surface-variant shrink-0">产品</span>
+                <span class="text-on-surface font-medium truncate" id="summary-product">智慧政务平台</span>
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-on-surface-variant shrink-0">难度</span>
+                <span class="text-on-surface font-medium" id="summary-difficulty">L3 · 中高层齐全</span>
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-on-surface-variant shrink-0">模式</span>
+                <span class="text-on-surface font-medium" id="summary-mode">方案预判</span>
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-on-surface-variant shrink-0">场景</span>
+                <span class="text-on-surface font-medium" id="summary-scene">智慧政务 · 800 万</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 提示卡 -->
+          <div class="mt-4 bg-primary-container/40 rounded-md p-3 text-xs text-on-surface-variant leading-relaxed">
+            <div class="flex items-start gap-1.5">
+              <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-primary shrink-0 mt-0.5"></i>
+              <span>建议选择 L3 难度配合方案预判模式，可获得更全面的打分反馈。</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 折叠后展开按钮 -->
+      <button id="btn-expand-step" class="hidden w-8 shrink-0 bg-surface border-r border-outline-variant/60 flex items-center justify-center hover:bg-surface-container transition-colors" title="展开步骤条">
+        <i data-lucide="panel-left-open" class="w-4 h-4 text-on-surface-variant"></i>
+      </button>
+
+      <!-- 右侧主区域 -->
+      <div class="flex-1 flex flex-col min-w-0 bg-background">
+
+        <!-- 顶部进度条 -->
+        <div class="bg-surface border-b border-outline-variant/60 px-6 py-3 shrink-0">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h1 class="text-base font-semibold text-on-surface">新建对局 · 政企销售竞标博弈</h1>
+              <p class="text-xs text-on-surface-variant mt-0.5">完成 4 步配置，开启 1V1 / 1VN 模拟博弈</p>
+            </div>
+            <div class="flex items-center gap-4 text-xs text-on-surface-variant">
+              <div class="flex items-center gap-1.5">
+                <i data-lucide="zap" class="w-3.5 h-3.5 text-warning"></i>
+                <span>预计耗时 <span class="font-semibold text-on-surface num">3</span> 分钟</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-success"></i>
+                <span>本次配置可保存为模板</span>
+              </div>
+            </div>
+          </div>
+          <!-- 进度条 -->
+          <div class="flex items-center gap-1.5">
+            <div class="h-1 flex-1 rounded-full bg-primary" id="progress-1"></div>
+            <div class="h-1 flex-1 rounded-full bg-outline-variant" id="progress-2"></div>
+            <div class="h-1 flex-1 rounded-full bg-outline-variant" id="progress-3"></div>
+            <div class="h-1 flex-1 rounded-full bg-outline-variant" id="progress-4"></div>
+          </div>
+        </div>
+
+        <!-- 滚动卡片区 -->
+        <div class="flex-1 overflow-y-auto p-6">
+
+          <!-- ============ 步骤1卡片：选择产品 ============ -->
+          <div class="step-card max-w-5xl" id="card-step-1">
+            <div class="bg-surface rounded-lg shadow-card p-6">
+              <!-- 卡片头 -->
+              <div class="flex items-start justify-between mb-1">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-md bg-primary-container flex items-center justify-center">
+                    <i data-lucide="package" class="w-5 h-5 text-primary"></i>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h2 class="text-base font-semibold text-on-surface">选择产品</h2>
+                      <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-semibold bg-error/15 text-error">必选</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-0.5">从产品库选择、上传资料或直接输入名称，三选一即可</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary-container text-primary">步骤 1 / 4</span>
+              </div>
+
+              <div class="mt-6 space-y-5">
+                <!-- 已有产品下拉框 -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-sm font-medium text-on-surface flex items-center gap-1.5">
+                      <i data-lucide="library" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+                      已有产品库
+                    </label>
+                    <span class="text-xs text-on-surface-variant">8 个可用产品</span>
+                  </div>
+                  <div class="relative">
+                    <select id="select-product" class="w-full bg-surface-container border-none rounded-md pl-3 pr-9 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer">
+                      <!-- 列表-产品1：CRM系统 -->
+                      <option value="crm">CRM 系统 · 客户关系管理 V8.2</option>
+                      <!-- 列表-产品2：数据中台 -->
+                      <option value="dataplatform">数据中台 · DataHub V5.1</option>
+                      <!-- 列表-产品3：AI客服平台 -->
+                      <option value="ai-cs">AI 客服平台 · SmartBot V3.0</option>
+                      <!-- 列表-产品4：智慧政务平台（默认选中） -->
+                      <option value="gov" selected>智慧政务平台 · SmartGov V3.2</option>
+                      <!-- 列表-产品5：网络安全方案 -->
+                      <option value="security">网络安全方案 · SecureOne V4.5</option>
+                      <!-- 列表-产品6：ERP系统 -->
+                      <option value="erp">ERP 系统 · EnterpriseOne V10.0</option>
+                      <!-- 列表-产品7：零信任安全 -->
+                      <option value="zero-trust">零信任安全 · ZTNA V2.3</option>
+                      <!-- 列表-产品8：协同办公 -->
+                      <option value="collab">协同办公 · WorkPlus V6.1</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-on-surface-variant absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                  </div>
+                </div>
+
+                <!-- 分隔线 -->
+                <div class="flex items-center gap-3 text-xs text-on-surface-variant">
+                  <div class="flex-1 h-px bg-outline-variant/60"></div>
+                  <span>或</span>
+                  <div class="flex-1 h-px bg-outline-variant/60"></div>
+                </div>
+
+                <!-- 上传产品资料 -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-sm font-medium text-on-surface flex items-center gap-1.5">
+                      <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+                      上传产品资料
+                    </label>
+                    <span class="text-xs text-on-surface-variant">支持 PDF / Word / Excel · ≤ 20MB</span>
+                  </div>
+
+                  <!-- 拖拽上传区 -->
+                  <div id="upload-drop" class="relative border-2 border-dashed border-outline-variant rounded-lg p-6 text-center bg-surface-container-lowest hover:border-primary/50 hover:bg-primary-container/30 transition-colors cursor-pointer">
+                    <i data-lucide="upload-cloud" class="w-8 h-8 text-on-surface-variant mx-auto mb-2"></i>
+                    <p class="text-sm text-on-surface font-medium">拖拽文件到此处，或 <span class="text-primary hover:underline">点击选择文件</span></p>
+                    <p class="text-xs text-on-surface-variant mt-1">系统将自动解析产品特性、客户案例与竞品对比</p>
+                    <input id="upload-input" type="file" class="upload-input" accept=".pdf,.doc,.docx,.xls,.xlsx" />
+                  </div>
+
+                  <!-- 已上传文件列表 -->
+                  <div class="mt-3 space-y-2" id="uploaded-files">
+                    <!-- 已上传-文件1：智慧政务平台说明书 -->
+                    <div class="bg-surface-container rounded-md p-3 flex items-center gap-3 uploaded-file">
+                      <div class="w-9 h-9 rounded-md bg-primary-container flex items-center justify-center shrink-0">
+                        <i data-lucide="file-text" class="w-4 h-4 text-primary"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-sm font-medium text-on-surface truncate">智慧政务平台 v3.2 说明书.pdf</div>
+                        <div class="text-xs text-on-surface-variant mt-0.5 num">2.3 MB · 上传于 14:28 · 已解析 128 页</div>
+                      </div>
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success shrink-0">
+                        <i data-lucide="check-circle-2" class="w-3 h-3"></i>已就绪
+                      </span>
+                      <button class="btn-remove-file text-on-surface-variant hover:text-error p-1 rounded hover:bg-error/10 transition-colors shrink-0" title="删除文件">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                    <!-- 已上传-文件2：白皮书 -->
+                    <div class="bg-surface-container rounded-md p-3 flex items-center gap-3 uploaded-file">
+                      <div class="w-9 h-9 rounded-md bg-primary-container flex items-center justify-center shrink-0">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4 text-primary"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-sm font-medium text-on-surface truncate">智慧政务产品白皮书.docx</div>
+                        <div class="text-xs text-on-surface-variant mt-0.5 num">1.8 MB · 上传于 14:30 · 解析中 67%</div>
+                      </div>
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning shrink-0">
+                        <i data-lucide="loader" class="w-3 h-3"></i>解析中
+                      </span>
+                      <button class="btn-remove-file text-on-surface-variant hover:text-error p-1 rounded hover:bg-error/10 transition-colors shrink-0" title="删除文件">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 分隔线 -->
+                <div class="flex items-center gap-3 text-xs text-on-surface-variant">
+                  <div class="flex-1 h-px bg-outline-variant/60"></div>
+                  <span>或</span>
+                  <div class="flex-1 h-px bg-outline-variant/60"></div>
+                </div>
+
+                <!-- 直接输入产品名称 -->
+                <div>
+                  <label class="text-sm font-medium text-on-surface flex items-center gap-1.5 mb-1.5">
+                    <i data-lucide="keyboard" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+                    直接输入产品名称
+                  </label>
+                  <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2"></i>
+                    <input id="input-product-name" type="text" placeholder="例如：智慧政务平台 V3.2"
+                           class="w-full pl-9 pr-3 py-2.5 bg-surface-container border-none rounded-md text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" />
+                  </div>
+                  <p class="text-xs text-on-surface-variant mt-1.5">系统将自动从知识库匹配相关产品信息与历史博弈数据</p>
+                </div>
+
+                <!-- 提示 -->
+                <div class="bg-primary-container/40 rounded-md p-3 text-xs text-on-surface-variant leading-relaxed flex items-start gap-2">
+                  <i data-lucide="info" class="w-3.5 h-3.5 text-primary shrink-0 mt-0.5"></i>
+                  <span>三种方式选择其一即可。当前已选 <span class="font-semibold text-primary">智慧政务平台 · SmartGov V3.2</span>，系统会基于该产品的真实特性生成对手画像。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ 步骤2卡片：选择难度 ============ -->
+          <div class="step-card max-w-5xl hidden" id="card-step-2">
+            <div class="bg-surface rounded-lg shadow-card p-6">
+              <div class="flex items-start justify-between mb-1">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-md bg-primary-container flex items-center justify-center">
+                    <i data-lucide="gauge" class="w-5 h-5 text-primary"></i>
+                  </div>
+                  <div>
+                    <h2 class="text-base font-semibold text-on-surface">选择博弈难度</h2>
+                    <p class="text-xs text-on-surface-variant mt-0.5">不同难度对应不同数量与层级的决策人对手，难度越高博弈越复杂</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary-container text-primary">步骤 2 / 4</span>
+              </div>
+
+              <!-- 4阶难度卡片 -->
+              <div class="grid grid-cols-4 gap-3 mt-6" id="difficulty-grid">
+                <!-- 难度1 - 仅技术中层 -->
+                <div class="difficulty-card border-2 border-outline-variant/40 rounded-lg p-4 cursor-pointer hover:border-primary/50 hover:shadow-card transition-all relative" data-difficulty="1" id="diff-1">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant num">L1 · 入门</span>
+                    <div class="check-badge hidden w-5 h-5 rounded-full bg-primary items-center justify-center">
+                      <i data-lucide="check" class="w-3 h-3 text-on-primary"></i>
+                    </div>
+                  </div>
+                  <div class="w-10 h-10 rounded-md bg-surface-container flex items-center justify-center mb-3">
+                    <i data-lucide="user" class="w-5 h-5 text-on-surface-variant"></i>
+                  </div>
+                  <div class="text-sm font-semibold text-on-surface mb-1">仅技术中层</div>
+                  <div class="text-xs text-on-surface-variant leading-relaxed mb-3">单一中层决策人对手</div>
+                  <div class="pt-3 border-t border-outline-variant/40 space-y-1.5">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="users" class="w-3 h-3"></i>
+                      <span class="num">1</span> 个对手
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="clock" class="w-3 h-3"></i>
+                      <span class="num">10</span> 轮限时
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 难度2 - 仅高层 -->
+                <div class="difficulty-card border-2 border-outline-variant/40 rounded-lg p-4 cursor-pointer hover:border-primary/50 hover:shadow-card transition-all relative" data-difficulty="2" id="diff-2">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant num">L2 · 标准</span>
+                    <div class="check-badge hidden w-5 h-5 rounded-full bg-primary items-center justify-center">
+                      <i data-lucide="check" class="w-3 h-3 text-on-primary"></i>
+                    </div>
+                  </div>
+                  <div class="w-10 h-10 rounded-md bg-surface-container flex items-center justify-center mb-3">
+                    <i data-lucide="user-cog" class="w-5 h-5 text-on-surface-variant"></i>
+                  </div>
+                  <div class="text-sm font-semibold text-on-surface mb-1">仅高层</div>
+                  <div class="text-xs text-on-surface-variant leading-relaxed mb-3">单一高层决策人对手</div>
+                  <div class="pt-3 border-t border-outline-variant/40 space-y-1.5">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="users" class="w-3 h-3"></i>
+                      <span class="num">1</span> 个对手
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="clock" class="w-3 h-3"></i>
+                      <span class="num">10</span> 轮限时
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 难度3 - 中高层齐全（默认选中） -->
+                <div class="difficulty-card border-2 border-primary bg-primary/5 rounded-lg p-4 cursor-pointer transition-all relative" data-difficulty="3" id="diff-3" aria-current="true">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-bold bg-primary text-on-primary num">L3 · 推荐</span>
+                    <div class="check-badge w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                      <i data-lucide="check" class="w-3 h-3 text-on-primary"></i>
+                    </div>
+                  </div>
+                  <div class="w-10 h-10 rounded-md bg-primary-container flex items-center justify-center mb-3">
+                    <i data-lucide="users" class="w-5 h-5 text-primary"></i>
+                  </div>
+                  <div class="text-sm font-semibold text-on-surface mb-1">中高层齐全</div>
+                  <div class="text-xs text-on-surface-variant leading-relaxed mb-3">2 个决策人（1 中层 + 1 高层）</div>
+                  <div class="pt-3 border-t border-primary/20 space-y-1.5">
+                    <div class="flex items-center gap-1.5 text-xs text-primary font-medium">
+                      <i data-lucide="users" class="w-3 h-3"></i>
+                      <span class="num">2</span> 个对手
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="clock" class="w-3 h-3"></i>
+                      <span class="num">10</span> 轮限时
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 难度4 - 上级干预 -->
+                <div class="difficulty-card border-2 border-outline-variant/40 rounded-lg p-4 cursor-pointer hover:border-primary/50 hover:shadow-card transition-all relative" data-difficulty="4" id="diff-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-bold bg-surface-container-high text-on-surface-variant num">L4 · 地狱</span>
+                    <div class="check-badge hidden w-5 h-5 rounded-full bg-primary items-center justify-center">
+                      <i data-lucide="check" class="w-3 h-3 text-on-primary"></i>
+                    </div>
+                  </div>
+                  <div class="w-10 h-10 rounded-md bg-surface-container flex items-center justify-center mb-3">
+                    <i data-lucide="users-round" class="w-5 h-5 text-on-surface-variant"></i>
+                  </div>
+                  <div class="text-sm font-semibold text-on-surface mb-1">上级干预</div>
+                  <div class="text-xs text-on-surface-variant leading-relaxed mb-3">3 个决策人（含上级单位）</div>
+                  <div class="pt-3 border-t border-outline-variant/40 space-y-1.5">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="users" class="w-3 h-3"></i>
+                      <span class="num">3</span> 个对手
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="clock" class="w-3 h-3"></i>
+                      <span class="num">10</span> 轮限时
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 难度4补充说明 -->
+              <div class="mt-4 bg-surface-container rounded-md p-3 text-xs text-on-surface-variant leading-relaxed flex items-start gap-2">
+                <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-warning shrink-0 mt-0.5"></i>
+                <div>
+                  <span class="font-medium text-on-surface">L4 上级干预：</span>含上级单位、利益、事业影响多维度博弈，3 个决策人会交叉质询并轮番上阵，建议有 3 次以上博弈经验后再挑战。
+                </div>
+              </div>
+
+              <!-- 难度推荐说明 -->
+              <div class="grid grid-cols-3 gap-3 mt-4">
+                <div class="bg-surface-container-lowest rounded-md p-3 border border-outline-variant/20">
+                  <div class="flex items-center gap-1.5 text-xs font-medium text-on-surface">
+                    <i data-lucide="trending-up" class="w-3.5 h-3.5 text-success"></i>
+                    评分反馈
+                  </div>
+                  <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">维度更细，反馈更具建设性</p>
+                </div>
+                <div class="bg-surface-container-lowest rounded-md p-3 border border-outline-variant/20">
+                  <div class="flex items-center gap-1.5 text-xs font-medium text-on-surface">
+                    <i data-lucide="brain" class="w-3.5 h-3.5 text-primary"></i>
+                    策略深度
+                  </div>
+                  <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">多决策人协同博弈策略推演</p>
+                </div>
+                <div class="bg-surface-container-lowest rounded-md p-3 border border-outline-variant/20">
+                  <div class="flex items-center gap-1.5 text-xs font-medium text-on-surface">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-warning"></i>
+                    单局时长
+                  </div>
+                  <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">难度越高，平均博弈时长越长</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ 步骤3卡片：选择模式 ============ -->
+          <div class="step-card max-w-5xl hidden" id="card-step-3">
+            <div class="bg-surface rounded-lg shadow-card p-6">
+              <div class="flex items-start justify-between mb-1">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-md bg-primary-container flex items-center justify-center">
+                    <i data-lucide="message-square" class="w-5 h-5 text-primary"></i>
+                  </div>
+                  <div>
+                    <h2 class="text-base font-semibold text-on-surface">选择交互模式</h2>
+                    <p class="text-xs text-on-surface-variant mt-0.5">影响博弈过程中 AI 打分与反馈方式，两种模式侧重点不同</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary-container text-primary">步骤 3 / 4</span>
+              </div>
+
+              <div class="mt-6">
+                <!-- Tab 切换 -->
+                <div class="bg-surface-container rounded-md p-1 inline-flex w-full max-w-md" id="mode-tabs" role="tablist">
+                  <button class="mode-tab flex-1 px-4 py-2 rounded text-sm font-medium bg-primary text-on-primary transition-all inline-flex items-center justify-center gap-1.5" data-mode="predict" id="tab-predict" role="tab" aria-selected="true">
+                    <i data-lucide="zap" class="w-3.5 h-3.5"></i>方案预判模式
+                  </button>
+                  <button class="mode-tab flex-1 px-4 py-2 rounded text-sm font-medium text-on-surface-variant hover:text-on-surface transition-all inline-flex items-center justify-center gap-1.5" data-mode="chat" id="tab-chat" role="tab" aria-selected="false">
+                    <i data-lucide="messages-square" class="w-3.5 h-3.5"></i>实时 AI 对话模式
+                  </button>
+                </div>
+
+                <!-- Tab 内容：方案预判模式（默认显示） -->
+                <div class="mode-content mt-5" id="mode-content-predict">
+                  <div class="bg-primary-container/30 border border-primary/20 rounded-lg p-5">
+                    <div class="flex items-start gap-4">
+                      <div class="w-12 h-12 rounded-md bg-primary flex items-center justify-center shrink-0">
+                        <i data-lucide="zap" class="w-6 h-6 text-on-primary"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                          <h3 class="text-base font-semibold text-on-surface">方案预判模式</h3>
+                          <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-semibold bg-primary text-on-primary">当前选择</span>
+                        </div>
+                        <p class="text-sm text-on-surface-variant mt-1.5 leading-relaxed">仅需输入您的策略文本，系统将基于对手画像、历史数据与产品知识库给出综合评分与改进建议，适合结构化推演场景。</p>
+
+                        <div class="grid grid-cols-4 gap-3 mt-4">
+                          <div class="bg-surface rounded-md p-3">
+                            <div class="text-xs text-on-surface-variant">评分维度</div>
+                            <div class="text-lg font-bold text-on-surface mt-1 num">5</div>
+                            <div class="text-[10px] text-on-surface-variant mt-0.5">说服力 · 适配度 · 风险 · 创新 · ROI</div>
+                          </div>
+                          <div class="bg-surface rounded-md p-3">
+                            <div class="text-xs text-on-surface-variant">反馈延迟</div>
+                            <div class="text-lg font-bold text-on-surface mt-1 num">~3s</div>
+                            <div class="text-[10px] text-on-surface-variant mt-0.5">综合多模型联合推理</div>
+                          </div>
+                          <div class="bg-surface rounded-md p-3">
+                            <div class="text-xs text-on-surface-variant">建议条数</div>
+                            <div class="text-lg font-bold text-on-surface mt-1 num">3 - 5</div>
+                            <div class="text-[10px] text-on-surface-variant mt-0.5">每轮生成可执行建议</div>
+                          </div>
+                          <div class="bg-surface rounded-md p-3">
+                            <div class="text-xs text-on-surface-variant">适用阶段</div>
+                            <div class="text-lg font-bold text-success mt-1">★ ★ ★ ★ ★</div>
+                            <div class="text-[10px] text-on-surface-variant mt-0.5">产品打磨 / 提案打磨期</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tab 内容：实时AI对话模式（隐藏） -->
+                <div class="mode-content mt-5 hidden" id="mode-content-chat">
+                  <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-5">
+                    <div class="flex items-start gap-4">
+                      <div class="w-12 h-12 rounded-md bg-primary-container flex items-center justify-center shrink-0">
+                        <i data-lucide="messages-square" class="w-6 h-6 text-primary"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <h3 class="text-base font-semibold text-on-surface">实时 AI 对话模式</h3>
+                        <p class="text-sm text-on-surface-variant mt-1.5 leading-relaxed">自由 AI 对话，每句话独立打分。AI 会扮演决策人对手进行质询，您可像真实谈判一样自由应对，AI 实时给出每句话的说服力与策略得分。</p>
+
+                        <div class="grid grid-cols-4 gap-3 mt-4">
+                          <div class="bg-surface rounded-md p-3">
+                            <div class="text-xs text-on-surface-variant">评分粒度</div>
+                            <div class="text-lg font-bold text-on-surface mt-1 num">逐句</div>
+                            <div class="text-[10px] text-on-surface-variant mt-0.5">每句话独立打分</div>
+                          </div>
+                          <div class="bg-surface rounded-md p-3">
+                            <div class="text-xs text-on-surface-variant">反馈延迟</div>
+                            <div class="text-lg font-bold text-on-surface mt-1 num">~1s</div>
+                            <div class="text-[10px] text-on-surface-variant mt-0.5">流式实时反馈</div>
+                          </div>
+                          <div class="bg-surface rounded-md p-3">
+                            <div class="text-xs text-on-surface-variant">对手扮演</div>
+                            <div class="text-lg font-bold text-on-surface mt-1">强</div>
+                            <div class="text-[10px] text-on-surface-variant mt-0.5">AI 主动质询 / 反驳</div>
+                          </div>
+                          <div class="bg-surface rounded-md p-3">
+                            <div class="text-xs text-on-surface-variant">适用阶段</div>
+                            <div class="text-lg font-bold text-warning mt-1">★ ★ ★ ★</div>
+                            <div class="text-[10px] text-on-surface-variant mt-0.5">客户谈判 / 路演演练</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 模式选择建议 -->
+              <div class="mt-4 bg-primary-container/40 rounded-md p-3 text-xs text-on-surface-variant leading-relaxed flex items-start gap-2">
+                <i data-lucide="info" class="w-3.5 h-3.5 text-primary shrink-0 mt-0.5"></i>
+                <span>建议新手从「方案预判模式」开始，可以更专注策略本身；有一定经验后可切换到「实时对话模式」体验更接近实战的对抗。</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ 步骤4卡片：选择场景 ============ -->
+          <div class="step-card max-w-5xl hidden" id="card-step-4">
+            <div class="bg-surface rounded-lg shadow-card p-6">
+              <div class="flex items-start justify-between mb-1">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-md bg-primary-container flex items-center justify-center">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-primary"></i>
+                  </div>
+                  <div>
+                    <h2 class="text-base font-semibold text-on-surface">AI 场景生成 · 项目背景</h2>
+                    <p class="text-xs text-on-surface-variant mt-0.5">选行业 + 产品分类，AI 自动生成完整项目背景（预算/周期/难点/客户诉求/决策人立场），生成后可手动修改</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary-container text-primary">步骤 4 / 4</span>
+              </div>
+
+              <!-- ========== AI 场景生成器 ========== -->
+              <div class="mt-5 grid grid-cols-12 gap-4">
+                <!-- 左侧：行业 + 产品分类 + 生成按钮 -->
+                <div class="col-span-4 bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-4 space-y-4">
+                  <div class="flex items-center gap-1.5 text-xs font-semibold text-on-surface">
+                    <i data-lucide="settings-2" class="w-3.5 h-3.5 text-primary"></i>
+                    生成参数
+                  </div>
+
+                  <!-- 行业下拉 -->
+                  <div>
+                    <label class="text-xs font-medium text-on-surface-variant flex items-center gap-1 mb-1.5">
+                      <i data-lucide="building" class="w-3 h-3"></i>
+                      行业
+                      <span class="text-error">*</span>
+                    </label>
+                    <select id="scene-industry" class="w-full bg-surface border border-outline-variant rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30">
+                      <option value="">请选择行业…</option>
+                      <option value="government">政府机关</option>
+                      <option value="public">事业单位（高校/医院）</option>
+                      <option value="manufacturing">制造企业</option>
+                      <option value="soe">央企</option>
+                      <option value="private">民营企业</option>
+                    </select>
+                  </div>
+
+                  <!-- 产品分类下拉 -->
+                  <div>
+                    <label class="text-xs font-medium text-on-surface-variant flex items-center gap-1 mb-1.5">
+                      <i data-lucide="package" class="w-3 h-3"></i>
+                      产品分类
+                      <span class="text-error">*</span>
+                    </label>
+                    <select id="scene-product-category" class="w-full bg-surface border border-outline-variant rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30">
+                      <option value="">请选择产品分类…</option>
+                      <option value="gov-it">智慧政务 / 一网通办</option>
+                      <option value="edu-it">教育云 / 智慧校园</option>
+                      <option value="health-it">医疗信息化 / HIS</option>
+                      <option value="transport">智慧交通 / 雪亮工程</option>
+                      <option value="env">环保监测 / 碳排放</option>
+                      <option value="crm">CRM / 客户管理</option>
+                      <option value="data-platform">数据中台 / BI</option>
+                      <option value="security">网络安全 / 等保</option>
+                      <option value="ai-platform">AI 平台 / 大模型</option>
+                      <option value="erp">ERP / 集团财务</option>
+                    </select>
+                  </div>
+
+                  <!-- 自定义场景输入 -->
+                  <div>
+                    <label class="text-xs font-medium text-on-surface-variant flex items-center gap-1 mb-1.5">
+                      <i data-lucide="pencil" class="w-3 h-3"></i>
+                      自定义场景（可选）
+                    </label>
+                    <textarea id="scene-custom-desc" rows="2" class="w-full bg-surface border border-outline-variant rounded-md px-3 py-2 text-xs text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="如：某省卫健委需要建设医联体信息化平台…"></textarea>
+                  </div>
+
+                  <!-- AI 生成按钮 -->
+                  <button id="btn-ai-generate-scene" type="button" class="w-full bg-primary text-on-primary px-4 py-2.5 rounded-md text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 shadow-card">
+                    <i data-lucide="wand-2" class="w-4 h-4"></i>
+                    AI 生成项目背景
+                  </button>
+
+                  <!-- 加载状态 -->
+                  <div id="ai-scene-loading" class="hidden text-center text-xs text-on-surface-variant py-2">
+                    <div class="inline-flex items-center gap-2">
+                      <span class="inline-block w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+                      AI 正在生成场景参数…
+                    </div>
+                  </div>
+
+                  <div class="pt-2 border-t border-outline-variant/40">
+                    <div class="text-[10px] text-on-surface-variant leading-relaxed">
+                      <i data-lucide="info" class="w-3 h-3 inline -mt-0.5"></i>
+                      数据来源：行业分类表 + 产品分类表 + 标准场景案例表
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 右侧：生成结果展示 + 可编辑 -->
+                <div class="col-span-8 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5 text-xs font-semibold text-on-surface">
+                      <i data-lucide="file-text" class="w-3.5 h-3.5 text-primary"></i>
+                      生成结果（可手动修改）
+                    </div>
+                    <button id="btn-reset-scene" type="button" class="text-[11px] text-on-surface-variant hover:text-on-surface hover:bg-surface-container px-2 py-1 rounded inline-flex items-center gap-1 transition-colors">
+                      <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                      重置
+                    </button>
+                  </div>
+
+                  <!-- 空状态 -->
+                  <div id="ai-scene-empty" class="border-2 border-dashed border-outline-variant/40 rounded-lg p-8 text-center bg-surface-container-lowest">
+                    <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mx-auto mb-3">
+                      <i data-lucide="file-question" class="w-6 h-6 text-on-surface-variant"></i>
+                    </div>
+                    <div class="text-sm font-medium text-on-surface">暂无生成结果</div>
+                    <div class="text-xs text-on-surface-variant mt-1">填写左侧行业 + 产品分类，点击"AI 生成项目背景"</div>
+                  </div>
+
+                  <!-- 生成结果表单（默认隐藏） -->
+                  <div id="ai-scene-result" class="hidden space-y-3">
+                    <!-- 项目名 -->
+                    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-3">
+                      <label class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide flex items-center gap-1 mb-1.5">
+                        <i data-lucide="tag" class="w-3 h-3"></i>
+                        项目名称
+                      </label>
+                      <input id="scene-name" type="text" class="w-full bg-surface border border-outline-variant rounded-md px-3 py-1.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30" value="" />
+                    </div>
+
+                    <!-- 2 列：预算 + 周期 -->
+                    <div class="grid grid-cols-2 gap-3">
+                      <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-3">
+                        <label class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide flex items-center gap-1 mb-1.5">
+                          <i data-lucide="circle-dollar-sign" class="w-3 h-3"></i>
+                          项目预算
+                        </label>
+                        <div class="flex items-center gap-2">
+                          <span class="text-sm text-on-surface-variant">¥</span>
+                          <input id="scene-budget" type="text" class="flex-1 bg-surface border border-outline-variant rounded-md px-3 py-1.5 text-sm text-on-surface font-mono focus:outline-none focus:ring-2 focus:ring-primary/30" value="" />
+                          <span class="text-sm text-on-surface-variant">万</span>
+                        </div>
+                      </div>
+                      <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-3">
+                        <label class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide flex items-center gap-1 mb-1.5">
+                          <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                          交付周期
+                        </label>
+                        <div class="flex items-center gap-2">
+                          <input id="scene-duration" type="text" class="flex-1 bg-surface border border-outline-variant rounded-md px-3 py-1.5 text-sm text-on-surface font-mono focus:outline-none focus:ring-2 focus:ring-primary/30" value="" />
+                          <span class="text-sm text-on-surface-variant">个月</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 技术难点 -->
+                    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-3">
+                      <label class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide flex items-center gap-1 mb-1.5">
+                        <i data-lucide="alert-triangle" class="w-3 h-3"></i>
+                        技术难点
+                      </label>
+                      <textarea id="scene-tech-difficulty" rows="2" class="w-full bg-surface border border-outline-variant rounded-md px-3 py-1.5 text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
+                    </div>
+
+                    <!-- 客户诉求 -->
+                    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-3">
+                      <label class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide flex items-center gap-1 mb-1.5">
+                        <i data-lucide="message-circle-heart" class="w-3 h-3"></i>
+                        客户核心诉求
+                      </label>
+                      <textarea id="scene-customer-needs" rows="2" class="w-full bg-surface border border-outline-variant rounded-md px-3 py-1.5 text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
+                    </div>
+
+                    <!-- 决策人立场 -->
+                    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-3">
+                      <label class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide flex items-center gap-1 mb-1.5">
+                        <i data-lucide="user-cog" class="w-3 h-3"></i>
+                        决策人立场
+                      </label>
+                      <textarea id="scene-decision-maker" rows="2" class="w-full bg-surface border border-outline-variant rounded-md px-3 py-1.5 text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
+                    </div>
+
+                    <!-- 竞品信息 -->
+                    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-3">
+                      <label class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide flex items-center gap-1 mb-1.5">
+                        <i data-lucide="swords" class="w-3 h-3"></i>
+                        主要竞品
+                      </label>
+                      <input id="scene-competitor" type="text" class="w-full bg-surface border border-outline-variant rounded-md px-3 py-1.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30" value="" />
+                    </div>
+
+                    <!-- 已编辑提示 -->
+                    <div id="ai-scene-edited-tip" class="hidden flex items-center gap-1.5 text-[11px] text-warning">
+                      <i data-lucide="pen-line" class="w-3 h-3"></i>
+                      您已手动修改部分参数
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ========== 预置场景快捷选择 ========== -->
+              <div class="mt-6 pt-5 border-t border-outline-variant/40">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-1.5 text-xs font-semibold text-on-surface">
+                    <i data-lucide="library-big" class="w-3.5 h-3.5 text-primary"></i>
+                    或从预置场景快速选择
+                  </div>
+                  <span class="text-[10px] text-on-surface-variant">4 个真实政企案例</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3" id="scene-grid">
+                <!-- 场景1：智慧政务（默认选中） -->
+                <div class="scene-card border-2 border-primary bg-primary/5 rounded-lg p-4 cursor-pointer transition-all relative" data-scene="gov" id="scene-gov" aria-current="true">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-md bg-primary flex items-center justify-center shrink-0">
+                        <i data-lucide="landmark" class="w-5 h-5 text-on-primary"></i>
+                      </div>
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <h3 class="text-sm font-semibold text-on-surface">智慧政务</h3>
+                          <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-semibold bg-primary text-on-primary">已选</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant mt-0.5">GOV · 市级综合 · 标杆案例</p>
+                      </div>
+                    </div>
+                    <div class="check-badge w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                      <i data-lucide="check" class="w-3 h-3 text-on-primary"></i>
+                    </div>
+                  </div>
+
+                  <p class="text-sm text-on-surface mt-2 leading-relaxed">XX 市政务平台升级项目</p>
+
+                  <div class="grid grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <div class="text-xs text-on-surface-variant">项目预算</div>
+                      <div class="text-base font-bold text-on-surface num mt-0.5">¥ 800 万</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-on-surface-variant">技术风险</div>
+                      <div class="text-base font-bold text-warning mt-0.5 flex items-center gap-1">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-warning"></span>中
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 pt-3 border-t border-primary/20">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="swords" class="w-3 h-3"></i>
+                      <span>主要竞品：</span>
+                      <span class="text-on-surface font-medium">竞品 A</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">在区域有 3 个标杆案例，客户关系深</p>
+                  </div>
+                </div>
+
+                <!-- 场景2：金融科技 -->
+                <div class="scene-card border-2 border-outline-variant/40 rounded-lg p-4 cursor-pointer hover:border-primary/50 hover:shadow-card transition-all relative" data-scene="fintech" id="scene-fintech">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-md bg-surface-container flex items-center justify-center shrink-0">
+                        <i data-lucide="banknote" class="w-5 h-5 text-on-surface-variant"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-sm font-semibold text-on-surface">金融科技</h3>
+                        <p class="text-xs text-on-surface-variant mt-0.5">FIN · 省级核心 · 强合规</p>
+                      </div>
+                    </div>
+                    <div class="check-badge hidden w-5 h-5 rounded-full bg-primary items-center justify-center">
+                      <i data-lucide="check" class="w-3 h-3 text-on-primary"></i>
+                    </div>
+                  </div>
+
+                  <p class="text-sm text-on-surface mt-2 leading-relaxed">某省农信社核心系统替换</p>
+
+                  <div class="grid grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <div class="text-xs text-on-surface-variant">项目预算</div>
+                      <div class="text-base font-bold text-on-surface num mt-0.5">¥ 1200 万</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-on-surface-variant">技术风险</div>
+                      <div class="text-base font-bold text-error mt-0.5 flex items-center gap-1">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-error"></span>高
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 pt-3 border-t border-outline-variant/40">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="swords" class="w-3 h-3"></i>
+                      <span>主要竞品：</span>
+                      <span class="text-on-surface font-medium">竞品 B</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">有央国企背书，金融客户认可度高</p>
+                  </div>
+                </div>
+
+                <!-- 场景3：央企数字化 -->
+                <div class="scene-card border-2 border-outline-variant/40 rounded-lg p-4 cursor-pointer hover:border-primary/50 hover:shadow-card transition-all relative" data-scene="soe" id="scene-soe">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-md bg-surface-container flex items-center justify-center shrink-0">
+                        <i data-lucide="building-2" class="w-5 h-5 text-on-surface-variant"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-sm font-semibold text-on-surface">央企数字化</h3>
+                        <p class="text-xs text-on-surface-variant mt-0.5">SOE · 集团 ERP · 长周期</p>
+                      </div>
+                    </div>
+                    <div class="check-badge hidden w-5 h-5 rounded-full bg-primary items-center justify-center">
+                      <i data-lucide="check" class="w-3 h-3 text-on-primary"></i>
+                    </div>
+                  </div>
+
+                  <p class="text-sm text-on-surface mt-2 leading-relaxed">某央企集团 ERP 迁移项目</p>
+
+                  <div class="grid grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <div class="text-xs text-on-surface-variant">项目预算</div>
+                      <div class="text-base font-bold text-on-surface num mt-0.5">¥ 3000 万</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-on-surface-variant">技术风险</div>
+                      <div class="text-base font-bold text-error mt-0.5 flex items-center gap-1">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-error"></span>高
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 pt-3 border-t border-outline-variant/40">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="swords" class="w-3 h-3"></i>
+                      <span>主要竞品：</span>
+                      <span class="text-on-surface font-medium">竞品 C</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">捆绑销售能力强，已占据集团内部 60%</p>
+                  </div>
+                </div>
+
+                <!-- 场景4：教育云 -->
+                <div class="scene-card border-2 border-outline-variant/40 rounded-lg p-4 cursor-pointer hover:border-primary/50 hover:shadow-card transition-all relative" data-scene="edu" id="scene-edu">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-md bg-surface-container flex items-center justify-center shrink-0">
+                        <i data-lucide="graduation-cap" class="w-5 h-5 text-on-surface-variant"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-sm font-semibold text-on-surface">教育云</h3>
+                        <p class="text-xs text-on-surface-variant mt-0.5">EDU · 高校 · 性价比</p>
+                      </div>
+                    </div>
+                    <div class="check-badge hidden w-5 h-5 rounded-full bg-primary items-center justify-center">
+                      <i data-lucide="check" class="w-3 h-3 text-on-primary"></i>
+                    </div>
+                  </div>
+
+                  <p class="text-sm text-on-surface mt-2 leading-relaxed">高校智慧校园云平台</p>
+
+                  <div class="grid grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <div class="text-xs text-on-surface-variant">项目预算</div>
+                      <div class="text-base font-bold text-on-surface num mt-0.5">¥ 500 万</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-on-surface-variant">技术风险</div>
+                      <div class="text-base font-bold text-success mt-0.5 flex items-center gap-1">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-success"></span>低
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 pt-3 border-t border-outline-variant/40">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                      <i data-lucide="swords" class="w-3 h-3"></i>
+                      <span>主要竞品：</span>
+                      <span class="text-on-surface font-medium">竞品 D</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">价格低 30%，主打预算敏感型客户</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 场景对比表 -->
+              <div class="mt-5 bg-surface-container rounded-md overflow-hidden">
+                <div class="grid grid-cols-5 px-4 py-2.5 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
+                  <span>场景</span>
+                  <span>预算</span>
+                  <span>风险</span>
+                  <span>主要竞品</span>
+                  <span>推荐指数</span>
+                </div>
+                <div class="divide-y divide-outline-variant/40 bg-surface">
+                  <div class="grid grid-cols-5 px-4 py-2.5 text-xs">
+                    <span class="text-on-surface font-medium">智慧政务</span>
+                    <span class="text-on-surface-variant num">¥ 800 万</span>
+                    <span class="text-warning">中</span>
+                    <span class="text-on-surface-variant">竞品 A · 区域标杆</span>
+                    <span class="text-success">★ ★ ★ ★ ★</span>
+                  </div>
+                  <div class="grid grid-cols-5 px-4 py-2.5 text-xs">
+                    <span class="text-on-surface font-medium">金融科技</span>
+                    <span class="text-on-surface-variant num">¥ 1200 万</span>
+                    <span class="text-error">高</span>
+                    <span class="text-on-surface-variant">竞品 B · 央国企背书</span>
+                    <span class="text-warning">★ ★ ★ ★</span>
+                  </div>
+                  <div class="grid grid-cols-5 px-4 py-2.5 text-xs">
+                    <span class="text-on-surface font-medium">央企数字化</span>
+                    <span class="text-on-surface-variant num">¥ 3000 万</span>
+                    <span class="text-error">高</span>
+                    <span class="text-on-surface-variant">竞品 C · 捆绑销售</span>
+                    <span class="text-warning">★ ★ ★</span>
+                  </div>
+                  <div class="grid grid-cols-5 px-4 py-2.5 text-xs">
+                    <span class="text-on-surface font-medium">教育云</span>
+                    <span class="text-on-surface-variant num">¥ 500 万</span>
+                    <span class="text-success">低</span>
+                    <span class="text-on-surface-variant">竞品 D · 价格战</span>
+                    <span class="text-success">★ ★ ★ ★ ★</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 底部固定操作栏 -->
+        <div class="bg-surface border-t border-outline-variant/60 px-6 py-4 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-3">
+            <button id="btn-back" class="bg-surface-container text-on-surface border border-outline-variant/40 px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>返回上一步
+            </button>
+            <button id="btn-save-template" class="text-on-surface-variant hover:text-on-surface px-3 py-2 rounded-md text-sm font-medium hover:bg-surface-container transition-all inline-flex items-center gap-1.5">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>保存为模板
+            </button>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <!-- 当前配置摘要 -->
+            <div class="hidden md:flex items-center gap-2 text-xs text-on-surface-variant bg-surface-container px-3 py-1.5 rounded-md">
+              <i data-lucide="info" class="w-3.5 h-3.5 text-primary"></i>
+              <span>当前：</span>
+              <span class="font-semibold text-on-surface" id="bottom-summary">智慧政务平台 · L3 · 方案预判 · 智慧政务</span>
+            </div>
+
+            <button id="btn-start-game" class="bg-primary text-on-primary px-5 py-2.5 rounded-md text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2 shadow-card">
+              <i data-lucide="play" class="w-4 h-4"></i>开始博弈
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+  <!-- @main-content:end -->
+
+  <script>lucide.createIcons();</script>
+  <script>
+    // 页面交互（高亮当前页 nav + 配置交互）
+    $(function() {
+      // 高亮当前页面导航
+      const path = window.location.pathname.split('/').pop() || 'home.html';
+      const map = { 'home.html': 'nav-home', 'setup.html': 'nav-setup', 'game.html': 'nav-game', 'result.html': 'nav-result', 'knowledge.html': 'nav-knowledge' };
+      const id = map[path];
+      if (id) {
+        const $el = $('#' + id);
+        if ($el.length) {
+          $el.removeClass('text-on-surface-variant').addClass('text-primary bg-primary-container').attr('aria-current', 'page');
+        }
+      }
+
+      // ========== 页面配置交互 ==========
+      const STATE = {
+        currentStep: 1,
+        product: 'gov',
+        difficulty: 3,
+        mode: 'predict',
+        scene: 'gov'
+      };
+
+      // ========== 步骤条切换 ==========
+      function switchStep(step) {
+        STATE.currentStep = step;
+        // 隐藏所有卡片
+        $('.step-card').addClass('hidden');
+        // 显示目标卡片
+        $('#card-step-' + step).removeClass('hidden');
+        // 更新步骤条样式
+        updateStepListStyle(step);
+        // 更新顶部进度条
+        updateProgressBar(step);
+        // 滚动主区域到顶部
+        $('.flex-1.overflow-y-auto').scrollTop(0);
+      }
+
+      function updateStepListStyle(activeStep) {
+        // 重置所有步骤条样式
+        $('#step-list .step-item').each(function() {
+          const $item = $(this);
+          const step = parseInt($item.data('step'));
+          const $badge = $item.find('.num');
+          const $title = $item.find('.text-sm').first();
+          const $subtitle = $item.find('.text-xs').last();
+          const $icon = $item.find('[data-lucide]').not('.num');
+
+          $item.removeClass('bg-primary-container');
+          $badge.removeClass('bg-primary text-on-primary').addClass('bg-surface-container-high text-on-surface-variant');
+
+          if (step === activeStep) {
+            // 当前步骤：激活态
+            $item.addClass('bg-primary-container');
+            $badge.removeClass('bg-surface-container-high text-on-surface-variant').addClass('bg-primary text-on-primary');
+            $title.removeClass('text-on-surface font-medium').addClass('text-primary font-semibold');
+            $subtitle.removeClass('text-on-surface-variant').addClass('text-primary/70');
+            $icon.removeClass('text-on-surface-variant').addClass('text-primary');
+          } else if (step < activeStep) {
+            // 已完成步骤
+            $badge.removeClass('bg-surface-container-high text-on-surface-variant').addClass('bg-success text-on-primary');
+            $title.removeClass('text-primary font-semibold').addClass('text-on-surface font-medium');
+            $subtitle.removeClass('text-primary/70').addClass('text-on-surface-variant');
+            $icon.removeClass('text-primary').addClass('text-success');
+          } else {
+            // 未开始步骤
+            $title.removeClass('text-primary font-semibold').addClass('text-on-surface font-medium');
+            $subtitle.removeClass('text-primary/70').addClass('text-on-surface-variant');
+            $icon.removeClass('text-primary text-success').addClass('text-on-surface-variant');
+          }
+        });
+      }
+
+      function updateProgressBar(step) {
+        for (let i = 1; i <= 4; i++) {
+          const $bar = $('#progress-' + i);
+          if (i <= step) {
+            $bar.removeClass('bg-outline-variant').addClass('bg-primary');
+          } else {
+            $bar.removeClass('bg-primary').addClass('bg-outline-variant');
+          }
+        }
+      }
+
+      // 步骤条点击
+      $('#step-list').on('click', '.step-item', function() {
+        const step = parseInt($(this).data('step'));
+        switchStep(step);
+      });
+
+      // ========== 步骤条折叠 ==========
+      $('#btn-toggle-step').on('click', function() {
+        $('#step-aside').addClass('hidden');
+        $('#btn-expand-step').removeClass('hidden');
+      });
+
+      $('#btn-expand-step').on('click', function() {
+        $('#btn-expand-step').addClass('hidden');
+        $('#step-aside').removeClass('hidden');
+      });
+
+      // ========== 步骤1：产品选择 ==========
+      $('#select-product').on('change', function() {
+        STATE.product = $(this).val();
+        updateSummary();
+      });
+
+      // 文件上传
+      $('#upload-drop').on('click', function() {
+        $('#upload-input').click();
+      });
+
+      $('#upload-input').on('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        console.log('上传文件:', file.name);
+        // 实际应实现：
+        // 1. 验证文件类型与大小（PDF/Doc/Excel 且 ≤ 20MB）
+        // 2. 上传文件到后端，获取 URL
+        // 3. 在 #uploaded-files 容器中追加新的文件节点
+        // 4. 显示解析进度（轮询接口）
+        // 5. 解析完成后切换"解析中" badge 为"已就绪"
+      });
+
+      // 删除已上传文件
+      $('#uploaded-files').on('click', '.btn-remove-file', function() {
+        const $file = $(this).closest('.uploaded-file');
+        const fileName = $file.find('.text-sm').first().text();
+        if (confirm('确认删除文件 "' + fileName + '" 吗？')) {
+          $file.fadeOut(200, function() {
+            $(this).remove();
+          });
+        }
+      });
+
+      $('#input-product-name').on('input', function() {
+        // 实际应实现：实时从知识库搜索匹配产品
+        console.log('搜索产品:', $(this).val());
+      });
+
+      // ========== 步骤2：难度选择 ==========
+      $('#difficulty-grid').on('click', '.difficulty-card', function() {
+        const diff = parseInt($(this).data('difficulty'));
+        STATE.difficulty = diff;
+        // 移除所有选中态
+        $('.difficulty-card').each(function() {
+          const $card = $(this);
+          $card.removeClass('border-primary bg-primary/5')
+               .addClass('border-outline-variant/40 hover:border-primary/50 hover:shadow-card');
+          $card.find('.check-badge').removeClass('flex').addClass('hidden');
+          // 重置徽标
+          const $badge = $card.find('span').first();
+          $badge.removeClass('bg-primary text-on-primary').addClass('bg-surface-container-high text-on-surface-variant');
+          // 重置图标容器
+          $card.find('.w-10.h-10').first()
+               .removeClass('bg-primary-container')
+               .addClass('bg-surface-container');
+          $card.find('.w-10.h-10').first().find('[data-lucide]')
+               .removeClass('text-primary')
+               .addClass('text-on-surface-variant');
+        });
+        // 设置当前选中
+        const $current = $('#diff-' + diff);
+        $current.removeClass('border-outline-variant/40 hover:border-primary/50 hover:shadow-card')
+                .addClass('border-primary bg-primary/5');
+        $current.find('.check-badge').removeClass('hidden').addClass('flex');
+        lucide.createIcons();
+        // 重置选中卡的徽标
+        const $badge = $current.find('span').first();
+        $badge.removeClass('bg-surface-container-high text-on-surface-variant').addClass('bg-primary text-on-primary');
+        $current.find('.w-10.h-10').first()
+                .removeClass('bg-surface-container')
+                .addClass('bg-primary-container');
+        $current.find('.w-10.h-10').first().find('[data-lucide]')
+                .removeClass('text-on-surface-variant')
+                .addClass('text-primary');
+        lucide.createIcons();
+        updateSummary();
+      });
+
+      // ========== 步骤3：模式切换 ==========
+      $('#mode-tabs').on('click', '.mode-tab', function() {
+        const mode = $(this).data('mode');
+        STATE.mode = mode;
+        // 重置所有 tab
+        $('.mode-tab').removeClass('bg-primary text-on-primary').addClass('text-on-surface-variant hover:text-on-surface');
+        $('.mode-tab').attr('aria-selected', 'false');
+        // 激活当前 tab
+        $(this).addClass('bg-primary text-on-primary').removeClass('text-on-surface-variant hover:text-on-surface');
+        $(this).attr('aria-selected', 'true');
+        // 切换内容
+        $('.mode-content').addClass('hidden');
+        $('#mode-content-' + mode).removeClass('hidden');
+        lucide.createIcons();
+        updateSummary();
+      });
+
+      // ========== 步骤4：场景选择 ==========
+      $('#scene-grid').on('click', '.scene-card', function() {
+        const scene = $(this).data('scene');
+        STATE.scene = scene;
+        // 重置所有场景
+        $('.scene-card').removeClass('border-primary bg-primary/5')
+                        .addClass('border-outline-variant/40 hover:border-primary/50 hover:shadow-card');
+        $('.scene-card .check-badge').removeClass('flex').addClass('hidden');
+        $('.scene-card').attr('aria-current', 'false');
+        $('.scene-card .bg-primary').removeClass('bg-primary text-on-primary').addClass('bg-surface-container text-on-surface-variant');
+        // 重新渲染 icons
+        lucide.createIcons();
+        // 激活当前
+        const $current = $('#scene-' + scene);
+        $current.removeClass('border-outline-variant/40 hover:border-primary/50 hover:shadow-card')
+                .addClass('border-primary bg-primary/5');
+        $current.find('.check-badge').removeClass('hidden').addClass('flex');
+        $current.attr('aria-current', 'true');
+        // 更新 icon 容器
+        $current.find('.w-10.h-10').first()
+                .removeClass('bg-surface-container')
+                .addClass('bg-primary');
+        $current.find('.w-10.h-10').first().find('[data-lucide]')
+                .removeClass('text-on-surface-variant')
+                .addClass('text-on-primary');
+        lucide.createIcons();
+        updateSummary();
+      });
+
+      // ========== 底部摘要更新 ==========
+      function updateSummary() {
+        const productMap = {
+          'crm': 'CRM 系统',
+          'dataplatform': '数据中台',
+          'ai-cs': 'AI 客服平台',
+          'gov': '智慧政务平台',
+          'security': '网络安全方案',
+          'erp': 'ERP 系统',
+          'zero-trust': '零信任安全',
+          'collab': '协同办公'
+        };
+        const diffMap = {
+          1: 'L1 · 仅技术中层',
+          2: 'L2 · 仅高层',
+          3: 'L3 · 中高层齐全',
+          4: 'L4 · 上级干预'
+        };
+        const modeMap = {
+          'predict': '方案预判',
+          'chat': '实时 AI 对话'
+        };
+        const sceneMap = {
+          'gov': '智慧政务 · 800 万',
+          'fintech': '金融科技 · 1200 万',
+          'soe': '央企数字化 · 3000 万',
+          'edu': '教育云 · 500 万'
+        };
+        const productName = productMap[STATE.product] || '智慧政务平台';
+        const diffName = diffMap[STATE.difficulty] || 'L3 · 中高层齐全';
+        const modeName = modeMap[STATE.mode] || '方案预判';
+        const sceneName = sceneMap[STATE.scene] || '智慧政务 · 800 万';
+
+        $('#summary-product').text(productName);
+        $('#summary-difficulty').text(diffName);
+        $('#summary-mode').text(modeName);
+        $('#summary-scene').text(sceneName);
+        $('#bottom-summary').text(productName + ' · ' + diffName.split(' · ')[0] + ' · ' + modeName + ' · ' + sceneName.split(' · ')[0]);
+      }
+
+      // ========== 底部按钮 ==========
+      $('#btn-back').on('click', function() {
+        // 实际应实现：返回上一步（先保存当前修改），并跳转到 home.html
+        window.location.href = 'home.html';
+      });
+
+      // ========== 【新增】AI 场景生成器 ==========
+      // 预置 5 个行业的 AI 生成场景模板（模拟后端调用结果）
+      const AI_SCENE_TEMPLATES = {
+        'government-gov-it': {
+          name: 'XX 市政务一网通办平台升级项目',
+          budget: 800,
+          duration: 9,
+          techDifficulty: '需打通 12 个委办局数据孤岛，统一身份认证与电子证照库，对接国产化信创目录（CPU/OS/中间件），数据迁移涉及 200 万存量用户。',
+          customerNeeds: '1）实现"一网通办"覆盖率 ≥ 95%；2）政务服务事项平均办理时限压缩 60%；3）通过等保三级测评；4）支持国产化替代。',
+          decisionMaker: '市政务办王主任，稳健型决策人，60 后。关注合规与政绩，对国产化和数据安全高度重视，决策周期长（2-3 个月），但决策后执行力强。倾向选择有标杆案例 + 央企背书的服务商。',
+          competitor: '竞品 A：某央企旗下子公司，在本省有 3 个标杆案例，客户关系深厚，但报价高 25%。'
+        },
+        'public-edu-it': {
+          name: '某市高校智慧校园云平台建设项目',
+          budget: 500,
+          duration: 6,
+          techDifficulty: '需支持 8 所高校统一身份认证与数据共享，对接 30+ 业务系统（教务/科研/财务/后勤），保障 5 万师生并发访问。',
+          customerNeeds: '1）跨校资源共享与学分互认；2）师生一站式服务（App + 小程序）；3）科研协作平台；4）预算敏感，整体不超过 ¥500 万。',
+          decisionMaker: '市教育局信息中心李科长，价格敏感型决策人，70 后。预算紧张，倾向本地化服务商，对售后响应速度要求高（2 小时响应），决策周期短（1 个月）。',
+          competitor: '竞品 D：本地小型集成商，价格低 30%，主打预算敏感型客户，技术能力有限。'
+        },
+        'public-health-it': {
+          name: '某市卫健委医联体信息化平台项目',
+          budget: 1200,
+          duration: 12,
+          techDifficulty: '需整合 1 家三甲 + 5 家二级医院 + 20 家社区卫生中心 HIS/EMR/PACS 系统，符合卫健委互联互通成熟度 4 级以上，数据安全要求极高。',
+          customerNeeds: '1）医联体内病历、检查结果互认；2）双向转诊顺畅；3）远程会诊；4）医疗大数据科研平台；5）通过等保三级 + 互联互通四级测评。',
+          decisionMaker: '市卫健委张处长，技术驱动型决策人，75 后。医学博士背景，对技术细节敏感，关注系统稳定性与数据安全，决策周期长（3-4 个月），但对技术方案优秀的供应商有"专家认可"加分。',
+          competitor: '竞品 B：东软集团旗下，有央国企背书，医疗行业案例丰富，报价高 15%。'
+        },
+        'manufacturing-erp': {
+          name: '某装备制造集团 ERP 国产化替代项目',
+          budget: 3000,
+          duration: 18,
+          techDifficulty: '需替换 SAP ERP 全模块（FI/CO/MM/PP/SD/PM），涉及 50 家子公司、200+ 业务场景，数据迁移复杂度极高，与 MES/PLM/SCM 系统深度集成。',
+          customerNeeds: '1）功能完整覆盖 SAP 全模块；2）国产化适配（信创目录）；3）项目实施周期不超过 18 个月；4）培训 500+ 关键用户；5）5 年内免费升级。',
+          decisionMaker: '集团 CIO 张总，技术派 + 成本导向双重身份。关注交付能力、案例与价格，决策需集团董事会审批，周期 4-6 个月。倾向"总价可控 + 分期付款"的合作模式。',
+          competitor: '竞品 C：用友 U9 Cloud，捆绑销售能力强，已占据集团下属 60% 子公司。'
+        },
+        'soe-data-platform': {
+          name: '某央企集团数据中台建设项目',
+          budget: 2500,
+          duration: 14,
+          techDifficulty: '需构建集团级数据汇聚、治理、共享、应用全链路平台，对接 200+ 业务系统，日处理数据量 50 亿条，要求实时计算 + 批处理双引擎。',
+          customerNeeds: '1）实现"数据资产一本账"；2）数据服务化（200+ API）；3）AI 模型训练与部署平台；4）数据安全分级分类；5）信创全栈适配。',
+          decisionMaker: '集团数字化部刘部长，央企决策风格，稳健保守 + 强合规导向。决策周期长（6 个月+），需多轮专家评审，对供应商资质要求极高（央国企背景优先）。',
+          competitor: '竞品 E：阿里云 DataWorks，央国企背景，品牌强，但定制化能力有限。'
+        },
+        'private-crm': {
+          name: '某连锁零售集团 CRM 升级项目',
+          budget: 200,
+          duration: 4,
+          techDifficulty: '需对接 ERP/微信小程序/线下 POS/会员小程序，整合 500 万会员数据，构建 360° 客户画像，CDP + MA 一体化。',
+          customerNeeds: '1）会员精准营销 ROI 提升 30%；2）全渠道客户识别（OneID）；3）自动化营销活动；4）销售团队移动端赋能；5）项目 4 个月内上线。',
+          decisionMaker: '集团 CMO 陈总，市场导向 + 效果付费。关注 ROI 与营销案例，决策快（1 个月），倾向"小步快跑"先做试点（1-2 个品牌），再推广。',
+          competitor: '竞品 F：销售易 SaaS，标准化产品，价格低 40%，但定制化能力弱。'
+        }
+      };
+
+      // 监听"AI 生成项目背景"按钮
+      $('#btn-ai-generate-scene').on('click', function () {
+        const industry = $('#scene-industry').val();
+        const productCategory = $('#scene-product-category').val();
+        const customDesc = $('#scene-custom-desc').val().trim();
+        if (!industry) { alert('请先选择"行业"'); $('#scene-industry').focus(); return; }
+        if (!productCategory) { alert('请先选择"产品分类"'); $('#scene-product-category').focus(); return; }
+        const key = industry + '-' + productCategory;
+        const $btn = $(this);
+        const $loading = $('#ai-scene-loading');
+        // 模拟 AI 调用：loading → 1.2s 后填充
+        $btn.prop('disabled', true).addClass('opacity-60');
+        $loading.removeClass('hidden');
+        setTimeout(function () {
+          $loading.addClass('hidden');
+          $btn.prop('disabled', false).removeClass('opacity-60');
+          // 优先用模板匹配
+          let tpl = AI_SCENE_TEMPLATES[key];
+          if (!tpl) {
+            // 自定义场景：根据 industry + productCategory + customDesc 拼装
+            const indMap = { government:'政府机关', 'public':'事业单位', manufacturing:'制造企业', soe:'央企', 'private':'民营企业' };
+            const catMap = { 'gov-it':'智慧政务', 'edu-it':'教育云', 'health-it':'医疗信息化', transport:'智慧交通', env:'环保监测', crm:'CRM', 'data-platform':'数据中台', security:'网络安全', 'ai-platform':'AI 平台', erp:'ERP' };
+            tpl = {
+              name: (indMap[industry] || '某客户') + (catMap[productCategory] || '信息化') + '建设项目',
+              budget: 500,
+              duration: 6,
+              techDifficulty: '根据所选行业（' + (indMap[industry]||'') + '）与产品分类（' + (catMap[productCategory]||'') + '），需完成系统集成、数据迁移、安全合规等关键任务。' + (customDesc ? '客户补充说明：' + customDesc : ''),
+              customerNeeds: '1）系统稳定运行 99.9% SLA；2）通过等保三级测评；3）满足行业监管要求；4）支持国产化替代；5）培训关键用户。',
+              decisionMaker: '客户决策人，稳健型风格，决策周期 1-3 个月，关注合规、案例与价格。',
+              competitor: '竞品 X：行业头部厂商，案例丰富，但报价偏高。'
+            };
+          } else if (customDesc) {
+            tpl = Object.assign({}, tpl, { techDifficulty: tpl.techDifficulty + '\n\n客户补充说明：' + customDesc });
+          }
+          // 填充表单
+          $('#scene-name').val(tpl.name);
+          $('#scene-budget').val(tpl.budget);
+          $('#scene-duration').val(tpl.duration);
+          $('#scene-tech-difficulty').val(tpl.techDifficulty);
+          $('#scene-customer-needs').val(tpl.customerNeeds);
+          $('#scene-decision-maker').val(tpl.decisionMaker);
+          $('#scene-competitor').val(tpl.competitor);
+          // 切换空状态 → 结果
+          $('#ai-scene-empty').addClass('hidden');
+          $('#ai-scene-result').removeClass('hidden');
+          $('#ai-scene-edited-tip').addClass('hidden');
+          // 同步到全局 STATE
+          STATE.aiScene = tpl;
+          // 通知提示
+          showToast('AI 场景已生成，可在右侧手动调整');
+        }, 1200);
+      });
+
+      // 监听手动修改 → 显示"已编辑"提示
+      $('#ai-scene-result input, #ai-scene-result textarea').on('input', function () {
+        $('#ai-scene-edited-tip').removeClass('hidden');
+      });
+
+      // 监听"重置"按钮
+      $('#btn-reset-scene').on('click', function () {
+        $('#scene-industry').val('');
+        $('#scene-product-category').val('');
+        $('#scene-custom-desc').val('');
+        $('#ai-scene-result').addClass('hidden');
+        $('#ai-scene-empty').removeClass('hidden');
+        $('#ai-scene-edited-tip').addClass('hidden');
+        STATE.aiScene = null;
+        showToast('已重置场景参数');
+      });
+
+      // 监听 URL 参数：如果从 home.html 带 location 参数来，自动选中对应场景
+      (function autoFillFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const location = params.get('location');
+        if (location === 'gov-center' || location === 'health-bureau') {
+          $('#scene-industry').val('government');
+          $('#scene-product-category').val('gov-it');
+        } else if (location === 'edu-bureau') {
+          $('#scene-industry').val('public');
+          $('#scene-product-category').val('edu-it');
+        } else if (location === 'manufacturing') {
+          $('#scene-industry').val('manufacturing');
+          $('#scene-product-category').val('erp');
+        }
+      })();
+
+      // ========== Toast 提示（轻量反馈） ==========
+      window.showToast = function (msg) {
+        const $t = $('<div class="fixed top-6 right-6 z-50 bg-on-surface text-on-primary text-sm px-4 py-2.5 rounded-md shadow-dialog flex items-center gap-2" style="display:none;">' +
+          '<i data-lucide="check-circle-2" class="w-4 h-4 text-success"></i><span>' + msg + '</span></div>');
+        $('body').append($t);
+        if (window.lucide) lucide.createIcons();
+        $t.fadeIn(180);
+        setTimeout(function () { $t.fadeOut(180, function () { $t.remove(); }); }, 2400);
+      };
+
+      $('#btn-save-template').on('click', function() {
+        // 实际应实现：
+        // 1. 弹出模态框让用户输入模板名称
+        // 2. 调用后端接口保存当前配置为模板
+        // 3. 成功后显示 toast 提示
+        console.log('保存为模板:', STATE);
+        alert('模板保存功能：实际应弹出对话框输入模板名称并调用后端接口保存');
+      });
+
+      $('#btn-start-game').on('click', function() {
+        // 跳转到博弈演练页，携带配置参数
+        const params = new URLSearchParams({
+          product: STATE.product,
+          difficulty: STATE.difficulty,
+          mode: STATE.mode,
+          scene: STATE.scene
+        });
+        window.location.href = 'game.html?' + params.toString();
+      });
+
+      // 初始化摘要
+      updateSummary();
+    });
+  </script>
+</body>
+
+</html>

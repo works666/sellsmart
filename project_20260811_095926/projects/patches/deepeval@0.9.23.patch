@@ -1,0 +1,11 @@
+diff --git a/dist/telemetry.js b/dist/telemetry.js
+index 6c18c413d30c4622199c364a39fc76447276b553..543cac6649169be4abf7c5adf1e4290ca7ffb658 100644
+--- a/dist/telemetry.js
++++ b/dist/telemetry.js
+@@ -333,3 +333,6 @@ function _moveTelemetryFilesIfNeeded() {
+     }
+ }
+ // moveTelemetryFilesIfNeeded();
++
++// Prefer the current telemetry API when the published legacy file shadows its directory.
++Object.assign(exports, require("./telemetry/index.js"));

@@ -1,0 +1,24 @@
+{
+  "auditedAt": "2026-10-21T03:03:27.1754316Z",
+  "cases": 18,
+  "inputAndRawAnswerConsistency": true,
+  "validDecisions": 18,
+  "allow": 18,
+  "reject": 0,
+  "needMore": 0,
+  "configuredProvider": "deepseek",
+  "configuredModel": "deepseek-v4-flash",
+  "modelServerIdentityCaptured": false,
+  "formatClarificationAdded": true,
+  "productionCodeChanged": false,
+  "globalConfigChanged": false,
+  "jevCalls": 0,
+  "logicalLlmCallsAcrossAllRuns": 56,
+  "callBreakdown": {
+    "correctedFormatMatrix": 18,
+    "correctedFormatProbe": 1,
+    "diagnosticOriginalFormat": 1,
+    "accidentalOriginalFormatRerun": 18,
+    "initialInvalid": 18
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '保存设置', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled type=\"button\" class=\"flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-40\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    29 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+  "gets": 2,
+  "writes": [
+    {
+      "expectedRevision": 0,
+      "config": {
+        "mode": "numeric",
+        "thresholds": {
+          "technical_meeting": {
+            "supportMin": 0,
+            "pleasantnessMin": 100
+          },
+          "case_site_visit": {
+            "supportMin": 51,
+            "pleasantnessMin": 50
+          },
+          "company_visit": {
+            "supportMin": 52,
+            "pleasantnessMin": 50
+          }
+        }
+      }
+    },
+    {
+      "expectedRevision": 1,
+      "config": {
+        "mode": "ai",
+        "thresholds": {
+          "technical_meeting": {
+            "supportMin": 60,
+            "pleasantnessMin": 100
+          },
+          "case_site_visit": {
+            "supportMin": 51,
+            "pleasantnessMin": 50
+          },
+          "company_visit": {
+            "supportMin": 52,
+            "pleasantnessMin": 50
+          }
+        }
+      }
+    }
+  ],
+  "config": {
+    "mode": "numeric",
+    "thresholds": {
+      "technical_meeting": {
+        "supportMin": 0,
+        "pleasantnessMin": 100
+      },
+      "case_site_visit": {
+        "supportMin": 51,
+        "pleasantnessMin": 50
+      },
+      "company_visit": {
+        "supportMin": 52,
+        "pleasantnessMin": 50
+      }
+    },
+    "revision": 1
+  },
+  "errors": []
+}

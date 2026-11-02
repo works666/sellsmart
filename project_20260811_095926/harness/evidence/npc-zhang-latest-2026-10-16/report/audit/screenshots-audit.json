@@ -1,0 +1,34 @@
+{
+  "status": "generated",
+  "sourceRevision": 10,
+  "recordCount": 15,
+  "requestAttemptCount": 15,
+  "responseAttemptCount": 15,
+  "attemptKeysMatchByProviderCaseIdAttempt": true,
+  "screenshots": [
+    {
+      "provider": "deepseek",
+      "html": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-latest-2026-10-16\\report\\html\\deepseek.html",
+      "screenshot": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-latest-2026-10-16\\report\\screenshots\\deepseek-api-result.png",
+      "screenshotBytes": 239345,
+      "title": "API实测结果 - DeepSeek - deepseek-flash",
+      "fullPage": true
+    },
+    {
+      "provider": "doubao",
+      "html": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-latest-2026-10-16\\report\\html\\doubao.html",
+      "screenshot": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-latest-2026-10-16\\report\\screenshots\\doubao-api-result.png",
+      "screenshotBytes": 242728,
+      "title": "API实测结果 - 豆包 - doubao-seed-2-0-lite-260428",
+      "fullPage": true
+    },
+    {
+      "provider": "qwen",
+      "html": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-latest-2026-10-16\\report\\html\\qwen.html",
+      "screenshot": "D:\\WeiXun\\project_20260811_095926\\harness\\evidence\\npc-zhang-latest-2026-10-16\\report\\screenshots\\qwen-api-result.png",
+      "screenshotBytes": 233895,
+      "title": "API实测结果 - Qwen - qwen-plus",
+      "fullPage": true
+    }
+  ]
+}

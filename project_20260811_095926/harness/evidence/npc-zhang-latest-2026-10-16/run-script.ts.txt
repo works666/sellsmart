@@ -1,0 +1,611 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import { getAiProviderConfig, type AiProvider, type ChatMessage } from '../project_20260811_095926/projects/src/lib/ai/client';
+import { wrapCustomerPromptWithContentJson, CUSTOMER_PLAIN_TEXT_OUTPUT_PROTOCOL } from '../project_20260811_095926/projects/src/lib/ai/prompts/customer';
+import { serializeUntrustedPromptData } from '../project_20260811_095926/projects/src/lib/ai/prompt-data';
+import { composeNpcRolePrompt } from '../project_20260811_095926/projects/src/lib/designer/prompt-config';
+import { PROJECT_ONE_FIVE_PERSON_NPCS } from '../project_20260811_095926/projects/src/lib/designer/project-one-five-person';
+import { hasNpcSpeakerIdentityViolation, npcSpeakerIdentityInstruction } from '../project_20260811_095926/projects/src/lib/ai/npc-speaker-identity';
+
+type Tier = 'low' | 'medium' | 'high';
+type Kind = 'opening' | 'sensitive-two-requests' | 'long-sales-pitch';
+type Provider = Extract<AiProvider, 'deepseek' | 'doubao' | 'qwen'>;
+type Json = Record<string, unknown>;
+type PromptConfig = {
+  liveCustomerPrompt: string;
+  supportTierThresholds: { mediumMin: number; highMin: number };
+  npcRolePrompts: Record<string, string | { base: string; low: string; medium: string; high: string }>;
+  channelModifiers: Record<string, string>;
+  npcChannelExceptions: Record<string, Record<string, string>>;
+};
+type TestCase = { caseId: string; tier: Tier; support: number; kind: Kind; input: string };
+type PreparedSample = TestCase & { provider: Provider; messages: ChatMessage[]; systemPromptSha256: string; messagesSha256: string };
+type AttemptResult = Json & { outputStatus: string; valid: boolean; content: string | null; httpStatus: number | null; finishReason: string | null; returnedModel: string | null; latencyMs: number };
+
+const providers: Provider[] = ['deepseek', 'doubao', 'qwen'];
+const effectiveModels: Partial<Record<Provider, string>> = {};
+const allowedHosts: Record<Provider, string> = {
+  deepseek: 'api.deepseek.com', doubao: 'ark.cn-beijing.volces.com', qwen: 'dashscope.aliyuncs.com',
+};
+const port = 3000;
+const oldSavePath = path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), 'project_20260811_095926', 'harness/evidence/designer-excel-import-2026-10-16/real-save-after.json');
+const projectRoot = path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), 'project_20260811_095926');
+const evidenceDir = path.join(projectRoot, 'harness/evidence/npc-zhang-latest-2026-10-16');
+const priorPath = path.join(projectRoot, 'harness/evidence/npc-zhang-natural-replies-2026-10-14/v5-live/summary.json');
+const currentSnapshotPath = path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url))), 'root-current-zhang-20261016.json');
+const runArg = process.argv.find((arg) => arg.startsWith('--run-id='));
+const runId = runArg?.slice('--run-id='.length) ?? '';
+const execute = process.argv.includes('--execute');
+const require = createRequire(path.join(projectRoot, 'projects/package.json'));
+const dotenv = require('dotenv') as { config: (options: { path: string; quiet?: boolean; override?: boolean }) => unknown };
+dotenv.config({ path: path.join(projectRoot, 'projects/.env.local'), quiet: true, override: false });
+
+function hash(text: string): string { return crypto.createHash('sha256').update(text, 'utf8').digest('hex'); }
+function charCount(text: string): number { return Array.from(text).length; }
+function writeJson(filePath: string, value: unknown): void { fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + '\n', 'utf8'); }
+function obj(value: unknown, label: string): Json {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${label}_SHAPE`);
+  return value as Json;
+}
+async function jsonRequest(url: string, init?: RequestInit): Promise<{ status: number; body: Json }> {
+  const response = await fetch(url, init);
+  const raw = await response.text();
+  let body: Json;
+  try { body = obj(JSON.parse(raw), 'HTTP_JSON'); } catch { throw new Error(`HTTP_${response.status}_INVALID_JSON`); }
+  return { status: response.status, body };
+}
+function stringField(value: Json, key: string): string {
+  if (typeof value[key] !== 'string') throw new Error(`${key.toUpperCase()}_MISSING`);
+  return value[key] as string;
+}
+function readSavedConfig(): Json {
+  const raw = fs.readFileSync(currentSnapshotPath, 'utf8').replace(/^\uFEFF/, '');
+  return obj(JSON.parse(raw), 'CURRENT_CONFIG_SNAPSHOT');
+}
+
+function profileField(profile: PromptConfig['npcRolePrompts'][string], field: Tier | 'base'): string {
+  if (typeof profile === 'string') return field === 'base' ? profile : '';
+  if (!profile || typeof profile[field] !== 'string') throw new Error(`ZHANG_PROFILE_${field}_MISSING`);
+  return profile[field] as string;
+}
+
+function configFingerprints(config: PromptConfig) {
+  const profile = config.npcRolePrompts['P1-001'];
+  if (!profile) throw new Error('ZHANG_PROFILE_MISSING');
+  const channelBase = config.channelModifiers.visit ?? '';
+  const channelException = config.npcChannelExceptions['P1-001']?.visit ?? '';
+  const combinedVisit = [channelBase, channelException].filter(Boolean).join('\n');
+  const values = {
+    base: profileField(profile, 'base'), low: profileField(profile, 'low'),
+    medium: profileField(profile, 'medium'), high: profileField(profile, 'high'), visit: combinedVisit,
+  };
+  return Object.fromEntries(Object.entries(values).map(([key, value]) => [key, { sha256: hash(value), chars: charCount(value) }])) as Record<string, { sha256: string; chars: number }>;
+}
+
+async function verifyLiveCurrent(): Promise<void> {
+  const username = process.env.PROMPT_EXCEL_TEST_USERNAME;
+  const password = process.env.PROMPT_EXCEL_TEST_PASSWORD;
+  if (!username || !password) throw new Error('TEST_LOGIN_ENV_REQUIRED');
+  const login = await jsonRequest('http://127.0.0.1:3000/api/auth/login', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action: 'login', username, password }),
+  });
+  if (login.status !== 200 || login.body.success !== true) throw new Error(`LOGIN_HTTP_${login.status}`);
+  const role = await jsonRequest('http://127.0.0.1:3000/api/auth/login', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action: 'select_role', loginToken: stringField(login.body, 'loginToken'), role: 'platform_designer' }),
+  });
+  if (role.status !== 200 || role.body.success !== true) throw new Error(`ROLE_HTTP_${role.status}`);
+  const latest = await jsonRequest('http://127.0.0.1:3000/api/designer/prompt-config', {
+    headers: { 'x-session': stringField(role.body, 'token') },
+  });
+  if (latest.status !== 200 || latest.body.success !== true) throw new Error(`CONFIG_GET_HTTP_${latest.status}`);
+  const previous = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'snapshot.json'), 'utf8')) as Json;
+  const previousConfig = obj(previous.config, 'PREVIOUS_CONFIG') as PromptConfig;
+  const latestConfig = obj(latest.body.config, 'LATEST_CONFIG') as PromptConfig;
+  const before = configFingerprints(previousConfig);
+  const after = configFingerprints(latestConfig);
+  const changedFields = Object.keys(after).filter((field) => before[field as keyof typeof before].sha256 !== after[field as keyof typeof after].sha256);
+  const audit = {
+    readAt: new Date().toISOString(), method: 'GET /api/designer/prompt-config', writesAttempted: false,
+    snapshotRevision: previous.revision, latestRevision: latest.body.revision,
+    snapshotUpdatedAt: previous.updatedAt ?? null, latestUpdatedAt: latest.body.updatedAt ?? null,
+    revisionChanged: previous.revision !== latest.body.revision, changedFields,
+    fields: Object.fromEntries(Object.keys(after).map((field) => [field, {
+      snapshotSha256: before[field as keyof typeof before].sha256,
+      latestSha256: after[field as keyof typeof after].sha256,
+      changed: before[field as keyof typeof before].sha256 !== after[field as keyof typeof after].sha256,
+    }])),
+    persisted: latest.body.persisted === true,
+  };
+  writeJson(path.join(evidenceDir, 'latest-readback-audit.json'), audit);
+  console.log(JSON.stringify(audit, null, 2));
+}
+
+async function providerInfo() {
+  const info = providers.map((provider) => {
+    const config = getAiProviderConfig(provider);
+    const url = new URL(config.baseUrl);
+    if (url.protocol !== 'https:' || url.hostname.toLowerCase() !== allowedHosts[provider]) throw new Error(`PROVIDER_ORIGIN_NOT_ALLOWLISTED:${provider}`);
+    return { provider, configuredModel: config.model, model: config.model, origin: url.hostname.toLowerCase(), configuredTimeoutMs: config.timeoutMs };
+  });
+  const deepseekConfig = getAiProviderConfig('deepseek');
+  const cataloguePath = path.join(evidenceDir, 'models-catalogue.json');
+  let catalogueRecord: { availableModelIds: string[]; status: number; effectiveModel?: string };
+  if (fs.existsSync(cataloguePath)) {
+    catalogueRecord = JSON.parse(fs.readFileSync(cataloguePath, 'utf8')) as typeof catalogueRecord;
+  } else {
+    const deepseekBase = new URL(deepseekConfig.baseUrl);
+    const modelPath = deepseekBase.pathname.replace(/\/+$/, '');
+    const modelsUrl = new URL((modelPath || '') + '/models', deepseekBase.origin);
+    const catalogueResponse = await fetch(modelsUrl, {
+      headers: { authorization: `Bearer ${deepseekConfig.apiKey}` },
+      signal: AbortSignal.timeout(Math.min(30_000, Math.max(deepseekConfig.timeoutMs, 5_000))),
+    });
+    const catalogueText = await catalogueResponse.text();
+    if (!catalogueResponse.ok) throw new Error(`DEEPSEEK_MODELS_HTTP_${catalogueResponse.status}`);
+    let catalogue: Json;
+    try { catalogue = obj(JSON.parse(catalogueText), 'DEEPSEEK_MODELS'); } catch { throw new Error('DEEPSEEK_MODELS_INVALID_JSON'); }
+    const modelRows = Array.isArray(catalogue.data) ? catalogue.data : [];
+    const modelIds = modelRows.map((item) => item && typeof item === 'object' ? (item as Json).id : null).filter((id): id is string => typeof id === 'string');
+    const effectiveModel = modelIds.includes(deepseekConfig.model) ? deepseekConfig.model : modelIds.includes('deepseek-flash') ? 'deepseek-flash' : undefined;
+    catalogueRecord = { availableModelIds: modelIds, status: catalogueResponse.status, effectiveModel };
+    writeJson(cataloguePath, {
+      provider: 'deepseek', origin: 'api.deepseek.com', status: catalogueResponse.status,
+      fetchedAt: new Date().toISOString(), configuredModel: deepseekConfig.model,
+      availableModelIds: modelIds, effectiveModel,
+      responseBodySha256: hash(catalogueText),
+    });
+  }
+  const modelIds = catalogueRecord.availableModelIds;
+  const configured = info.find((entry) => entry.provider === 'deepseek')!;
+  let effective = configured.configuredModel;
+  if (!modelIds.includes(effective)) {
+    if (modelIds.includes('deepseek-flash')) effective = 'deepseek-flash';
+    else throw new Error('DEEPSEEK_CONFIGURED_MODEL_NOT_LISTED_AND_NO_APPROVED_ALIAS');
+  }
+  if (catalogueRecord.effectiveModel && catalogueRecord.effectiveModel !== effective) throw new Error('DEEPSEEK_MODEL_CATALOGUE_SELECTION_CHANGED');
+  effectiveModels.deepseek = effective;
+  return info.map((entry) => ({ ...entry, effectiveModel: entry.provider === 'deepseek' ? effective : entry.configuredModel }));
+}
+
+function loadCases(): TestCase[] {
+  const data = JSON.parse(fs.readFileSync(priorPath, 'utf8')) as { records?: Array<Json> };
+  if (!Array.isArray(data.records)) throw new Error('PRIOR_CASES_MISSING');
+  const inputFor = (caseId: string): string => {
+    const row = data.records!.find((entry) => entry.caseId === caseId);
+    if (!row || typeof row.input !== 'string' || row.npcId !== 'P1-001') throw new Error(`PRIOR_CASE_INPUT_MISSING:${caseId}`);
+    return row.input;
+  };
+  const commonOpening = inputFor('deepseek-P1-001-low-opening');
+  for (const tier of ['medium', 'high'] as const) {
+    if (inputFor(`deepseek-P1-001-${tier}-opening`) !== commonOpening) throw new Error(`OPENING_INPUT_NOT_COMMON:${tier}`);
+  }
+  return [
+    { caseId: 'zhang-low-opening', tier: 'low', support: 20, kind: 'opening', input: commonOpening },
+    { caseId: 'zhang-medium-opening', tier: 'medium', support: 50, kind: 'opening', input: commonOpening },
+    { caseId: 'zhang-high-opening', tier: 'high', support: 80, kind: 'opening', input: commonOpening },
+    { caseId: 'zhang-low-sensitive-two-requests', tier: 'low', support: 20, kind: 'sensitive-two-requests', input: inputFor('deepseek-P1-001-low-sensitive-refusal') },
+    { caseId: 'zhang-low-long-sales-pitch', tier: 'low', support: 20, kind: 'long-sales-pitch', input: inputFor('deepseek-P1-001-low-long-pitch') },
+  ];
+}
+
+function composeSamples(config: PromptConfig, cases: TestCase[]): PreparedSample[] {
+  const npc = PROJECT_ONE_FIVE_PERSON_NPCS['P1-001'];
+  if (npc.name !== '张建国' || npc.title !== '主管副总经理') throw new Error('ZHANG_NPC_IDENTITY_MISMATCH');
+  const profile = config.npcRolePrompts['P1-001'];
+  const customerPrompt = config.liveCustomerPrompt;
+  if (!customerPrompt.endsWith(CUSTOMER_PLAIN_TEXT_OUTPUT_PROTOCOL)) throw new Error('GLOBAL_OUTPUT_PROTOCOL_MISMATCH');
+  const customerJson = wrapCustomerPromptWithContentJson(customerPrompt.slice(0, -CUSTOMER_PLAIN_TEXT_OUTPUT_PROTOCOL.length));
+  const visit = [config.channelModifiers.visit, config.npcChannelExceptions['P1-001']?.visit].filter(Boolean).join('\n');
+  if (!visit) throw new Error('VISIT_PROMPT_EMPTY');
+  const otherNpcNames = Object.entries(PROJECT_ONE_FIVE_PERSON_NPCS).filter(([id]) => id !== 'P1-001').map(([, item]) => item.name);
+  const otherNpcProfiles = Object.entries(config.npcRolePrompts)
+    .filter(([id]) => id !== 'P1-001')
+    .flatMap(([, value]) => typeof value === 'string' ? [value] : Object.values(value))
+    .filter((value): value is string => typeof value === 'string' && value.trim().length > 20);
+  const samples: PreparedSample[] = [];
+  for (const testCase of cases) {
+    const role = composeNpcRolePrompt(profile, testCase.support, 50, config.supportTierThresholds);
+    const identity = npcSpeakerIdentityInstruction({ id: npc.id, name: npc.name, title: npc.title }, '办公室拜访');
+    const identityLock = [
+      '## 本轮身份补充',
+      '当前NPC是张建国，你以张建国的第一人称回复；玩家是来访销售方。',
+      testCase.input.includes('我是云岚数科的林先生') ? '当前玩家已自报姓名，可称林先生。' : '当前玩家未自报姓名，只称您，不得猜测或编造姓名。',
+      '玩家开场中的“张总”是对NPC的称呼，不得把张建国或“张总”反过来称呼玩家。',
+    ].join('\n');
+    const outputProtocol = '## 最终输出格式\n只输出单个合法JSON对象，且仅含content字符串字段。NPC正文放在content字段内；身份规则中的“只输出正文”仅指content字段的值。格式示例：{"content":"您好"}。';
+    const system = [customerJson, '## 当前人物角色提示\n' + role, '## 本轮拜访渠道\n' + visit, identity, identityLock, outputProtocol].join('\n\n');
+    const user = serializeUntrustedPromptData('customer_runtime_context', {
+      npc: { id: npc.id, name: npc.name, title: npc.title },
+      visit: { status: '已预约', location: '办公室' }, visitorCompany: '云岚数科', verifiedMaterials: [],
+      confirmedFacts: ['拜访已预约并在办公室进行。', '来访企业为云岚数科。', '目前没有经过核验的材料。'], playerMessage: testCase.input,
+    }, { maxStringLength: 2000, maxTotalLength: 8000 });
+    const messages: ChatMessage[] = [{ role: 'system', content: system }, { role: 'user', content: user }];
+    const serializedMessages = JSON.stringify(messages);
+    if (otherNpcNames.some((name) => serializedMessages.includes(name))) throw new Error('OTHER_NPC_NAME_IN_PROMPT');
+    if (otherNpcProfiles.some((otherProfile) => serializedMessages.includes(otherProfile))) throw new Error('OTHER_NPC_PROFILE_IN_PROMPT');
+    for (const provider of providers) {
+      samples.push({ ...testCase, provider, messages, systemPromptSha256: hash(system), messagesSha256: hash(serializedMessages) });
+    }
+  }
+  if (samples.length !== 15) throw new Error('EXPECTED_FIFTEEN_PROMPTS');
+  return samples;
+}
+
+type Parsed = { status: string; valid: boolean; content: string | null; returnedModel: string | null; finishReason: string | null; usage: unknown; reasoningContentChars: number | null; rawContent: unknown };
+function parseJsonCompletion(raw: string): Parsed {
+  let envelope: unknown;
+  try { envelope = JSON.parse(raw); } catch { return { status: 'invalid_json', valid: false, content: null, returnedModel: null, finishReason: null, usage: null, reasoningContentChars: null, rawContent: null }; }
+  if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope)) return { status: 'invalid_shape', valid: false, content: null, returnedModel: null, finishReason: null, usage: null, reasoningContentChars: null, rawContent: null };
+  const data = envelope as Json;
+  const choice = Array.isArray(data.choices) ? data.choices[0] as Json | undefined : undefined;
+  const message = choice && choice.message && typeof choice.message === 'object' ? choice.message as Json : null;
+  const rawContent = message?.content ?? null;
+  const text = typeof rawContent === 'string' ? rawContent
+    : Array.isArray(rawContent) ? rawContent.map((part) => part && typeof part === 'object' && (part as Json).type === 'text' ? String((part as Json).text ?? '') : '').join('')
+      : null;
+  const returnedModel = typeof data.model === 'string' ? data.model : null;
+  const finishReason = typeof choice?.finish_reason === 'string' ? choice.finish_reason : null;
+  const reasoning = typeof message?.reasoning_content === 'string' ? message.reasoning_content : '';
+  if (text === null) return { status: 'invalid_shape', valid: false, content: null, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: reasoning ? charCount(reasoning) : 0, rawContent };
+  if (!text.trim()) return { status: 'blank_content', valid: false, content: null, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: reasoning ? charCount(reasoning) : 0, rawContent };
+  let inner: unknown;
+  try { inner = JSON.parse(text); } catch { return { status: 'invalid_json', valid: false, content: null, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: reasoning ? charCount(reasoning) : 0, rawContent }; }
+  if (!inner || typeof inner !== 'object' || Array.isArray(inner)) return { status: 'invalid_shape', valid: false, content: null, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: reasoning ? charCount(reasoning) : 0, rawContent };
+  const object = inner as Json;
+  if (Object.keys(object).length !== 1 || typeof object.content !== 'string') return { status: 'invalid_shape', valid: false, content: null, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: reasoning ? charCount(reasoning) : 0, rawContent };
+  if (!(object.content as string).trim()) return { status: 'blank_content', valid: false, content: null, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: reasoning ? charCount(reasoning) : 0, rawContent };
+  return { status: 'valid', valid: true, content: object.content as string, returnedModel, finishReason, usage: data.usage ?? null, reasoningContentChars: reasoning ? charCount(reasoning) : 0, rawContent };
+}
+
+function parseSse(raw: string): Parsed {
+  let content = '';
+  let returnedModel: string | null = null;
+  let finishReason: string | null = null;
+  let usage: unknown = null;
+  let reasoningContentChars = 0;
+  let sawJson = false;
+  for (const line of raw.split(/\r?\n/)) {
+    if (!line.startsWith('data:')) continue;
+    const value = line.slice(5).trim();
+    if (!value || value === '[DONE]') continue;
+    let event: Json;
+    try { event = obj(JSON.parse(value), 'SSE_EVENT'); } catch { continue; }
+    sawJson = true;
+    if (typeof event.model === 'string') returnedModel = event.model;
+    if (event.usage !== undefined) usage = event.usage;
+    const choice = Array.isArray(event.choices) ? event.choices[0] as Json | undefined : undefined;
+    if (!choice) continue;
+    if (typeof choice.finish_reason === 'string') finishReason = choice.finish_reason;
+    const delta = choice.delta && typeof choice.delta === 'object' ? choice.delta as Json : null;
+    const text = delta?.content;
+    if (typeof text === 'string') content += text;
+    else if (Array.isArray(text)) content += text.map((part) => part && typeof part === 'object' && (part as Json).type === 'text' ? String((part as Json).text ?? '') : '').join('');
+    if (typeof delta?.reasoning_content === 'string') reasoningContentChars += charCount(delta.reasoning_content);
+  }
+  if (!sawJson) return { status: 'blank_sse', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: null };
+  if (!content.trim()) return { status: 'blank_content', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+  let inner: unknown;
+  try { inner = JSON.parse(content); } catch { return { status: 'invalid_json', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content }; }
+  if (!inner || typeof inner !== 'object' || Array.isArray(inner)) return { status: 'invalid_shape', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+  const object = inner as Json;
+  if (Object.keys(object).length !== 1 || typeof object.content !== 'string') return { status: 'invalid_shape', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+  if (!(object.content as string).trim()) return { status: 'blank_content', valid: false, content: null, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+  return { status: 'valid', valid: true, content: object.content as string, returnedModel, finishReason, usage, reasoningContentChars, rawContent: content };
+}
+
+function safeError(error: unknown): string {
+  if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)) return 'TIMEOUT';
+  if (error instanceof TypeError) return 'NETWORK_ERROR';
+  return 'REQUEST_ERROR';
+}
+
+function providerTarget(provider: Provider) {
+  const config = getAiProviderConfig(provider);
+  const base = new URL(config.baseUrl);
+  if (base.protocol !== 'https:' || base.hostname.toLowerCase() !== allowedHosts[provider]) throw new Error(`PROVIDER_ORIGIN_NOT_ALLOWLISTED:${provider}`);
+  const basePath = base.pathname.replace(/\/+$/, '');
+  const url = basePath.endsWith('/chat/completions') ? base : new URL(basePath + '/chat/completions', base.origin);
+  url.search = ''; url.hash = '';
+  return { url, apiKey: config.apiKey, model: effectiveModels[provider] ?? config.model, configuredModel: config.model, configuredTimeoutMs: config.timeoutMs, origin: base.hostname.toLowerCase() };
+}
+
+async function attemptOne(sample: PreparedSample, attempt: number): Promise<AttemptResult> {
+  const started = Date.now();
+  const target = providerTarget(sample.provider);
+  const useSse = sample.provider === 'deepseek';
+  const requestBody = {
+    model: target.model, messages: sample.messages, temperature: 0.35, max_tokens: 512,
+    response_format: { type: 'json_object' },
+    ...(sample.provider === 'qwen' ? { enable_thinking: false } : { thinking: { type: 'disabled' } }),
+    stream: useSse,
+  };
+  const serializedBody = JSON.stringify(requestBody);
+  fs.appendFileSync(path.join(evidenceDir, 'requests.ndjson'), JSON.stringify({
+    caseId: sample.caseId, provider: sample.provider, attempt, configuredModel: target.configuredModel,
+    requestedModel: target.model, effectiveModel: target.model, origin: target.origin,
+    endpointPath: target.url.pathname, temperature: 0.35, maxTokens: 512, jsonMode: true,
+    thinking: 'disabled', stream: useSse, requestBodySha256: hash(serializedBody),
+    systemPromptSha256: sample.systemPromptSha256, messagesSha256: sample.messagesSha256, body: requestBody,
+  }) + '\n', 'utf8');
+
+  let httpStatus: number | null = null;
+  let requestId: string | null = null;
+  let responseBodyText: string | null = null;
+  const rawChunks: string[] = [];
+  let decoder: TextDecoder | null = null;
+  let parsed: Parsed = { status: 'request_error', valid: false, content: null, returnedModel: null, finishReason: null, usage: null, reasoningContentChars: null, rawContent: null };
+  let requestErrorCode: string | null = null;
+  try {
+    const timeoutMs = useSse ? 180_000 : target.configuredTimeoutMs;
+    const response = await fetch(target.url, {
+      method: 'POST', headers: { authorization: `Bearer ${target.apiKey}`, 'content-type': 'application/json' },
+      body: serializedBody, signal: AbortSignal.timeout(timeoutMs),
+    });
+    httpStatus = response.status;
+    requestId = response.headers.get('x-request-id') ?? response.headers.get('request-id') ?? response.headers.get('x-tt-logid');
+    if (useSse && response.body) {
+      decoder = new TextDecoder();
+      const reader = response.body.getReader();
+      while (true) {
+        const chunk = await reader.read();
+        if (chunk.done) break;
+        rawChunks.push(decoder.decode(chunk.value, { stream: true }));
+      }
+      rawChunks.push(decoder.decode());
+      responseBodyText = rawChunks.join('');
+    } else {
+      responseBodyText = await response.text();
+    }
+    parsed = useSse ? parseSse(responseBodyText) : parseJsonCompletion(responseBodyText);
+    if (!response.ok) parsed = { ...parsed, status: 'http_error', valid: false, content: null };
+  } catch (error) {
+    requestErrorCode = safeError(error);
+    if (useSse) {
+      if (decoder) rawChunks.push(decoder.decode());
+      responseBodyText = rawChunks.join('');
+      if (responseBodyText) parsed = parseSse(responseBodyText);
+      if (!parsed.valid) parsed = { ...parsed, status: parsed.status === 'blank_sse' ? 'request_error_blank_sse' : parsed.status };
+    } else {
+      parsed = { ...parsed, status: 'request_error', valid: false };
+    }
+  }
+  const finished = Date.now();
+  const result: AttemptResult = {
+    caseId: sample.caseId, provider: sample.provider, attempt, configuredModel: target.configuredModel,
+    requestedModel: target.model, effectiveModel: target.model, configuredOrigin: target.origin,
+    npcId: 'P1-001', npcName: '张建国', tier: sample.tier, support: sample.support, kind: sample.kind,
+    input: sample.input, httpStatus, requestId, requestErrorCode, outputStatus: parsed.status, valid: parsed.valid,
+    responseBodyText, responseJson: !useSse && responseBodyText ? (() => { try { return JSON.parse(responseBodyText); } catch { return null; } })() : null,
+    responseContentRaw: parsed.rawContent, content: parsed.content, returnedModel: parsed.returnedModel,
+    finishReason: parsed.finishReason, usage: parsed.usage, reasoningContentChars: parsed.reasoningContentChars,
+    contentChars: parsed.content ? charCount(parsed.content.trim()) : null,
+    identityViolation: parsed.valid && parsed.content ? hasNpcSpeakerIdentityViolation({ id: 'P1-001', name: '张建国', title: '主管副总经理' }, parsed.content) : null,
+    startedAt: new Date(started).toISOString(), finishedAt: new Date(finished).toISOString(), latencyMs: finished - started,
+  };
+  fs.appendFileSync(path.join(evidenceDir, 'responses.ndjson'), JSON.stringify(result) + '\n', 'utf8');
+  return result;
+}
+
+async function main() {
+  if (process.argv.includes('--verify-current')) {
+    await verifyLiveCurrent();
+    return;
+  }
+  if (process.argv.includes('--finalize-existing')) {
+    const requests = fs.readFileSync(path.join(evidenceDir, 'requests.ndjson'), 'utf8').split(/\r?\n/).filter(Boolean);
+    const attempts = fs.readFileSync(path.join(evidenceDir, 'responses.ndjson'), 'utf8').split(/\r?\n/).filter(Boolean);
+    const results = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'final-results.json'), 'utf8')) as Json;
+    const manifest = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'manifest.json'), 'utf8')) as Json;
+    const resultRows = Array.isArray(results.records) ? results.records as Json[] : [];
+    const uniqueRequests = new Set(requests.map((line) => {
+      const row = JSON.parse(line) as Json;
+      return `${row.provider}:${row.caseId}`;
+    }));
+    const requestAttempts = attempts.map((line) => JSON.parse(line) as Json);
+    const requestRows = requests.map((line) => JSON.parse(line) as Json);
+    const snapshot = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'snapshot.json'), 'utf8')) as Json;
+    const snapshotConfig = obj(snapshot.config, 'SNAPSHOT_CONFIG') as PromptConfig;
+    const otherNpcProfiles = Object.entries(snapshotConfig.npcRolePrompts)
+      .filter(([id]) => id !== 'P1-001')
+      .flatMap(([, value]) => typeof value === 'string' ? [value] : Object.values(value))
+      .filter((value): value is string => typeof value === 'string' && value.trim().length > 20);
+    const otherNpcProfileIncluded = requestRows.some((row) => {
+      const body = obj(row.body, 'SAVED_REQUEST_BODY');
+      const messages = Array.isArray(body.messages) ? JSON.stringify(body.messages) : '';
+      return otherNpcProfiles.some((profile) => messages.includes(profile));
+    });
+    const messageHashesByCase = new Map<string, Set<string>>();
+    for (const row of requestRows) {
+      const caseId = String(row.caseId);
+      const hashes = messageHashesByCase.get(caseId) ?? new Set<string>();
+      hashes.add(String(row.messagesSha256));
+      messageHashesByCase.set(caseId, hashes);
+    }
+    const sameInputMessagesAcrossProviders = [...messageHashesByCase.values()].every((hashes) => hashes.size === 1);
+    const allowedRequestOrigins = requestRows.every((row) => Object.values(allowedHosts).includes(String(row.origin)));
+    const providerOrder: Record<Provider, number> = { deepseek: 0, doubao: 1, qwen: 2 };
+    const caseOrder = new Map(['zhang-low-opening', 'zhang-medium-opening', 'zhang-high-opening', 'zhang-low-sensitive-two-requests', 'zhang-low-long-sales-pitch'].map((caseId, index) => [caseId, index]));
+    resultRows.sort((a, b) => providerOrder[a.provider as Provider] - providerOrder[b.provider as Provider]
+      || (caseOrder.get(String(a.caseId)) ?? 99) - (caseOrder.get(String(b.caseId)) ?? 99));
+    results.records = resultRows;
+    writeJson(path.join(evidenceDir, 'final-results.json'), results);
+    manifest.finishedAt = requestAttempts.at(-1)?.finishedAt ?? new Date().toISOString();
+    manifest.executionStatus = resultRows.length === 15 && resultRows.every((item) => item.outputStatus === 'valid') ? 'complete' : 'partial_or_failed';
+    manifest.completionRequestsSent = requests.length > 0;
+    manifest.completionRequests = uniqueRequests.size;
+    manifest.completionAttempts = requestAttempts.length;
+    manifest.retries = Math.max(0, requestAttempts.length - uniqueRequests.size);
+    manifest.otherNpcCompleteProfilesIncludedInRequests = otherNpcProfileIncluded;
+    manifest.sameMessagesPerCaseAcrossProviders = sameInputMessagesAcrossProviders;
+    manifest.allRequestOriginsAllowlisted = allowedRequestOrigins;
+    const readbackPath = path.join(evidenceDir, 'latest-readback-audit.json');
+    if (fs.existsSync(readbackPath)) manifest.postRunReadback = JSON.parse(fs.readFileSync(readbackPath, 'utf8')) as Json;
+    writeJson(path.join(evidenceDir, 'manifest.json'), manifest);
+    fs.copyFileSync(fileURLToPath(import.meta.url), path.join(evidenceDir, 'run-script.ts.txt'));
+    console.log(JSON.stringify({ mode: 'finalized-existing-evidence', executionStatus: manifest.executionStatus,
+      completionRequests: manifest.completionRequests, completionAttempts: manifest.completionAttempts,
+      retries: manifest.retries, evidenceDir }, null, 2));
+    return;
+  }
+  if (runId && !/^[a-z0-9][a-z0-9-]{0,63}$/.test(runId)) throw new Error('INVALID_RUN_ID');
+  if (execute && !runId) throw new Error('EXECUTE_REQUIRES_RUN_ID');
+  fs.mkdirSync(evidenceDir, { recursive: true });
+  const apiData = readSavedConfig();
+  const revision = Number(apiData.revision);
+  if (!Number.isInteger(revision) || revision < 0 || apiData.persisted !== true) throw new Error('CURRENT_CONFIG_NOT_PERSISTED');
+  const config = obj(apiData.config, 'PROMPT_CONFIG') as PromptConfig;
+  writeJson(path.join(evidenceDir, 'snapshot.json'), apiData);
+  const oldData = JSON.parse(fs.readFileSync(oldSavePath, 'utf8')) as { revision?: number; persisted?: boolean; config: PromptConfig };
+  if (oldData.revision !== 9 || oldData.persisted !== true) throw new Error('EXPECTED_ROOT_SAVED_REVISION_9');
+  const beforeHashes = configFingerprints(oldData.config);
+  const currentHashes = configFingerprints(config);
+  const changedFields = Object.keys(currentHashes).filter((key) => beforeHashes[key as keyof typeof beforeHashes].sha256 !== currentHashes[key as keyof typeof currentHashes].sha256);
+  const providerData = await providerInfo();
+  const cases = loadCases();
+  const samples = composeSamples(config, cases);
+  const plan = {
+    preparedAt: new Date().toISOString(), sourceRevision: revision, sourcePersisted: apiData.persisted,
+    sourceUpdatedAt: apiData.updatedAt ?? null, previousRevision: oldData.revision,
+    sourceComparison: Object.fromEntries(Object.keys(currentHashes).map((field) => [field, {
+      previous: beforeHashes[field as keyof typeof beforeHashes], current: currentHashes[field as keyof typeof currentHashes],
+      changed: beforeHashes[field as keyof typeof beforeHashes].sha256 !== currentHashes[field as keyof typeof currentHashes].sha256,
+    }])), changedFields,
+    providerData: providerData.map(({ provider, configuredModel, effectiveModel, origin, configuredTimeoutMs }) => ({
+      provider, configuredModel, requestedModel: effectiveModel, effectiveModel, origin, configuredTimeoutMs,
+    })),
+    caseCount: cases.length, totalModelCalls: samples.length,
+    caseInputs: cases.map(({ caseId, tier, support, kind, input }) => ({ caseId, tier, support, kind, input, inputSha256: hash(input) })),
+    promptHashes: samples.map(({ caseId, provider, systemPromptSha256, messagesSha256 }) => ({ caseId, provider, systemPromptSha256, messagesSha256 })),
+    settings: { temperature: 0.35, maxTokens: 512, responseFormat: 'json_object', thinking: 'disabled',
+      deepseekStream: true, deepseekWaitLimitMs: 180_000, maxAutomaticAttempts: 3, providerSequence: providers },
+    allowedOrigins: Object.values(allowedHosts), otherNpcRolePromptsIncludedInRequests: false,
+    persistenceWrites: false, modelCatalogueGetSent: true, completionRequestsSent: false,
+    evidenceDir,
+  };
+  writeJson(path.join(evidenceDir, 'prepared-plan.json'), plan);
+  writeJson(path.join(evidenceDir, 'manifest.json'), {
+    sourceRevision: revision, sourcePersisted: apiData.persisted, sourceUpdatedAt: apiData.updatedAt ?? null,
+    previousRevision: oldData.revision, changedFields,
+    fields: Object.fromEntries(Object.keys(currentHashes).map((field) => [field, {
+      previousSha256: beforeHashes[field as keyof typeof beforeHashes].sha256,
+      currentSha256: currentHashes[field as keyof typeof currentHashes].sha256,
+      changed: beforeHashes[field as keyof typeof beforeHashes].sha256 !== currentHashes[field as keyof typeof currentHashes].sha256,
+    }])),
+    providers: plan.providerData, settings: plan.settings, totalModelCalls: samples.length,
+    deepseekModelCatalogue: JSON.parse(fs.readFileSync(path.join(evidenceDir, 'models-catalogue.json'), 'utf8')),
+    allowedOrigins: Object.values(allowedHosts), modelCatalogueGetSent: true, completionRequestsSent: false,
+    completionRequests: 0, completionAttempts: 0, retries: 0,
+  });
+  console.log(JSON.stringify({ sourceRevision: revision, previousRevision: oldData.revision, changedFields, fieldHashes: plan.sourceComparison, providers: plan.providerData, testCases: cases.map(({ caseId, tier, kind, input }) => ({ caseId, tier, kind, input })), plannedCalls: samples.length, preparedPlan: path.join(evidenceDir, 'prepared-plan.json'), snapshot: path.join(evidenceDir, 'snapshot.json'), executeAllowed: false }, null, 2));
+  if (!execute) return;
+
+  if (revision <= oldData.revision || changedFields.length === 0) throw new Error('NEW_ZHANG_PROMPT_NOT_CONFIRMED');
+  if (fs.existsSync(path.join(evidenceDir, 'requests.ndjson')) || fs.existsSync(path.join(evidenceDir, 'responses.ndjson'))) throw new Error('RUN_EVIDENCE_ALREADY_EXISTS');
+  fs.writeFileSync(path.join(evidenceDir, 'requests.ndjson'), '', 'utf8');
+  fs.writeFileSync(path.join(evidenceDir, 'responses.ndjson'), '', 'utf8');
+  const allResults: Array<Json> = [];
+  let deepseekStopReason: string | null = null;
+  const casesByProvider: Record<Provider, PreparedSample[]> = {
+    deepseek: samples.filter((sample) => sample.provider === 'deepseek'),
+    doubao: samples.filter((sample) => sample.provider === 'doubao'),
+    qwen: samples.filter((sample) => sample.provider === 'qwen'),
+  };
+  const persistProgress = () => {
+    const providerOrder: Record<Provider, number> = { deepseek: 0, doubao: 1, qwen: 2 };
+    const caseOrder = new Map(cases.map((item, index) => [item.caseId, index]));
+    const records = [...allResults].sort((a, b) => providerOrder[a.provider as Provider] - providerOrder[b.provider as Provider]
+      || (caseOrder.get(String(a.caseId)) ?? 99) - (caseOrder.get(String(b.caseId)) ?? 99));
+    writeJson(path.join(evidenceDir, 'final-results.json'), {
+      sourceRevision: revision, sourceUpdatedAt: apiData.updatedAt ?? null, providers: plan.providerData,
+      settings: plan.settings, completedCases: allResults.length, plannedCases: 15,
+      deepseekStopReason, records,
+    });
+  };
+  const runProvider = async (provider: Provider) => {
+    let consecutiveLongBlankResponses = 0;
+    const testCases = casesByProvider[provider];
+    for (let index = 0; index < testCases.length; index += 1) {
+      const sample = testCases[index];
+      if (provider === 'deepseek' && deepseekStopReason) {
+        const skipped = {
+          caseId: sample.caseId, provider, configuredModel: providerTarget(provider).configuredModel,
+          requestedModel: providerTarget(provider).model, effectiveModel: providerTarget(provider).model,
+          returnedModel: null, npcId: 'P1-001', npcName: '张建国', tier: sample.tier, support: sample.support,
+          kind: sample.kind, input: sample.input, content: null, contentChars: null, attemptCount: 0,
+          httpStatus: null, finishReason: null, outputStatus: 'not_run_after_deepseek_sse_timeout', latencyMs: 0,
+          identityViolation: null, usage: null, firstValidAttempt: null,
+        };
+        allResults.push(skipped);
+        persistProgress();
+        continue;
+      }
+      let selected: AttemptResult | null = null;
+      let lastAttempt: AttemptResult | null = null;
+      let attemptCount = 0;
+      let totalLatency = 0;
+      for (let attempt = 1; attempt <= 3; attempt += 1) {
+        attemptCount = attempt;
+        const attemptResult = await attemptOne(sample, attempt);
+        lastAttempt = attemptResult;
+        totalLatency += attemptResult.latencyMs;
+        if (attemptResult.valid) { selected = attemptResult; break; }
+        const wasLongSseWithoutContent = provider === 'deepseek' && !attemptResult.content
+          && attemptResult.latencyMs >= 175_000;
+        consecutiveLongBlankResponses = wasLongSseWithoutContent ? consecutiveLongBlankResponses + 1 : 0;
+        if (provider === 'deepseek' && index === 0 && consecutiveLongBlankResponses >= 2) {
+          deepseekStopReason = 'first_sample_had_two_consecutive_180s_sse_attempts_without_content';
+          break;
+        }
+        if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      if (!lastAttempt) throw new Error(`NO_ATTEMPT_RESULT:${provider}:${sample.caseId}`);
+      const finalAttempt = selected ?? lastAttempt;
+      const record = {
+        caseId: sample.caseId, provider, configuredModel: providerTarget(provider).configuredModel,
+        requestedModel: providerTarget(provider).model, effectiveModel: providerTarget(provider).model,
+        returnedModel: finalAttempt.returnedModel, npcId: 'P1-001', npcName: '张建国', tier: sample.tier,
+        support: sample.support, kind: sample.kind, input: sample.input,
+        content: selected?.content ?? null, contentChars: selected?.content ? charCount(selected.content.trim()) : null,
+        attemptCount, httpStatus: finalAttempt.httpStatus, finishReason: finalAttempt.finishReason,
+        outputStatus: selected ? 'valid' : finalAttempt.outputStatus, latencyMs: totalLatency,
+        identityViolation: selected?.identityViolation ?? finalAttempt.identityViolation ?? null,
+        usage: finalAttempt.usage, firstValidAttempt: selected?.attempt ?? null,
+      };
+      allResults.push(record);
+      persistProgress();
+      console.log(JSON.stringify({ completed: allResults.length, caseId: record.caseId, provider,
+        outputStatus: record.outputStatus, attemptCount, latencyMs: totalLatency }));
+      if (deepseekStopReason) console.log(JSON.stringify({ provider, stopped: true, reason: deepseekStopReason }));
+    }
+  };
+  await Promise.all(providers.map((provider) => runProvider(provider)));
+  writeJson(path.join(evidenceDir, 'final-results.json'), {
+    sourceRevision: revision, sourceUpdatedAt: apiData.updatedAt ?? null, providers: plan.providerData,
+    settings: plan.settings, completedCases: allResults.length, plannedCases: 15,
+    deepseekStopReason, records: allResults,
+  });
+  const attemptRows = fs.readFileSync(path.join(evidenceDir, 'responses.ndjson'), 'utf8').split(/\r?\n/).filter(Boolean);
+  const completionManifest = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'manifest.json'), 'utf8')) as Json;
+  completionManifest.finishedAt = new Date().toISOString();
+  completionManifest.executionStatus = allResults.length === 15 && allResults.every((item) => item.outputStatus === 'valid') ? 'complete' : 'partial_or_failed';
+  completionManifest.completionRequestsSent = true;
+  completionManifest.completionRequests = allResults.filter((item) => Number(item.attemptCount) > 0).length;
+  completionManifest.completionAttempts = attemptRows.length;
+  completionManifest.retries = Math.max(0, attemptRows.length - Number(completionManifest.completionRequests));
+  writeJson(path.join(evidenceDir, 'manifest.json'), completionManifest);
+  fs.copyFileSync(fileURLToPath(import.meta.url), path.join(evidenceDir, 'run-script.ts.txt'));
+  console.log(JSON.stringify({ mode: 'complete', evidenceDir, completedCases: allResults.length,
+    failedCases: allResults.filter((item) => item.outputStatus !== 'valid').map((item) => item.caseId),
+    deepseekStopReason }, null, 2));
+}
+
+main().catch((error: unknown) => {
+  const code = error instanceof Error ? error.message : 'UNKNOWN_ERROR';
+  console.error(`ZHANG_LATEST_TEST_FAILED:${code}`);
+  process.exitCode = 1;
+});

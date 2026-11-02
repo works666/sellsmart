@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+    /* 等距2.5D 办公楼微动效 */
+    @keyframes float-soft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+    .bldg-float { animation: float-soft 4s ease-in-out infinite; }
+    @keyframes pulse-ring { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
+    .pulse-ring { animation: pulse-ring 1.6s ease-out infinite; transform-origin: center; }
+  </style>
+
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <header class="bg-surface border-b border-outline-variant/60 sticky top-0 z-40 h-14 flex items-center justify-between px-6">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
+          <i data-lucide="target" class="w-4 h-4 text-on-primary"></i>
+        </div>
+        <span class="font-bold text-base text-on-surface">竞标博弈 · 政企销售实训</span>
+      </div>
+      <nav class="flex items-center gap-1" id="top-nav">
+        <a href="home.html" id="nav-home" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">实训工作台</a>
+        <a href="setup.html" id="nav-setup" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">对局配置</a>
+        <a href="game.html" id="nav-game" class="px-3 py-1.5 text-sm font-medium text-primary bg-primary-container rounded-md transition-colors" aria-current="page">博弈演练</a>
+        <a href="result.html" id="nav-result" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">复盘中心</a>
+        <a href="knowledge.html" id="nav-knowledge" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">产品知识库</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+        <i data-lucide="circle-dot" class="w-3 h-3 text-success"></i>
+        <span class="text-xs font-medium text-on-surface-variant num">已连接 2 个对局</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+        <span class="text-sm font-semibold text-primary">初</span>
+      </div>
+    </div>
+  </header>
+  <!-- @nav:end 导航组件 -->
+
+  <!--
+    主内容区：游戏核心页 game.html 使用三栏布局（左侧地图/中间对话/右侧看板）
+    固定顶栏高度 56px (h-14)，主体三栏 grid 高度 = 100vh - 56px
+  -->
+  <main class="flex-1 overflow-hidden" style="height: calc(100vh - 3.5rem)">
+    <!-- @main-content:start -->
+    <div class="grid grid-cols-[300px_1fr_360px] h-full bg-background">
+
+      <!-- ============================================ -->
+      <!-- 左栏：办公楼地图（300px） -->
+      <!-- ============================================ -->
+      <aside id="left-panel" class="bg-surface border-r border-outline-variant/60 flex flex-col overflow-hidden">
+
+        <!-- 顶部：项目信息 -->
+        <div class="px-4 pt-4 pb-3 border-b border-outline-variant/40">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <i data-lucide="briefcase" class="w-3.5 h-3.5 text-primary"></i>
+                <span class="text-[11px] font-semibold uppercase tracking-wider text-primary">智慧政务</span>
+              </div>
+              <h2 class="text-sm font-semibold text-on-surface leading-tight">XX市政务平台升级</h2>
+              <div class="flex items-center gap-2 mt-1.5 text-xs text-on-surface-variant num">
+                <span>预算</span>
+                <span class="font-semibold text-on-surface">¥800万</span>
+                <span class="text-outline-variant">·</span>
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-warning/15 text-warning font-medium">关键项目</span>
+              </div>
+            </div>
+            <button id="btn-toggle-sound" class="p-1 rounded-md hover:bg-surface-container text-on-surface-variant transition-colors" title="提示音">
+              <i data-lucide="volume-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 顶部进度：轮次 / 倒计时 -->
+        <div class="px-4 py-3 bg-surface-container/40 border-b border-outline-variant/40">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="layers" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+              <span class="text-xs text-on-surface-variant">第 <span class="font-semibold text-on-surface num">5</span> / <span class="num">10</span> 轮</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="timer" class="w-3.5 h-3.5 text-warning"></i>
+              <span class="text-xs font-semibold text-warning num" id="countdown">03:42</span>
+            </div>
+          </div>
+          <div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+            <div class="h-full bg-primary rounded-full transition-all" style="width: 50%"></div>
+          </div>
+          <div class="flex items-center justify-between mt-1.5 text-[10px] text-on-surface-variant num">
+            <span>竞品 · 领航科技</span>
+            <span>共10轮</span>
+          </div>
+        </div>
+
+        <!-- 中部：2.5D 办公楼 SVG -->
+        <div class="flex-1 overflow-y-auto px-3 py-4 scrollbar-hide">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant mb-2 px-1">办公楼 · 拜访路径</div>
+
+          <!-- 2.5D 办公楼 SVG（等距视角） -->
+          <div id="bldg-svg-wrap" class="bldg-float">
+            <svg viewBox="0 0 260 360" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+              <defs>
+                <linearGradient id="bldgFront" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#FFFFFF"/>
+                  <stop offset="1" stop-color="#F1F4F9"/>
+                </linearGradient>
+                <linearGradient id="bldgSide" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#DDE2EC"/>
+                  <stop offset="1" stop-color="#C8CFDC"/>
+                </linearGradient>
+                <linearGradient id="bldgTop" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#E6EAF2"/>
+                  <stop offset="1" stop-color="#DDE2EC"/>
+                </linearGradient>
+                <linearGradient id="roofGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#2F6BFF"/>
+                  <stop offset="1" stop-color="#5C8BFF"/>
+                </linearGradient>
+              </defs>
+
+              <!-- 地面阴影 -->
+              <ellipse cx="130" cy="345" rx="100" ry="8" fill="#152033" opacity="0.08"/>
+
+              <!-- 4F (顶层) 陈主任 - 关卡3解锁 -->
+              <g id="floor-4f" data-floor="4F" data-status="locked-l3">
+                <!-- 顶面 -->
+                <polygon points="60,50 200,50 220,40 80,40" fill="url(#bldgTop)"/>
+                <!-- 正面 -->
+                <polygon points="60,50 200,50 200,110 60,110" fill="url(#bldgFront)" stroke="#C8CFDC" stroke-width="0.5"/>
+                <!-- 侧面 -->
+                <polygon points="200,50 220,40 220,100 200,110" fill="url(#bldgSide)" stroke="#C8CFDC" stroke-width="0.5"/>
+                <!-- 窗户 -->
+                <rect x="75" y="62" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="105" y="62" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="135" y="62" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="165" y="62" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="75" y="84" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="105" y="84" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="135" y="84" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="165" y="84" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <!-- 锁定图标 -->
+                <g transform="translate(118, 118)">
+                  <rect width="24" height="16" rx="3" fill="#FFFFFF" stroke="#C8CFDC" stroke-width="1"/>
+                  <path d="M8 8 V6 a4 4 0 0 1 8 0 V8" stroke="#637089" stroke-width="1.2" fill="none"/>
+                  <circle cx="12" cy="12" r="1.5" fill="#637089"/>
+                </g>
+              </g>
+
+              <!-- 3F 张主任 - 关卡4解锁 -->
+              <g id="floor-3f" data-floor="3F" data-status="locked-l4">
+                <polygon points="60,110 200,110 220,100 80,100" fill="url(#bldgTop)"/>
+                <polygon points="60,110 200,110 200,170 60,170" fill="url(#bldgFront)" stroke="#C8CFDC" stroke-width="0.5"/>
+                <polygon points="200,110 220,100 220,160 200,170" fill="url(#bldgSide)" stroke="#C8CFDC" stroke-width="0.5"/>
+                <rect x="75" y="122" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="105" y="122" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="135" y="122" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="165" y="122" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="75" y="144" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="105" y="144" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="135" y="144" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="165" y="144" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <g transform="translate(118, 178)">
+                  <rect width="24" height="16" rx="3" fill="#FFFFFF" stroke="#C8CFDC" stroke-width="1"/>
+                  <path d="M8 8 V6 a4 4 0 0 1 8 0 V8" stroke="#637089" stroke-width="1.2" fill="none"/>
+                  <circle cx="12" cy="12" r="1.5" fill="#637089"/>
+                </g>
+              </g>
+
+              <!-- 2F 刘总 - 当前所在（高亮） -->
+              <g id="floor-2f" data-floor="2F" data-status="current" style="cursor: pointer">
+                <polygon points="60,170 200,170 220,160 80,160" fill="url(#bldgTop)"/>
+                <polygon points="60,170 200,170 200,230 60,230" fill="#E8EFFE" stroke="#2F6BFF" stroke-width="1.5"/>
+                <polygon points="200,170 220,160 220,220 200,230" fill="#C8CFDC" stroke="#2F6BFF" stroke-width="1.5"/>
+                <rect x="75" y="182" width="22" height="14" fill="#FFFFFF" stroke="#2F6BFF" stroke-width="0.8" rx="1"/>
+                <rect x="105" y="182" width="22" height="14" fill="#FFFFFF" stroke="#2F6BFF" stroke-width="0.8" rx="1"/>
+                <rect x="135" y="182" width="22" height="14" fill="#FFFFFF" stroke="#2F6BFF" stroke-width="0.8" rx="1"/>
+                <rect x="165" y="182" width="22" height="14" fill="#FFFFFF" stroke="#2F6BFF" stroke-width="0.8" rx="1"/>
+                <rect x="75" y="204" width="22" height="14" fill="#FFFFFF" stroke="#2F6BFF" stroke-width="0.8" rx="1"/>
+                <rect x="105" y="204" width="22" height="14" fill="#FFFFFF" stroke="#2F6BFF" stroke-width="0.8" rx="1"/>
+                <rect x="135" y="204" width="22" height="14" fill="#FFFFFF" stroke="#2F6BFF" stroke-width="0.8" rx="1"/>
+                <rect x="165" y="204" width="22" height="14" fill="#FFFFFF" stroke="#2F6BFF" stroke-width="0.8" rx="1"/>
+                <!-- 当前访问指示 -->
+                <circle cx="130" cy="200" r="20" fill="none" stroke="#2F6BFF" stroke-width="1.5" opacity="0.5" class="pulse-ring"/>
+                <g transform="translate(118, 238)">
+                  <rect width="24" height="16" rx="3" fill="#2F6BFF"/>
+                  <path d="M12 4 L7 9 H10 V13 H14 V9 H17 Z" fill="#FFFFFF"/>
+                </g>
+              </g>
+
+              <!-- 1F 王工 - 已访问 -->
+              <g id="floor-1f" data-floor="1F" data-status="visited" style="cursor: pointer">
+                <polygon points="60,230 200,230 220,220 80,220" fill="url(#bldgTop)"/>
+                <polygon points="60,230 200,230 200,290 60,290" fill="url(#bldgFront)" stroke="#C8CFDC" stroke-width="0.5"/>
+                <polygon points="200,230 220,220 220,280 200,290" fill="url(#bldgSide)" stroke="#C8CFDC" stroke-width="0.5"/>
+                <rect x="75" y="242" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="105" y="242" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="135" y="242" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="165" y="242" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="75" y="264" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="105" y="264" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="135" y="264" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <rect x="165" y="264" width="22" height="14" fill="#E6EAF2" stroke="#C8CFDC" stroke-width="0.5" rx="1"/>
+                <g transform="translate(118, 298)">
+                  <rect width="24" height="16" rx="3" fill="#16A37B"/>
+                  <path d="M7 8 L11 12 L17 6" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+              </g>
+
+              <!-- 屋顶 -->
+              <polygon points="60,40 80,30 220,30 200,40" fill="url(#roofGrad)"/>
+              <polygon points="200,40 220,30 230,38 210,48" fill="#2F6BFF" opacity="0.7"/>
+            </svg>
+          </div>
+
+          <!-- 楼层文字标注 -->
+          <div class="space-y-1.5 mt-1">
+            <!-- 4F -->
+            <div class="flex items-center justify-between px-2 py-1.5 rounded-md opacity-60">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold num text-on-surface-variant w-5">4F</span>
+                <span class="text-xs text-on-surface">陈主任</span>
+                <span class="text-[10px] text-on-surface-variant">·一线使用方</span>
+              </div>
+              <span class="text-[10px] text-on-surface-variant num">关卡3解锁</span>
+            </div>
+            <!-- 3F -->
+            <div class="flex items-center justify-between px-2 py-1.5 rounded-md opacity-60">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold num text-on-surface-variant w-5">3F</span>
+                <span class="text-xs text-on-surface">张主任</span>
+                <span class="text-[10px] text-on-surface-variant">·上级主管</span>
+              </div>
+              <span class="text-[10px] text-on-surface-variant num">关卡4解锁</span>
+            </div>
+            <!-- 2F 当前 -->
+            <div class="flex items-center justify-between px-2 py-1.5 rounded-md bg-primary-container">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold num text-primary w-5">2F</span>
+                <span class="text-xs font-semibold text-primary">刘总</span>
+                <span class="text-[10px] text-primary/70">·商务高层</span>
+              </div>
+              <span class="inline-flex items-center gap-1 text-[10px] font-medium text-primary">
+                <i data-lucide="map-pin" class="w-2.5 h-2.5"></i>当前
+              </span>
+            </div>
+            <!-- 1F 已访问 -->
+            <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-surface-container/60 cursor-pointer transition-colors" id="floor-1f-link">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold num text-on-surface-variant w-5">1F</span>
+                <span class="text-xs text-on-surface">王工</span>
+                <span class="text-[10px] text-on-surface-variant">·技术中层</span>
+              </div>
+              <span class="inline-flex items-center gap-1 text-[10px] font-medium text-success">
+                <i data-lucide="check" class="w-2.5 h-2.5"></i>已访问
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部：拜访次数 -->
+        <div class="px-4 py-3 border-t border-outline-variant/40 bg-surface-container/30">
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="door-open" class="w-3.5 h-3.5 text-primary"></i>
+              <span class="text-xs text-on-surface-variant">拜访次数</span>
+            </div>
+            <span class="text-xs font-semibold text-on-surface num">2 / 3</span>
+          </div>
+          <div class="flex gap-1">
+            <div class="flex-1 h-1.5 bg-primary rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-primary rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-surface-container-high rounded-full"></div>
+          </div>
+          <div class="text-[10px] text-on-surface-variant mt-1.5">本轮剩余 <span class="font-semibold text-primary num">1</span> 次拜访机会</div>
+        </div>
+
+      </aside>
+
+      <!-- ============================================ -->
+      <!-- 中栏：AI对话交互区 -->
+      <!-- ============================================ -->
+      <section id="center-panel" class="flex flex-col bg-background overflow-hidden">
+
+        <!-- 顶部：当前拜访对象卡 + 模式切换 -->
+        <div class="bg-surface border-b border-outline-variant/60 px-5 py-3.5 flex items-center justify-between gap-4">
+          <!-- 拜访对象卡 -->
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <div class="relative shrink-0">
+              <div class="w-11 h-11 rounded-full bg-primary-container flex items-center justify-center">
+                <span class="text-base font-semibold text-primary">刘</span>
+              </div>
+              <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-success border-2 border-surface"></div>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-semibold text-on-surface truncate">刘总 · 商务高层</h2>
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-primary/15 text-primary text-[10px] font-semibold num">权重 35%</span>
+              </div>
+              <div class="flex items-center gap-3 mt-1 text-[11px] text-on-surface-variant">
+                <div class="flex items-center gap-1">
+                  <i data-lucide="target" class="w-3 h-3"></i>
+                  <span>核心诉求：<span class="font-medium text-on-surface">商务合作稳定性</span></span>
+                </div>
+                <span class="text-outline-variant">·</span>
+                <div class="flex items-center gap-1.5">
+                  <span>好感度</span>
+                  <div class="w-20 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: 65%"></div>
+                  </div>
+                  <span class="font-semibold text-primary num">65</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 模式切换 Tab -->
+          <div class="flex items-center gap-1 p-1 bg-surface-container rounded-md shrink-0" id="mode-tabs">
+            <button id="tab-predict" class="px-3 py-1.5 text-xs font-medium rounded-sm transition-all text-on-surface-variant">
+              方案预判模式
+            </button>
+            <button id="tab-live" class="px-3 py-1.5 text-xs font-medium rounded-sm transition-all bg-surface text-primary shadow-card">
+              实时AI对话模式
+            </button>
+          </div>
+        </div>
+
+        <!-- 模式说明条 -->
+        <div id="mode-hint" class="px-5 py-1.5 bg-primary-container/40 border-b border-outline-variant/40 flex items-center gap-2 text-[11px] text-primary">
+          <i data-lucide="sparkles" class="w-3 h-3"></i>
+          <span>实时AI对话模式 · 您的每一句话将直接影响角色好感度与成交概率</span>
+        </div>
+
+        <!-- 中部：消息列表 -->
+        <div id="chat-list" class="flex-1 overflow-y-auto px-5 py-4 space-y-3 scrollbar-hide">
+
+          <!-- 消息 - 时间分隔 -->
+          <div class="flex items-center gap-2 text-[10px] text-on-surface-variant my-2">
+            <div class="flex-1 h-px bg-outline-variant/40"></div>
+            <span class="num">第 5 轮 · 14:32</span>
+            <div class="flex-1 h-px bg-outline-variant/40"></div>
+          </div>
+
+          <!-- 竞品自动公关消息 -->
+          <div id="msg-event-1" class="flex items-start gap-2">
+            <div class="w-7 h-7 rounded-md bg-error/10 flex items-center justify-center shrink-0">
+              <i data-lucide="swords" class="w-3.5 h-3.5 text-error"></i>
+            </div>
+            <div class="flex-1 bg-error/5 border border-error/20 rounded-md px-3 py-2">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-[11px] font-semibold text-error">竞品 · 领航科技</span>
+                <span class="text-[10px] text-on-surface-variant num">14:30</span>
+              </div>
+              <p class="text-xs text-on-surface leading-relaxed">领航科技也对 <span class="font-semibold">刘总</span> 发起了拜访，预计将切入"价格优势"角度。</p>
+            </div>
+          </div>
+
+          <!-- AI 回复 1 -->
+          <div id="msg-ai-1" class="flex items-start gap-2">
+            <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+              <span class="text-xs font-semibold text-primary">刘</span>
+            </div>
+            <div class="flex-1 max-w-[80%]">
+              <div class="bg-surface border border-outline-variant/40 rounded-md rounded-tl-sm px-3 py-2 shadow-card">
+                <p class="text-sm text-on-surface leading-relaxed">你们的产品我大致了解了。但说实话，这次预算审批压力很大，领航那边给了我们一个非常有诱惑力的报价。你这边能给我什么承诺？</p>
+              </div>
+              <div class="flex items-center gap-2 mt-1 text-[10px] text-on-surface-variant num px-1">
+                <span>14:32</span>
+                <span>·</span>
+                <span class="text-warning">语气试探</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 学员消息 1 -->
+          <div id="msg-user-1" class="flex items-start gap-2 flex-row-reverse">
+            <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0">
+              <span class="text-xs font-semibold text-on-primary">我</span>
+            </div>
+            <div class="flex-1 max-w-[80%] flex flex-col items-end">
+              <div class="bg-primary text-on-primary rounded-md rounded-tr-sm px-3 py-2 shadow-card">
+                <p class="text-sm leading-relaxed">刘总，我们的价格虽然不是最低的，但我们的 SLA 服务等级承诺 99.99%，并且提供专属客户成功经理。合作的稳定性才是最关键的。</p>
+              </div>
+              <div class="flex items-center gap-2 mt-1 text-[10px] text-on-surface-variant num px-1">
+                <span>14:33</span>
+                <span>·</span>
+                <span>主打稳定性</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI 回复 2 -->
+          <div id="msg-ai-2" class="flex items-start gap-2">
+            <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+              <span class="text-xs font-semibold text-primary">刘</span>
+            </div>
+            <div class="flex-1 max-w-[80%]">
+              <div class="bg-surface border border-outline-variant/40 rounded-md rounded-tl-sm px-3 py-2 shadow-card">
+                <p class="text-sm text-on-surface leading-relaxed">嗯，稳定性确实是我们最看重的。但我需要一个落到实处的方案 — 比如说，如果系统出问题，你们多久能响应？有没有具体的赔偿条款？</p>
+              </div>
+              <div class="flex items-center gap-2 mt-1 text-[10px] text-on-surface-variant num px-1">
+                <span>14:34</span>
+                <span>·</span>
+                <span class="text-success">兴趣上升</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 竞品自动公关消息 2 -->
+          <div id="msg-event-2" class="flex items-start gap-2">
+            <div class="w-7 h-7 rounded-md bg-error/10 flex items-center justify-center shrink-0">
+              <i data-lucide="megaphone" class="w-3.5 h-3.5 text-error"></i>
+            </div>
+            <div class="flex-1 bg-error/5 border border-error/20 rounded-md px-3 py-2">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-[11px] font-semibold text-error">竞品动态</span>
+                <span class="text-[10px] text-on-surface-variant num">14:35</span>
+              </div>
+              <p class="text-xs text-on-surface leading-relaxed">领航科技已向 <span class="font-semibold">王工（技术中层）</span> 推送了详细的技术白皮书，附带 <span class="font-semibold text-error num">+8</span> 好感度冲击。</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 底部：输入区 -->
+        <div class="bg-surface border-t border-outline-variant/60 px-4 py-3 relative">
+          <!-- 加号菜单（默认隐藏） -->
+          <div id="plus-menu" class="hidden absolute bottom-full left-4 mb-2 bg-surface border border-outline-variant/60 rounded-lg shadow-float p-2 w-72 z-20">
+            <div class="text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant px-2 py-1 mb-1">互动动作 · 影响好感度</div>
+            <div class="grid grid-cols-4 gap-1">
+              <button class="action-menu-item flex flex-col items-center gap-1 p-2 rounded-md hover:bg-primary-container transition-colors" data-action="gift">
+                <i data-lucide="gift" class="w-4 h-4 text-primary"></i>
+                <span class="text-[10px] text-on-surface">送礼品</span>
+              </button>
+              <button class="action-menu-item flex flex-col items-center gap-1 p-2 rounded-md hover:bg-primary-container transition-colors" data-action="dinner">
+                <i data-lucide="utensils" class="w-4 h-4 text-primary"></i>
+                <span class="text-[10px] text-on-surface">请客吃饭</span>
+              </button>
+              <button class="action-menu-item flex flex-col items-center gap-1 p-2 rounded-md hover:bg-primary-container transition-colors" data-action="tea">
+                <i data-lucide="coffee" class="w-4 h-4 text-primary"></i>
+                <span class="text-[10px] text-on-surface">约茶叙</span>
+              </button>
+              <button class="action-menu-item flex flex-col items-center gap-1 p-2 rounded-md hover:bg-primary-container transition-colors" data-action="festival">
+                <i data-lucide="party-popper" class="w-4 h-4 text-primary"></i>
+                <span class="text-[10px] text-on-surface">节日祝福</span>
+              </button>
+              <button class="action-menu-item flex flex-col items-center gap-1 p-2 rounded-md hover:bg-primary-container transition-colors" data-action="demo">
+                <i data-lucide="presentation" class="w-4 h-4 text-primary"></i>
+                <span class="text-[10px] text-on-surface">产品路演</span>
+              </button>
+              <button class="action-menu-item flex flex-col items-center gap-1 p-2 rounded-md hover:bg-primary-container transition-colors" data-action="visit">
+                <i data-lucide="building-2" class="w-4 h-4 text-primary"></i>
+                <span class="text-[10px] text-on-surface">邀请参观</span>
+              </button>
+              <button class="action-menu-item flex flex-col items-center gap-1 p-2 rounded-md hover:bg-primary-container transition-colors" data-action="sample">
+                <i data-lucide="package" class="w-4 h-4 text-primary"></i>
+                <span class="text-[10px] text-on-surface">寄送样品</span>
+              </button>
+              <button class="action-menu-item flex flex-col items-center gap-1 p-2 rounded-md hover:bg-primary-container transition-colors" data-action="video">
+                <i data-lucide="video" class="w-4 h-4 text-primary"></i>
+                <span class="text-[10px] text-on-surface">视频会议</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 提示条 -->
+          <div class="flex items-center justify-between mb-2 text-[10px] text-on-surface-variant">
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="lightbulb" class="w-3 h-3 text-warning"></i>
+              <span>提示：可使用 <span class="font-semibold text-primary">+</span> 选择互动动作，或直接输入对话</span>
+            </div>
+            <div class="flex items-center gap-2 num">
+              <span>已输入 <span id="char-count" class="font-semibold text-on-surface">0</span> / 500</span>
+            </div>
+          </div>
+
+          <!-- 输入框 + 按钮 -->
+          <div class="flex items-end gap-2">
+            <button id="btn-plus" class="shrink-0 w-9 h-9 rounded-md bg-surface-container hover:bg-surface-container-high flex items-center justify-center transition-colors" title="更多动作">
+              <i data-lucide="plus" class="w-4 h-4 text-on-surface-variant"></i>
+            </button>
+            <div class="flex-1 relative">
+              <textarea id="msg-input" rows="2" maxlength="500"
+                class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none transition-colors"
+                placeholder="输入您想对刘总说的话...  (Enter 发送 / Shift+Enter 换行)"></textarea>
+            </div>
+            <button id="btn-send" class="shrink-0 h-9 px-4 rounded-md bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+              <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              发送
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- 右栏：实时博弈看板（360px） -->
+      <!-- ============================================ -->
+      <aside id="right-panel" class="bg-surface border-l border-outline-variant/60 flex flex-col overflow-hidden">
+
+        <!-- 实时成交概率 -->
+        <div class="px-4 pt-4 pb-3 border-b border-outline-variant/40">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">实时成交概率</h3>
+            <button id="btn-trend" class="text-[10px] text-primary font-medium hover:underline">查看趋势</button>
+          </div>
+          <div class="flex items-center gap-4">
+            <!-- 环形进度 -->
+            <div class="relative w-20 h-20 shrink-0">
+              <svg viewBox="0 0 80 80" class="w-full h-full -rotate-90">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="#E6EAF2" stroke-width="6"/>
+                <!-- 38% 成交概率 -->
+                <circle cx="40" cy="40" r="34" fill="none" stroke="#2F6BFF" stroke-width="6"
+                        stroke-dasharray="213.6" stroke-dashoffset="132.43" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-xl font-bold text-primary num">38%</span>
+                <span class="text-[9px] text-on-surface-variant">成交概率</span>
+              </div>
+            </div>
+            <!-- 概率变化 -->
+            <div class="flex-1 space-y-1.5">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-on-surface-variant">较上轮</span>
+                <span class="inline-flex items-center gap-0.5 text-success font-semibold num">
+                  <i data-lucide="trending-up" class="w-3 h-3"></i>+5
+                </span>
+              </div>
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-on-surface-variant">竞品差距</span>
+                <span class="font-semibold text-error num">-3</span>
+              </div>
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-on-surface-variant">综合胜率</span>
+                <span class="font-semibold text-on-surface num">54%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 角色好感度列表 -->
+        <div class="flex-1 overflow-y-auto px-4 py-3 scrollbar-hide">
+          <div class="flex items-center justify-between mb-2.5">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">角色好感度</h3>
+            <span class="text-[10px] text-on-surface-variant num">5 角色</span>
+          </div>
+          <div id="role-list" class="space-y-2.5">
+
+            <!-- 角色 1 - 王工 -->
+            <div class="role-card bg-surface-container/40 rounded-md p-2.5 border border-outline-variant/30">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <div class="w-5 h-5 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                    <span class="text-[10px] font-semibold text-primary">王</span>
+                  </div>
+                  <span class="text-xs font-semibold text-on-surface truncate">王工</span>
+                  <span class="text-[10px] text-on-surface-variant">·技术中层</span>
+                </div>
+                <span class="text-[10px] font-semibold text-success num">领先</span>
+              </div>
+              <!-- 对比条 -->
+              <div class="space-y-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">我方</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all" style="width: 70%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-primary num w-6 text-right">70</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">竞品</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-error rounded-full transition-all" style="width: 45%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-error num w-6 text-right">45</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 角色 2 - 刘总（当前） -->
+            <div class="role-card bg-primary-container/40 rounded-md p-2.5 border border-primary/30">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center shrink-0">
+                    <span class="text-[10px] font-semibold text-on-primary">刘</span>
+                  </div>
+                  <span class="text-xs font-semibold text-on-surface truncate">刘总</span>
+                  <span class="text-[10px] text-on-surface-variant">·商务高层</span>
+                </div>
+                <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold text-primary">
+                  <i data-lucide="map-pin" class="w-2.5 h-2.5"></i>当前
+                </span>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">我方</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all" style="width: 65%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-primary num w-6 text-right">65</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">竞品</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-error rounded-full transition-all" style="width: 60%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-error num w-6 text-right">60</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 角色 3 - 张主任 -->
+            <div class="role-card bg-surface-container/40 rounded-md p-2.5 border border-outline-variant/30">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <div class="w-5 h-5 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                    <span class="text-[10px] font-semibold text-primary">张</span>
+                  </div>
+                  <span class="text-xs font-semibold text-on-surface truncate">张主任</span>
+                  <span class="text-[10px] text-on-surface-variant">·上级主管</span>
+                </div>
+                <span class="inline-flex items-center gap-0.5 text-[10px] font-medium text-on-surface-variant">
+                  <i data-lucide="lock" class="w-2.5 h-2.5"></i>关卡4
+                </span>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">我方</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all" style="width: 30%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-primary num w-6 text-right">30</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">竞品</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-error rounded-full transition-all" style="width: 50%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-error num w-6 text-right">50</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 角色 4 - 陈主任 -->
+            <div class="role-card bg-surface-container/40 rounded-md p-2.5 border border-outline-variant/30">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <div class="w-5 h-5 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                    <span class="text-[10px] font-semibold text-primary">陈</span>
+                  </div>
+                  <span class="text-xs font-semibold text-on-surface truncate">陈主任</span>
+                  <span class="text-[10px] text-on-surface-variant">·一线使用方</span>
+                </div>
+                <span class="text-[10px] font-semibold text-success num">大幅领先</span>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">我方</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all" style="width: 80%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-primary num w-6 text-right">80</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">竞品</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-error rounded-full transition-all" style="width: 35%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-error num w-6 text-right">35</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 角色 5 - 赵总 -->
+            <div class="role-card bg-surface-container/40 rounded-md p-2.5 border border-outline-variant/30">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <div class="w-5 h-5 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                    <span class="text-[10px] font-semibold text-primary">赵</span>
+                  </div>
+                  <span class="text-xs font-semibold text-on-surface truncate">赵总</span>
+                  <span class="text-[10px] text-on-surface-variant">·财务主管</span>
+                </div>
+                <span class="text-[10px] font-semibold text-on-surface-variant num">持平</span>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">我方</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all" style="width: 55%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-primary num w-6 text-right">55</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-on-surface-variant w-8 shrink-0">竞品</span>
+                  <div class="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                    <div class="h-full bg-error rounded-full transition-all" style="width: 50%"></div>
+                  </div>
+                  <span class="text-[10px] font-semibold text-error num w-6 text-right">50</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 实时事件流 -->
+        <div class="px-4 py-3 border-t border-outline-variant/40 bg-surface-container/20">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">实时事件流</h3>
+            <span class="inline-flex items-center gap-1 text-[10px] text-success font-medium num">
+              <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>LIVE
+            </span>
+          </div>
+          <div id="event-stream" class="space-y-1.5">
+            <!-- 事件 1 -->
+            <div class="flex items-start gap-2 text-[11px]">
+              <span class="text-on-surface-variant num shrink-0 w-9">14:35</span>
+              <span class="text-error shrink-0">⚔</span>
+              <span class="text-on-surface flex-1">竞品·领航科技 拜访了 <span class="font-semibold">张主任</span> <span class="font-semibold text-error num">+5</span></span>
+            </div>
+            <!-- 事件 2 -->
+            <div class="flex items-start gap-2 text-[11px]">
+              <span class="text-on-surface-variant num shrink-0 w-9">14:33</span>
+              <span class="text-primary shrink-0">✓</span>
+              <span class="text-on-surface flex-1">您向 <span class="font-semibold">刘总</span> 发送消息，好感度 <span class="font-semibold text-success num">+3</span></span>
+            </div>
+            <!-- 事件 3 -->
+            <div class="flex items-start gap-2 text-[11px]">
+              <span class="text-on-surface-variant num shrink-0 w-9">14:30</span>
+              <span class="text-warning shrink-0">!</span>
+              <span class="text-on-surface flex-1">进入 <span class="font-semibold">第 5 轮</span>，本轮剩余 <span class="font-semibold text-primary num">1</span> 次拜访</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作按钮区 -->
+        <div class="px-4 py-3 border-t border-outline-variant/40 space-y-2">
+          <button id="btn-submit-plan" class="w-full h-10 rounded-md bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5">
+            <i data-lucide="file-check-2" class="w-4 h-4"></i>
+            提交最终方案
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btn-end-round" class="h-9 rounded-md bg-surface-container border border-outline-variant/60 text-on-surface text-xs font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1">
+              <i data-lucide="flag" class="w-3.5 h-3.5"></i>
+              结束本轮
+            </button>
+            <button id="btn-full-review" class="h-9 rounded-md bg-surface-container border border-outline-variant/60 text-on-surface text-xs font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1">
+              <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+              完整复盘
+            </button>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+    <!-- @main-content:end -->
+  </main>
+
+  <script>lucide.createIcons();</script>
+  <script>
+    // ─── 高亮当前页面导航 ───────────────────────────────────
+    $(function() {
+      const path = window.location.pathname.split('/').pop() || 'game.html';
+      const map = {
+        'home.html': 'nav-home',
+        'setup.html': 'nav-setup',
+        'game.html': 'nav-game',
+        'result.html': 'nav-result',
+        'knowledge.html': 'nav-knowledge'
+      };
+      const id = map[path];
+      if (id) {
+        const $el = $('#' + id);
+        if ($el.length) {
+          $el.removeClass('text-on-surface-variant').addClass('text-primary bg-primary-container').attr('aria-current', 'page');
+        }
+      }
+    });
+
+    // ─── 业务交互 ──────────────────────────────────────────
+    $(function() {
+
+      // 1) 加号菜单 toggle
+      $('#btn-plus').on('click', function(e) {
+        e.stopPropagation();
+        $('#plus-menu').toggleClass('hidden');
+      });
+      // 点击其他区域关闭菜单
+      $(document).on('click', function(e) {
+        if (!$(e.target).closest('#plus-menu, #btn-plus').length) {
+          $('#plus-menu').addClass('hidden');
+        }
+      });
+
+      // 2) 互动动作菜单项
+      // 点击后应实现：
+      //   1) 在聊天窗口中追加一条系统消息（"您对刘总 [动作名] ..."）
+      //   2) 根据动作类型与角色权重，调用后端好感度计算接口，实时更新角色卡条形图
+      //   3) 在事件流顶部插入一条新事件，带时间戳
+      //   4) 关闭浮动菜单
+      $('#plus-menu').on('click', '.action-menu-item', function() {
+        const action = $(this).data('action');
+        const label = $(this).find('span').text();
+        console.log('触发互动动作:', action, '|', label);
+        $('#plus-menu').addClass('hidden');
+      });
+
+      // 3) 模式切换
+      $('#mode-tabs').on('click', 'button', function() {
+        const id = $(this).attr('id');
+        $('#mode-tabs button').removeClass('bg-surface text-primary shadow-card').addClass('text-on-surface-variant');
+        $(this).removeClass('text-on-surface-variant').addClass('bg-surface text-primary shadow-card');
+        if (id === 'tab-predict') {
+          $('#mode-hint').html('<i data-lucide="brain" class="w-3 h-3"></i><span>方案预判模式 · 在右侧 AI 回复前预测对方态度与可能的反制手段</span>');
+        } else {
+          $('#mode-hint').html('<i data-lucide="sparkles" class="w-3 h-3"></i><span>实时AI对话模式 · 您的每一句话将直接影响角色好感度与成交概率</span>');
+        }
+        lucide.createIcons();
+      });
+
+      // 4) 发送消息
+      // 完整流程应实现：
+      //   1) 校验非空，将学员消息追加到聊天窗口（蓝底右侧气泡）
+      //   2) 调用后端 LLM 接口，模拟刘总回复
+      //   3) 收到 AI 回复后追加到聊天窗口（白底左侧气泡 + 头像）
+      //   4) 同步更新右侧看板：好感度数字、对比条宽度、成交概率环形进度
+      //   5) 顶部事件流追加新事件
+      //   6) 清空输入框，重置字数
+      $('#btn-send').on('click', function() {
+        const val = $('#msg-input').val().trim();
+        if (!val) return;
+        console.log('发送消息:', val);
+        $('#msg-input').val('');
+        $('#char-count').text('0');
+      });
+      // Enter 发送 / Shift+Enter 换行
+      $('#msg-input').on('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          $('#btn-send').trigger('click');
+        }
+      });
+      // 字数统计
+      $('#msg-input').on('input', function() {
+        $('#char-count').text($(this).val().length);
+      });
+
+      // 5) 楼层跳转（1F 已访问可点击）
+      // 应实现：
+      //   1) 弹窗显示历史对话摘要
+      //   2) 切换当前拜访对象卡到对应角色
+      //   3) 重载对话历史消息
+      $('#floor-1f-link').on('click', function() {
+        console.log('跳转到 1F 王工 历史记录');
+      });
+      // 2F 同样可点击
+      $('#floor-2f').on('click', function() {
+        console.log('2F 刘总 - 当前已在该楼层');
+      });
+
+      // 6) 提交方案
+      // 应实现：
+      //   1) 弹窗确认提示，列出本轮触达的角色、关键话术、关键动作
+      //   2) 确认后调用后端评判接口，根据好感度加权计算最终成交概率
+      //   3) 跳转至 result.html?id=xxx 显示完整复盘
+      $('#btn-submit-plan').on('click', function() {
+        console.log('提交最终方案');
+      });
+
+      // 7) 结束本轮
+      // 应实现：
+      //   1) 校验本轮是否还有剩余拜访次数，未用完提示是否确认
+      //   2) 推进到下一轮（轮次+1，倒计时重置）
+      //   3) 触发竞品 AI 自动行动（按既定剧本）
+      //   4) 更新事件流
+      $('#btn-end-round').on('click', function() {
+        console.log('结束本轮');
+      });
+
+      // 8) 查看完整复盘
+      $('#btn-full-review').on('click', function() {
+        window.location.href = 'result.html';
+      });
+
+      // 9) 趋势按钮
+      $('#btn-trend').on('click', function() {
+        console.log('查看成交概率趋势 - 后续应实现折线图弹窗');
+      });
+
+      // 10) 提示音切换
+      $('#btn-toggle-sound').on('click', function() {
+        const icon = $(this).find('i');
+        if (icon.attr('data-lucide') === 'volume-2') {
+          icon.attr('data-lucide', 'volume-x');
+        } else {
+          icon.attr('data-lucide', 'volume-2');
+        }
+        lucide.createIcons();
+      });
+
+      // 11) 倒计时模拟（演示用，每秒 -1）
+      let remaining = 222; // 03:42
+      setInterval(function() {
+        if (remaining > 0) remaining--;
+        const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+        const s = String(remaining % 60).padStart(2, '0');
+        $('#countdown').text(m + ':' + s);
+      }, 1000);
+
+    });
+  </script>
+</body>
+
+</html>

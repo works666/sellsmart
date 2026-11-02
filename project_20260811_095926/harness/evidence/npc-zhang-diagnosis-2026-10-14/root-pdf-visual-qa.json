@@ -1,0 +1,21 @@
+{
+  "textAuditRecordCount": 69,
+  "checkedPages": [
+    1,
+    2,
+    9,
+    11,
+    14
+  ],
+  "contactSheetPages": 14,
+  "contactSheet": "D:/WeiXun/tmp/zhang-v6-root-qa/contact.png",
+  "renderBackend": "pypdfium2",
+  "checks": [
+    "完整输入与回复无裁切",
+    "单条记录无跨页拆断",
+    "原始空格标注完整可逆",
+    "封面指标正常",
+    "来源caption缩短无超右界"
+  ],
+  "passed": true
+}

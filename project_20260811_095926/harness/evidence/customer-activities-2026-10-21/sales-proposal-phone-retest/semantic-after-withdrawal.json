@@ -1,0 +1,410 @@
+{
+  "checkedAt": "2026-10-21T09:21:31.956Z",
+  "sessionId": "ffce6ee9-00ec-4286-9fa4-b95b8de36b22",
+  "updatedAt": "2026-10-21T09:21:20.922647+00:00",
+  "version": 5,
+  "decisionProvider": "jev",
+  "decisionProviderRevision": 0,
+  "activityMode": "numeric",
+  "activityRevision": 3,
+  "members": [
+    {
+      "npcId": "P1-001",
+      "support": 0,
+      "pleasantness": 50
+    },
+    {
+      "npcId": "P1-002",
+      "support": 0,
+      "pleasantness": 50
+    },
+    {
+      "npcId": "P1-003",
+      "support": 0,
+      "pleasantness": 50
+    },
+    {
+      "npcId": "P1-004",
+      "support": 0,
+      "pleasantness": 51
+    },
+    {
+      "npcId": "P1-005",
+      "support": 0,
+      "pleasantness": 50
+    }
+  ],
+  "activeCall": null,
+  "pendingCount": 0,
+  "diagnostics": [
+    {
+      "at": 1792574411452,
+      "event": "phone_conversation_started",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "details": {
+        "startMessageIndex": 0
+      },
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574420436,
+      "event": "semantic_review_started",
+      "npcId": "P1-004",
+      "reason": "customer_activity_reply_unclear",
+      "channel": "work_phone",
+      "details": {
+        "result": "unclear",
+        "signal": "disposition",
+        "attempt": 0,
+        "violation": "none",
+        "evidence_valid": false
+      },
+      "messageId": "327d8eeb-ffb6-4a99-950f-4037b83b6d2c",
+      "conversationId": "reply:327d8eeb-ffb6-4a99-950f-4037b83b6d2c"
+    },
+    {
+      "at": 1792574421683,
+      "event": "semantic_review_completed",
+      "npcId": "P1-004",
+      "reason": "customer_activity_reply_allowed",
+      "channel": "work_phone",
+      "details": {
+        "result": "allowed",
+        "signal": "disposition",
+        "attempt": 0,
+        "violation": "none",
+        "evidence_valid": false
+      },
+      "messageId": "327d8eeb-ffb6-4a99-950f-4037b83b6d2c",
+      "conversationId": "reply:327d8eeb-ffb6-4a99-950f-4037b83b6d2c"
+    },
+    {
+      "at": 1792574442766,
+      "event": "semantic_review_started",
+      "npcId": "P1-004",
+      "reason": "customer_activity_reply_unclear",
+      "channel": "work_phone",
+      "details": {
+        "result": "unclear",
+        "signal": "disposition",
+        "attempt": 0,
+        "violation": "none",
+        "evidence_valid": false
+      },
+      "messageId": "23f87b34-431d-46d1-b672-d41ccaf90bd1",
+      "conversationId": "reply:23f87b34-431d-46d1-b672-d41ccaf90bd1"
+    },
+    {
+      "at": 1792574443973,
+      "event": "semantic_review_completed",
+      "npcId": "P1-004",
+      "reason": "customer_activity_reply_allowed",
+      "channel": "work_phone",
+      "details": {
+        "result": "allowed",
+        "signal": "disposition",
+        "attempt": 0,
+        "violation": "none",
+        "evidence_valid": false
+      },
+      "messageId": "23f87b34-431d-46d1-b672-d41ccaf90bd1",
+      "conversationId": "reply:23f87b34-431d-46d1-b672-d41ccaf90bd1"
+    },
+    {
+      "at": 1792574464761,
+      "event": "semantic_review_started",
+      "npcId": "P1-004",
+      "reason": "customer_activity_reply_unclear",
+      "channel": "work_phone",
+      "details": {
+        "result": "unclear",
+        "signal": "disposition",
+        "attempt": 0,
+        "violation": "none",
+        "evidence_valid": false
+      },
+      "messageId": "1f4f8f21-3b7f-4cae-b639-f2060bb445da",
+      "conversationId": "reply:1f4f8f21-3b7f-4cae-b639-f2060bb445da"
+    },
+    {
+      "at": 1792574466352,
+      "event": "semantic_review_completed",
+      "npcId": "P1-004",
+      "reason": "customer_activity_reply_allowed",
+      "channel": "work_phone",
+      "details": {
+        "result": "allowed",
+        "signal": "disposition",
+        "attempt": 0,
+        "violation": "none",
+        "evidence_valid": false
+      },
+      "messageId": "1f4f8f21-3b7f-4cae-b639-f2060bb445da",
+      "conversationId": "reply:1f4f8f21-3b7f-4cae-b639-f2060bb445da"
+    },
+    {
+      "at": 1792574479223,
+      "event": "conversation_queued",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "details": {
+        "messageCount": 8,
+        "endMessageIndex": 8
+      },
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4",
+      "organizationSnapshot": [
+        {
+          "npcId": "P1-001",
+          "support": 0,
+          "pleasantness": 50
+        },
+        {
+          "npcId": "P1-002",
+          "support": 0,
+          "pleasantness": 50
+        },
+        {
+          "npcId": "P1-003",
+          "support": 0,
+          "pleasantness": 50
+        },
+        {
+          "npcId": "P1-004",
+          "support": 0,
+          "pleasantness": 51
+        },
+        {
+          "npcId": "P1-005",
+          "support": 0,
+          "pleasantness": 50
+        }
+      ]
+    },
+    {
+      "at": 1792574479223,
+      "event": "detection_started",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574479228,
+      "event": "candidate_accepted",
+      "npcId": "P1-004",
+      "reason": "sales_proposal_enters_feasibility_without_customer_response",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "deterministic_sales_proposal"
+      },
+      "messageId": "327d8eeb-ffb6-4a99-950f-4037b83b6d2c",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574479228,
+      "event": "model_skipped",
+      "npcId": "P1-004",
+      "reason": "deterministic_candidate_does_not_need_model_classification",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "deterministic_sales_proposal"
+      },
+      "messageId": "327d8eeb-ffb6-4a99-950f-4037b83b6d2c",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574479228,
+      "event": "candidate_accepted",
+      "npcId": "P1-004",
+      "reason": "sales_proposal_enters_feasibility_without_customer_response",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "deterministic_sales_proposal"
+      },
+      "messageId": "1f4f8f21-3b7f-4cae-b639-f2060bb445da",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574479228,
+      "event": "model_skipped",
+      "npcId": "P1-004",
+      "reason": "deterministic_candidate_does_not_need_model_classification",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "deterministic_sales_proposal"
+      },
+      "messageId": "1f4f8f21-3b7f-4cae-b639-f2060bb445da",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574479228,
+      "event": "model_request",
+      "npcId": "P1-004",
+      "reason": "customer_activity_semantic_fallback",
+      "channel": "work_phone",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574480169,
+      "event": "model_response",
+      "npcId": "P1-004",
+      "reason": "empty_activity_list",
+      "channel": "work_phone",
+      "details": {
+        "candidate_count": 0
+      },
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574480170,
+      "event": "proposal_semantic_review_started",
+      "npcId": "P1-004",
+      "reason": "negation_or_withdrawal_signal_requires_context_review",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "sales_negation_semantic_review",
+        "withdrawal_message_count": 1
+      },
+      "messageId": "327d8eeb-ffb6-4a99-950f-4037b83b6d2c",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574481820,
+      "event": "proposal_semantic_review_completed",
+      "npcId": "P1-004",
+      "reason": "proposal_withdrawal_semantically_confirmed",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "sales_negation_semantic_review",
+        "model_classification": "withdrawn",
+        "withdrawal_message_id": "1f4f8f21-3b7f-4cae-b639-f2060bb445da",
+        "withdrawal_message_count": 1
+      },
+      "messageId": "327d8eeb-ffb6-4a99-950f-4037b83b6d2c",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574481820,
+      "event": "proposal_semantic_review_completed",
+      "npcId": "P1-004",
+      "reason": "proposal_semantically_not_proposed",
+      "channel": "work_phone",
+      "details": {
+        "detection_source": "sales_negation_semantic_review",
+        "model_classification": "not_proposed",
+        "withdrawal_message_count": 0
+      },
+      "messageId": "1f4f8f21-3b7f-4cae-b639-f2060bb445da",
+      "activityType": "technical_meeting",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574479223,
+      "event": "candidates_count",
+      "npcId": "P1-004",
+      "channel": "work_phone",
+      "details": {
+        "count": 0
+      },
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574479223,
+      "event": "no_candidate",
+      "npcId": "P1-004",
+      "reason": "activity_detector_returned_no_candidate",
+      "channel": "work_phone",
+      "configRevision": 3,
+      "conversationId": "preview:ffce6ee9-00ec-4286-9fa4-b95b8de36b22:call:b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    }
+  ],
+  "decisions": [],
+  "tasks": [],
+  "phoneMessages": [
+    {
+      "at": 1792574406893,
+      "role": "player",
+      "text": "玩家拨打工作电话，等待接听。",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "b2cc7fb2-df9a-4fab-ba3e-afbc9a1da3c4"
+    },
+    {
+      "at": 1792574408575,
+      "role": "npc",
+      "text": "您好，我是赵晓晨。您这会儿打电话来，是有什么事吗？",
+      "channel": "work_phone",
+      "messageId": "d595bfe3-ac31-4e93-82af-f271d23b7d82"
+    },
+    {
+      "at": 1792574419094,
+      "role": "player",
+      "text": "赵老师，咱们能不能安排一次技术交流会，讨论接口需求？",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "327d8eeb-ffb6-4a99-950f-4037b83b6d2c"
+    },
+    {
+      "at": 1792574421683,
+      "role": "npc",
+      "text": "嗯……这个我得先记下来，跟李经理汇报一下，后面再给您回话。",
+      "channel": "work_phone",
+      "messageId": "8a1e82c5-a5b0-4ff7-9e06-ee8a588b3581"
+    },
+    {
+      "at": 1792574440844,
+      "role": "player",
+      "text": "那就下周三？",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "23f87b34-431d-46d1-b672-d41ccaf90bd1"
+    },
+    {
+      "at": 1792574443973,
+      "role": "npc",
+      "text": "这个时间我这边定不了，得先跟李经理汇报，有结果再给您回话。",
+      "channel": "work_phone",
+      "messageId": "e379413c-7361-4773-b682-dda7fe7a6697"
+    },
+    {
+      "at": 1792574462353,
+      "role": "player",
+      "text": "刚才的技术交流会先不办了，我撤回这个活动提议。",
+      "channel": "work_phone",
+      "delivery": {
+        "responseAction": "reply"
+      },
+      "messageId": "1f4f8f21-3b7f-4cae-b639-f2060bb445da"
+    },
+    {
+      "at": 1792574466352,
+      "role": "npc",
+      "text": "嗯嗯，知道了，那这事我就先不往上报了。",
+      "channel": "work_phone",
+      "messageId": "cf78471f-3c16-486f-89fc-c13f76fb15b4"
+    }
+  ]
+}

@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+
+    /* ============== 等距地图舞台 ============== */
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      background: radial-gradient(ellipse at 50% 30%, #0B1B33 0%, #050B1A 60%, #02060F 100%);
+    }
+
+    /* 地图加载骨架 */
+    #map-loading {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #0E1F3A 0%, #0A1530 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 30; transition: opacity .5s ease;
+    }
+    #map-loading .ring {
+      width: 56px; height: 56px; border-radius: 9999px;
+      border: 3px solid rgba(47,107,255,0.2);
+      border-top-color: #2F6BFF;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .skel-bar { background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 100%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* 地图主舞台 */
+    #map-stage {
+      position: relative; width: 100%; height: 100%;
+      background: #0A1530;
+    }
+    #map-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; user-select: none; -webkit-user-drag: none;
+      transition: transform .8s ease;
+    }
+
+    /* 地图四角 UI 装饰 */
+    .map-corner {
+      position: absolute; padding: 6px 10px;
+      background: rgba(10,21,48,0.6); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      color: #B8C5DA; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      pointer-events: none;
+    }
+    .map-corner i { display: inline-block; vertical-align: -2px; margin-right: 4px; color: #2F6BFF; }
+
+    /* 指南针 */
+    #map-compass {
+      position: absolute; right: 20px; top: 20px;
+      width: 60px; height: 60px; z-index: 10;
+    }
+    .compass-outer { width:60px; height:60px; border-radius:9999px; background:rgba(10,21,48,0.6); backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,0.1); position:relative; }
+    .compass-needle { position:absolute; left:50%; top:50%; width:3px; height:22px; background:linear-gradient(to top, #DC2626 50%, #FFFFFF 50%); transform:translate(-50%,-100%); transform-origin: bottom center; }
+    .compass-center { position:absolute; left:50%; top:50%; width:6px; height:6px; border-radius:9999px; background:#2F6BFF; transform:translate(-50%,-50%); }
+    .compass-label { position:absolute; left:50%; transform:translateX(-50%); font-size:9px; font-weight:700; color:#B8C5DA; }
+    .compass-label.n { top: 3px; }
+    .compass-label.s { bottom: 3px; }
+    .compass-label.e { right: 5px; top: 50%; transform: translateY(-50%); }
+    .compass-label.w { left: 5px; top: 50%; transform: translateY(-50%); }
+
+    /* ============== Hotspot ============== */
+    .hotspot {
+      position: absolute; transform: translate(-50%, -50%);
+      cursor: pointer; z-index: 5;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hotspot .pulse-dot {
+      position: relative; width: 40px; height: 40px; border-radius: 9999px;
+      background: rgba(47,107,255,0.85);
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 0 0 0 rgba(47,107,255,0.55), 0 4px 12px rgba(47,107,255,0.4);
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+      flex-shrink: 0;
+    }
+    .hotspot .pulse-dot::before {
+      content: ""; position: absolute; inset: 0; border-radius: 9999px;
+      background: rgba(47,107,255,0.35);
+      animation: pulse 2s infinite;
+    }
+    .hotspot .pulse-dot::after {
+      content: ""; position: absolute; inset: 50% auto auto 50%;
+      width: 8px; height: 8px; border-radius: 9999px; background: #fff;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.7; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+    .hotspot .label {
+      padding: 4px 10px; border-radius: 9999px;
+      background: rgba(10,21,48,0.78); backdrop-filter: blur(6px);
+      color: #fff; font-size: 12px; font-weight: 600;
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.12);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .hotspot .label .price { color: #F59E0B; font-weight: 700; font-size: 11px; }
+    .hotspot .label .stars { color: #F59E0B; font-size: 10px; letter-spacing: 1px; }
+
+    .hotspot:hover .pulse-dot {
+      transform: scale(1.2);
+      box-shadow: 0 0 0 0 rgba(47,107,255,0.7), 0 6px 20px rgba(47,107,255,0.6);
+      background: #2F6BFF;
+    }
+    .hotspot.active .pulse-dot {
+      transform: scale(1.25);
+      background: #F59E0B; border-color: #fff;
+      box-shadow: 0 0 0 0 rgba(245,158,11,0.7), 0 6px 24px rgba(245,158,11,0.6);
+    }
+    .hotspot.active .pulse-dot::before { background: rgba(245,158,11,0.4); }
+    .hotspot.active .label { background: rgba(245,158,11,0.92); border-color: rgba(255,255,255,0.4); }
+    .hotspot.active .label .price { color: #fff; }
+    .hotspot.main .pulse-dot {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, #F59E0B 0%, #DC2626 100%);
+      border: 3px solid #fff;
+    }
+    .hotspot.main .label {
+      background: linear-gradient(135deg, rgba(245,158,11,0.95) 0%, rgba(220,38,38,0.95) 100%);
+      font-size: 13px; padding: 5px 12px;
+    }
+    .hotspot.main .pulse-dot::after { width: 10px; height: 10px; }
+
+    /* 折叠区域 */
+    #fold-toggle {
+      position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+      z-index: 8;
+    }
+    .folded-hotspot {
+      opacity: 0; pointer-events: none;
+      transform: translate(-50%, -50%) scale(0.5);
+      transition: opacity .4s ease, transform .4s ease;
+    }
+    .folded-hotspot.show {
+      opacity: 1; pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* ============== 右侧详情侧滑面板 ============== */
+    #detail-panel {
+      position: absolute; top: 0; right: 0; height: 100%;
+      width: 380px; z-index: 20;
+      transform: translateX(100%);
+      transition: transform .35s cubic-bezier(.16,.84,.36,1);
+      background: #fff;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+      display: flex; flex-direction: column;
+      border-radius: 16px 0 0 16px;
+    }
+    #detail-panel.show { transform: translateX(0); }
+    #detail-panel .panel-head {
+      padding: 16px 18px;
+      background: linear-gradient(135deg, #2F6BFF 0%, #1E4FCC 100%);
+      color: #fff; position: relative;
+      border-radius: 16px 0 0 0;
+    }
+    #detail-panel .panel-body { flex: 1; overflow-y: auto; padding: 16px 18px 20px; }
+    #detail-panel .panel-body::-webkit-scrollbar { width: 6px; }
+    #detail-panel .panel-body::-webkit-scrollbar-thumb { background: #DDE2EC; border-radius: 9999px; }
+    #detail-panel .panel-foot {
+      padding: 14px 18px; border-top: 1px solid #E6EAF2;
+      background: #FAFBFD; display: flex; gap: 8px;
+      border-radius: 0 0 0 16px;
+    }
+    #btn-close-panel {
+      position: absolute; top: 12px; right: 12px;
+      width: 28px; height: 28px; border-radius: 9999px;
+      background: rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background .2s;
+    }
+    #btn-close-panel:hover { background: rgba(255,255,255,0.3); }
+
+    /* 详情面板内部元素 */
+    .diff-star { color: #F59E0B; letter-spacing: 2px; font-size: 14px; }
+    .diff-star.empty { color: #DDE2EC; }
+    .tag-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    }
+    .section-title {
+      font-size: 11px; font-weight: 700; color: #637089;
+      text-transform: uppercase; letter-spacing: 1px;
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 8px;
+    }
+    .section-title::before {
+      content: ""; width: 3px; height: 12px; background: #2F6BFF; border-radius: 2px;
+    }
+    .meta-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; background: #F6F8FB; border-radius: 8px;
+      margin-bottom: 6px; font-size: 13px;
+    }
+    .meta-row .key { color: #637089; display: flex; align-items: center; gap: 6px; }
+    .meta-row .val { color: #152033; font-weight: 600; }
+    .meta-row .val.money { color: #F59E0B; font-weight: 700; font-family: var(--font-mono); }
+
+    .bullet-list { list-style: none; padding: 0; margin: 0; }
+    .bullet-list li {
+      position: relative; padding: 5px 0 5px 18px; font-size: 12.5px; color: #152033;
+      line-height: 1.6;
+    }
+    .bullet-list li::before {
+      content: ""; position: absolute; left: 4px; top: 13px; width: 5px; height: 5px;
+      border-radius: 9999px; background: #2F6BFF;
+    }
+
+    /* 决策人卡片 */
+    .dm-card {
+      background: linear-gradient(135deg, #F1F4F9 0%, #E8EFFE 100%);
+      border-radius: 10px; padding: 12px; margin-top: 8px;
+      border: 1px solid #E6EAF2;
+    }
+    .dm-avatar {
+      width: 40px; height: 40px; border-radius: 9999px;
+      background: linear-gradient(135deg, #2F6BFF 0%, #1E4FCC 100%);
+      color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .dm-trait { display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #fff; }
+
+    /* AI 预测 */
+    .ai-card {
+      background: linear-gradient(135deg, #0B1B33 0%, #152033 100%);
+      color: #fff; border-radius: 10px; padding: 14px;
+      position: relative; overflow: hidden;
+    }
+    .ai-card::after {
+      content: ""; position: absolute; right: -30px; top: -30px;
+      width: 100px; height: 100px; border-radius: 9999px;
+      background: radial-gradient(circle, rgba(47,107,255,0.4) 0%, transparent 70%);
+    }
+    .ai-card .num-stat { font-size: 22px; font-weight: 700; color: #2F6BFF; font-family: var(--font-mono); }
+
+    /* ============== 折叠信息 ============== */
+    #project-info {
+      position: absolute; top: 80px; right: 20px;
+      width: 280px; background: rgba(10,21,48,0.85); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 12px 14px;
+      color: #fff; z-index: 15;
+      transition: transform .3s ease, opacity .3s ease;
+    }
+    #project-info.collapsed { transform: translateX(110%); opacity: 0; pointer-events: none; }
+    #project-info .info-row { display:flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
+    #project-info .info-row .k { color: #8AA0BF; }
+    #project-info .info-row .v { color: #fff; font-weight: 600; }
+    #project-info h4 { font-size: 12px; font-weight: 700; color: #B8C5DA; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    #project-info h4 i { color: #2F6BFF; }
+
+    /* 底部折叠切换按钮 */
+    #btn-toggle-info {
+      position: absolute; top: 88px; right: 12px;
+      width: 32px; height: 32px; border-radius: 9999px;
+      background: rgba(10,21,48,0.7); backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #B8C5DA; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 16; transition: right .3s ease, background .2s;
+    }
+    #btn-toggle-info:hover { background: rgba(47,107,255,0.7); color: #fff; }
+    #project-info.collapsed ~ #btn-toggle-info { right: 12px; }
+
+    /* ============== 难度 Pill ============== */
+    .diff-pill {
+      padding: 6px 14px; border-radius: 9999px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all .2s ease;
+      border: 1px solid transparent;
+    }
+    .diff-pill.active {
+      background: #E8EFFE; color: #2F6BFF; border-color: #2F6BFF;
+    }
+    .diff-pill:not(.active) {
+      background: #F1F4F9; color: #637089;
+    }
+    .diff-pill:not(.active):hover { background: #E6EAF2; }
+
+    /* AI 强度滑条 */
+    .ai-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 4px; border-radius: 9999px;
+      background: #E6EAF2; outline: none;
+    }
+    .ai-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; border-radius: 9999px;
+      background: #2F6BFF; cursor: pointer;
+      border: 2px solid #fff; box-shadow: 0 1px 3px rgba(15,32,51,0.2);
+    }
+    .ai-slider::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 9999px;
+      background: #2F6BFF; cursor: pointer; border: 2px solid #fff;
+    }
+
+    /* 道具 */
+    .item-chip {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 8px;
+      background: #F6F8FB; border: 1px solid #E6EAF2;
+    }
+    .item-chip .icon-wrap {
+      width: 32px; height: 32px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* 操作点 */
+    .ap-chip {
+      display: flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 9999px;
+      background: linear-gradient(135deg, #2F6BFF 0%, #6E9CFF 100%);
+      color: #fff; font-weight: 700; font-size: 13px;
+    }
+
+    /* 主按钮 */
+    .btn-primary {
+      background: #2F6BFF; color: #fff; padding: 12px 28px;
+      border-radius: 10px; font-size: 14px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+      cursor: pointer; transition: all .2s ease; border: none;
+      box-shadow: 0 2px 6px rgba(47,107,255,0.3);
+    }
+    .btn-primary:hover:not(:disabled) { background: #2560E6; box-shadow: 0 4px 12px rgba(47,107,255,0.4); }
+    .btn-primary:active:not(:disabled) { transform: scale(0.98); }
+    .btn-primary:disabled { background: #C8CFDC; color: #fff; cursor: not-allowed; box-shadow: none; }
+
+    .btn-secondary {
+      background: #F1F4F9; color: #637089; padding: 12px 20px;
+      border-radius: 10px; font-size: 14px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px; justify-content: center;
+      cursor: pointer; transition: all .2s ease; border: 1px solid #E6EAF2;
+    }
+    .btn-secondary:hover { background: #E6EAF2; color: #152033; }
+
+    /* 图例 */
+    #map-legend {
+      position: absolute; left: 20px; bottom: 20px; z-index: 10;
+      background: rgba(10,21,48,0.78); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 10px 12px;
+      color: #fff; font-size: 11px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    #map-legend .row { display: flex; align-items: center; gap: 8px; }
+    #map-legend .dot { width: 10px; height: 10px; border-radius: 9999px; }
+    #map-legend .dot.blue { background: #2F6BFF; }
+    #map-legend .dot.gold { background: linear-gradient(135deg, #F59E0B 0%, #DC2626 100%); }
+    #map-legend .dot.gray { background: rgba(255,255,255,0.4); }
+
+    /* 小地图缩略 */
+    #minimap {
+      position: absolute; left: 20px; top: 20px; z-index: 10;
+      width: 140px; padding: 6px;
+      background: rgba(10,21,48,0.78); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+    }
+    #minimap .mini-img {
+      width: 100%; height: 70px; border-radius: 4px;
+      background-image: url('game-map.webp');
+      background-size: cover; background-position: center;
+      position: relative; overflow: hidden;
+    }
+    #minimap .mini-img::after {
+      content: ""; position: absolute; inset: 0;
+      background: rgba(47,107,255,0.15);
+    }
+    #minimap .mini-title {
+      font-size: 10px; color: #B8C5DA; text-align: center; padding-top: 4px;
+      font-weight: 600; letter-spacing: 0.5px;
+    }
+
+    /* 地图缩放按钮 */
+    #map-zoom {
+      position: absolute; right: 20px; bottom: 20px; z-index: 10;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .zoom-btn {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(10,21,48,0.78); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #B8C5DA; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s;
+    }
+    .zoom-btn:hover { background: rgba(47,107,255,0.7); color: #fff; }
+
+    /* 顶部关卡进度 */
+    .progress-bar {
+      width: 80px; height: 4px; border-radius: 9999px;
+      background: #E6EAF2; overflow: hidden;
+    }
+    .progress-bar .fill {
+      height: 100%; background: linear-gradient(to right, #2F6BFF 0%, #6E9CFF 100%);
+      border-radius: 9999px; transition: width .6s ease;
+    }
+
+    /* tooltip */
+    .info-tooltip {
+      position: absolute; left: 50%; top: -8px; transform: translate(-50%, -100%);
+      background: rgba(10,21,48,0.95); color: #fff; padding: 6px 10px;
+      border-radius: 6px; font-size: 11px; white-space: nowrap;
+      pointer-events: none; opacity: 0; transition: opacity .2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .info-tooltip::after {
+      content: ""; position: absolute; left: 50%; bottom: -4px;
+      transform: translateX(-50%);
+      border-left: 4px solid transparent; border-right: 4px solid transparent;
+      border-top: 4px solid rgba(10,21,48,0.95);
+    }
+    .hotspot:hover .info-tooltip { opacity: 1; }
+  </style>
+
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="text-on-surface font-sans">
+
+  <!-- ============== 顶部状态条 (72px) ============== -->
+  <header class="fixed top-0 left-0 right-0 z-40 h-[72px] bg-surface border-b border-outline-variant/60 flex items-center px-6">
+    <!-- 左：LOGO + 关卡进度 -->
+    <div class="flex items-center gap-6 w-[300px]">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-card">
+          <i data-lucide="target" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <span class="font-bold text-[15px] text-on-surface">竞标博弈</span>
+          <span class="text-[10px] text-on-surface-variant font-medium tracking-wider">BIDDING&nbsp;WAR</span>
+        </div>
+      </div>
+      <div class="h-8 w-px bg-outline-variant/60"></div>
+      <div class="flex flex-col">
+        <span class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">关卡进度</span>
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-bold text-on-surface num">第 3 关</span>
+          <span class="text-xs text-on-surface-variant num">/ 共 8 关</span>
+        </div>
+        <div class="progress-bar mt-1">
+          <div class="fill" style="width: 37.5%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中：关卡名称 + 预算 -->
+    <div class="flex-1 flex items-center justify-center gap-3">
+      <div class="flex items-center gap-2 px-3 py-1.5 bg-primary-container rounded-md">
+        <i data-lucide="map-pin" class="w-3.5 h-3.5 text-primary"></i>
+        <span class="text-sm font-semibold text-primary">XX市智慧政务 v3.2 · 政企竞标实训</span>
+      </div>
+      <div class="flex items-center gap-1.5 px-3 py-1.5 bg-warning/10 rounded-md">
+        <i data-lucide="banknote" class="w-3.5 h-3.5 text-warning"></i>
+        <span class="text-xs text-on-surface-variant">项目预算</span>
+        <span class="text-sm font-bold text-warning num">¥580万</span>
+      </div>
+    </div>
+
+    <!-- 右：玩家信息 -->
+    <div class="flex items-center gap-3 w-[300px] justify-end">
+      <div class="ap-chip" id="ap-chip">
+        <i data-lucide="gem" class="w-3.5 h-3.5"></i>
+        <span class="num">28</span>
+        <span class="text-white/70 text-[11px]">/ 30</span>
+      </div>
+      <div class="flex items-center gap-2 pl-3 border-l border-outline-variant/60">
+        <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+          <span class="text-sm font-semibold text-primary">初</span>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <span class="text-xs font-semibold text-on-surface">小初</span>
+          <span class="text-[10px] text-on-surface-variant">销售经理 · Lv.4</span>
+        </div>
+      </div>
+      <button id="btn-settings" class="w-9 h-9 rounded-md hover:bg-surface-container flex items-center justify-center transition-colors">
+        <i data-lucide="settings" class="w-4 h-4 text-on-surface-variant"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============== 中间主舞台 ============== -->
+  <main class="absolute top-[72px] bottom-[120px] left-0 right-0">
+    <!-- @main-content:start -->
+    <div id="map-stage">
+      <!-- 加载状态 -->
+      <div id="map-loading">
+        <div class="ring"></div>
+        <div class="mt-5 text-white/80 text-sm font-medium">地图加载中</div>
+        <div class="mt-2 text-white/40 text-xs">正在渲染 XX市等距城市地图...</div>
+        <div class="mt-4 w-48 h-1 bg-white/10 rounded-full overflow-hidden">
+          <div id="load-progress" class="h-full bg-primary" style="width: 0%; transition: width .3s"></div>
+        </div>
+        <div id="load-percent" class="mt-2 text-primary text-xs font-semibold num">0%</div>
+      </div>
+
+      <!-- 等距地图背景图 -->
+      <img id="map-img" src="game-map.webp" alt="XX市等距城市地图" data-category="建筑城市" />
+
+      <!-- 地图小缩略图 -->
+      <div id="minimap">
+        <div class="mini-img"></div>
+        <div class="mini-title">XX市 · CITY MAP</div>
+      </div>
+
+      <!-- 地图角落装饰 -->
+      <div class="map-corner" style="left: 20px; top: 110px;">
+        <i data-lucide="map"></i>ISOMETRIC&nbsp;VIEW · 1:800
+      </div>
+      <div class="map-corner" style="left: 20px; top: 138px;">
+        <i data-lucide="calendar"></i>2024&nbsp;Q1 · 冬季场景
+      </div>
+
+      <!-- 指南针 -->
+      <div id="map-compass" style="right: 90px; top: 20px;">
+        <div class="compass-outer">
+          <div class="compass-needle"></div>
+          <div class="compass-center"></div>
+          <span class="compass-label n">N</span>
+          <span class="compass-label s">S</span>
+          <span class="compass-label e">E</span>
+          <span class="compass-label w">W</span>
+        </div>
+      </div>
+
+      <!-- 缩放控制 -->
+      <div id="map-zoom">
+        <button class="zoom-btn" id="btn-zoom-in"><i data-lucide="plus" class="w-4 h-4"></i></button>
+        <button class="zoom-btn" id="btn-zoom-out"><i data-lucide="minus" class="w-4 h-4"></i></button>
+        <button class="zoom-btn" id="btn-zoom-reset"><i data-lucide="home" class="w-4 h-4"></i></button>
+      </div>
+
+      <!-- 图例 -->
+      <div id="map-legend">
+        <div class="row"><div class="dot blue"></div><span>可攻略目标 (8)</span></div>
+        <div class="row"><div class="dot gold"></div><span>主线目标 (1)</span></div>
+        <div class="row"><div class="dot gray"></div><span>折叠目标 (2)</span></div>
+      </div>
+
+      <!-- 折叠/展开 切换按钮 -->
+      <button id="fold-toggle" class="flex items-center gap-2 px-4 py-2 rounded-full bg-surface/95 backdrop-blur shadow-dialog border border-outline-variant/60 text-on-surface text-xs font-semibold hover:bg-surface transition-all">
+        <i data-lucide="chevron-up" id="fold-icon" class="w-3.5 h-3.5 transition-transform"></i>
+        <span id="fold-text">展开更多目标 (2)</span>
+      </button>
+
+      <!-- 项目背景信息卡片（可折叠） -->
+      <div id="project-info" class="collapsed">
+        <h4><i data-lucide="info"></i>项目背景</h4>
+        <!-- 信息行-甲方 -->
+        <div class="info-row">
+          <span class="k">甲方主体</span>
+          <span class="v">XX市人民政府</span>
+        </div>
+        <!-- 信息行-决策人 -->
+        <div class="info-row">
+          <span class="k">核心决策人</span>
+          <span class="v">张副市长</span>
+        </div>
+        <!-- 信息行-难点 -->
+        <div class="info-row">
+          <span class="k">技术难点</span>
+          <span class="v">3 项</span>
+        </div>
+        <!-- 信息行-周期 -->
+        <div class="info-row">
+          <span class="k">交付周期</span>
+          <span class="v">12 个月</span>
+        </div>
+        <div class="info-row" style="border-top: 1px solid rgba(255,255,255,0.08); margin-top: 6px; padding-top: 8px;">
+          <span class="k">总关卡数</span>
+          <span class="v num text-warning">8 栋主目标</span>
+        </div>
+      </div>
+      <button id="btn-toggle-info" title="项目背景">
+        <i data-lucide="info" class="w-4 h-4"></i>
+      </button>
+
+      <!-- ============== 8 个主 Hotspot ============== -->
+      <!-- 主线-热点1：市政府（中心超高层地标） -->
+      <div class="hotspot main" id="hs-gov" data-id="gov" data-name="市政府" data-budget="580" data-difficulty="5" style="left: 50%; top: 50%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="landmark" class="w-3 h-3"></i>
+          市政府 · 主线
+          <span class="price">¥580万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐⭐⭐⭐ 极难 · 主线目标</div>
+          <div class="opacity-70">决策人：张副市长</div>
+        </div>
+      </div>
+
+      <!-- 热点2：区规划局（西北区多层办公楼） -->
+      <div class="hotspot" id="hs-planning" data-id="planning" data-name="区规划局" data-budget="85" data-difficulty="2" style="left: 15%; top: 22%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="building" class="w-3 h-3"></i>
+          区规划局
+          <span class="price">¥85万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐ 简单 · 入门级</div>
+          <div class="opacity-70">推荐新人练手</div>
+        </div>
+      </div>
+
+      <!-- 热点3：市卫健委（西北区高层办公楼1） -->
+      <div class="hotspot" id="hs-health" data-id="health" data-name="市卫健委" data-budget="120" data-difficulty="3" style="left: 30%; top: 28%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="building-2" class="w-3 h-3"></i>
+          市卫健委
+          <span class="price">¥120万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐⭐ 中等</div>
+          <div class="opacity-70">关注数据安全</div>
+        </div>
+      </div>
+
+      <!-- 热点4：市生态环境局（西北区高层办公楼2） -->
+      <div class="hotspot" id="hs-eco" data-id="eco" data-name="市生态环境局" data-budget="95" data-difficulty="2" style="left: 43%; top: 30%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="leaf" class="w-3 h-3"></i>
+          市生态环境局
+          <span class="price">¥95万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐ 简单</div>
+          <div class="opacity-70">重视环保合规</div>
+        </div>
+      </div>
+
+      <!-- 热点5：市交通局（北区高层办公楼） -->
+      <div class="hotspot" id="hs-traffic" data-id="traffic" data-name="市交通局" data-budget="180" data-difficulty="4" style="left: 58%; top: 27%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="traffic-cone" class="w-3 h-3"></i>
+          市交通局
+          <span class="price">¥180万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐⭐⭐ 较难</div>
+          <div class="opacity-70">需展示高并发架构</div>
+        </div>
+      </div>
+
+      <!-- 热点6：市国资委（东北区高层办公楼1） -->
+      <div class="hotspot" id="hs-sasac" data-id="sasac" data-name="市国资委" data-budget="150" data-difficulty="3" style="left: 67%; top: 35%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="briefcase" class="w-3 h-3"></i>
+          市国资委
+          <span class="price">¥150万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐⭐ 中等</div>
+          <div class="opacity-70">关注国资合规</div>
+        </div>
+      </div>
+
+      <!-- 热点7：市教育局（东北区高层办公楼2） -->
+      <div class="hotspot" id="hs-edu" data-id="edu" data-name="市教育局" data-budget="200" data-difficulty="4" style="left: 78%; top: 42%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="graduation-cap" class="w-3 h-3"></i>
+          市教育局
+          <span class="price">¥200万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐⭐⭐ 较难</div>
+          <div class="opacity-70">需教育行业案例</div>
+        </div>
+      </div>
+
+      <!-- 热点8：区民政局（东北区多层办公楼） -->
+      <div class="hotspot" id="hs-civil" data-id="civil" data-name="区民政局" data-budget="60" data-difficulty="1" style="left: 85%; top: 50%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="heart-handshake" class="w-3 h-3"></i>
+          区民政局
+          <span class="price">¥60万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐ 入门</div>
+          <div class="opacity-70">难度最低</div>
+        </div>
+      </div>
+
+      <!-- ============== 2 个折叠 Hotspot ============== -->
+      <!-- 热点9：市公安局（西南区高层办公楼） -->
+      <div class="hotspot folded-hotspot" id="hs-police" data-id="police" data-name="市公安局" data-budget="140" data-difficulty="3" style="left: 28%; top: 65%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="shield" class="w-3 h-3"></i>
+          市公安局
+          <span class="price">¥140万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐⭐ 中等</div>
+          <div class="opacity-70">等保三级要求</div>
+        </div>
+      </div>
+
+      <!-- 热点10：区教育局分校（南区光伏办公楼） -->
+      <div class="hotspot folded-hotspot" id="hs-edu-branch" data-id="edu-branch" data-name="区教育局分校" data-budget="75" data-difficulty="2" style="left: 50%; top: 78%;">
+        <div class="pulse-dot"></div>
+        <div class="label">
+          <i data-lucide="sun" class="w-3 h-3"></i>
+          区教育局分校
+          <span class="price">¥75万</span>
+        </div>
+        <div class="info-tooltip">
+          <div>⭐⭐ 简单</div>
+          <div class="opacity-70">光伏绿色机房</div>
+        </div>
+      </div>
+
+      <!-- ============== 右侧详情侧滑面板 ============== -->
+      <aside id="detail-panel" aria-hidden="true">
+        <div class="panel-head">
+          <div class="flex items-center gap-3">
+            <div id="panel-icon-wrap" class="w-12 h-12 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center">
+              <i data-lucide="landmark" class="w-6 h-6 text-white" id="panel-icon"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-[10px] font-semibold text-white/70 uppercase tracking-wider">攻略目标</div>
+              <div class="text-lg font-bold text-white truncate" id="panel-title">市政府</div>
+              <div class="flex items-center gap-1 mt-0.5" id="panel-stars">
+                <span class="diff-star">★★★★★</span>
+                <span class="text-[10px] text-white/70 ml-1">极难</span>
+              </div>
+            </div>
+          </div>
+          <div id="btn-close-panel">
+            <i data-lucide="x" class="w-4 h-4 text-white"></i>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <!-- 项目卡 -->
+          <div class="mb-5">
+            <div class="section-title">项目信息</div>
+            <div class="meta-row">
+              <span class="key"><i data-lucide="file-text" class="w-3.5 h-3.5 text-on-surface-variant"></i>项目名称</span>
+              <span class="val" id="panel-project">智慧政务 v3.2 一期</span>
+            </div>
+            <div class="meta-row">
+              <span class="key"><i data-lucide="banknote" class="w-3.5 h-3.5 text-on-surface-variant"></i>项目预算</span>
+              <span class="val money" id="panel-budget">¥580万</span>
+            </div>
+            <div class="meta-row">
+              <span class="key"><i data-lucide="clock" class="w-3.5 h-3.5 text-on-surface-variant"></i>交付周期</span>
+              <span class="val" id="panel-period">12 个月</span>
+            </div>
+            <div class="meta-row">
+              <span class="key"><i data-lucide="users" class="w-3.5 h-3.5 text-on-surface-variant"></i>参与竞品</span>
+              <span class="val">3 家</span>
+            </div>
+          </div>
+
+          <!-- 技术难点 -->
+          <div class="mb-5">
+            <div class="section-title">技术难点</div>
+            <ul class="bullet-list" id="panel-tech-list">
+              <li>日均 50W+ 高并发市民访问，需构建分布式微服务架构</li>
+              <li>涉及 12 个委办局数据互联互通，需统一数据中台</li>
+              <li>等保三级合规要求，安全审计与容灾备份双中心</li>
+            </ul>
+          </div>
+
+          <!-- 客户诉求 -->
+          <div class="mb-5">
+            <div class="section-title">客户核心诉求</div>
+            <ul class="bullet-list" id="panel-demand-list">
+              <li>"一网通办"覆盖率从 65% 提升至 95%</li>
+              <li>政务服务事项平均办理时间缩短 60%</li>
+              <li>系统支持国产化适配（麒麟/统信 OS）</li>
+              <li>提供 5 年期本地化运维与升级服务</li>
+            </ul>
+          </div>
+
+          <!-- 决策人 -->
+          <div class="mb-5">
+            <div class="section-title">关键决策人</div>
+            <div class="dm-card">
+              <div class="flex items-center gap-3">
+                <div class="dm-avatar" id="panel-dm-avatar">张</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-on-surface" id="panel-dm-name">张明远</span>
+                    <span class="tag-pill bg-primary/15 text-primary" id="panel-dm-style">稳健型</span>
+                  </div>
+                  <div class="text-xs text-on-surface-variant mt-0.5" id="panel-dm-title">XX市人民政府 · 副市长</div>
+                </div>
+              </div>
+              <div class="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+                <div class="dm-trait">
+                  <i data-lucide="briefcase" class="w-3 h-3 text-on-surface-variant"></i>
+                  <span>分管：智慧城市/数字政府</span>
+                </div>
+                <div class="dm-trait">
+                  <i data-lucide="graduation-cap" class="w-3 h-3 text-on-surface-variant"></i>
+                  <span>背景：清华计算机博士</span>
+                </div>
+                <div class="dm-trait">
+                  <i data-lucide="clock" class="w-3 h-3 text-on-surface-variant"></i>
+                  <span>决策周期：2-3 周</span>
+                </div>
+                <div class="dm-trait">
+                  <i data-lucide="thumbs-up" class="w-3 h-3 text-on-surface-variant"></i>
+                  <span>偏好：技术驱动</span>
+                </div>
+              </div>
+              <div class="mt-3 p-2 bg-white/80 rounded text-[11px] text-on-surface-variant leading-relaxed">
+                <span class="font-semibold text-on-surface">性格画像：</span>
+                极度重视技术架构先进性与长期可扩展性，对国产化合规有强烈使命感。容易被"国产化标杆案例"打动，但反感过度商务话术，倾向与"工程师型"销售对话。
+              </div>
+            </div>
+          </div>
+
+          <!-- AI 预估 -->
+          <div class="mb-2">
+            <div class="section-title">AI 战前预估</div>
+            <div class="ai-card">
+              <div class="flex items-center gap-2 mb-3 relative z-10">
+                <i data-lucide="sparkles" class="w-4 h-4 text-primary"></i>
+                <span class="text-xs font-semibold text-white/80 uppercase tracking-wider">战略建议</span>
+              </div>
+              <div class="text-[13px] text-white/90 leading-relaxed mb-3 relative z-10" id="panel-ai-tip">
+                推荐主打「国产化适配+等保三级」组合方案，强调清华系技术团队背景。第一轮报价 ¥520万，留出 8% 让利空间以应对后续议价。
+              </div>
+              <div class="grid grid-cols-3 gap-2 relative z-10">
+                <div class="text-center">
+                  <div class="text-[10px] text-white/50 mb-0.5">预期利润率</div>
+                  <div class="num-stat" id="panel-ai-profit">22%</div>
+                </div>
+                <div class="text-center border-l border-r border-white/10">
+                  <div class="text-[10px] text-white/50 mb-0.5">难度系数</div>
+                  <div class="num-stat" id="panel-ai-diff">4.8</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-[10px] text-white/50 mb-0.5">胜率预估</div>
+                  <div class="num-stat text-success" id="panel-ai-win">38%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-foot">
+          <button id="btn-switch-target" class="btn-secondary flex-1">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>换个目标
+          </button>
+          <button id="btn-choose-target" class="btn-primary flex-[2]">
+            <i data-lucide="crosshair" class="w-4 h-4"></i>开始攻略此目标
+          </button>
+        </div>
+      </aside>
+    </div>
+    <!-- @main-content:end -->
+  </main>
+
+  <!-- ============== 底部操作台 (120px) ============== -->
+  <footer class="fixed bottom-0 left-0 right-0 z-40 h-[120px] bg-surface border-t border-outline-variant/60">
+    <div class="h-full px-6 flex items-center gap-6">
+      <!-- 左侧：难度 + AI 强度 -->
+      <div class="flex flex-col gap-2 w-[280px] shrink-0">
+        <div class="flex items-center gap-1.5">
+          <span class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">对局难度</span>
+          <div class="flex items-center gap-1" id="diff-group">
+            <div class="diff-pill" data-diff="easy">简单</div>
+            <div class="diff-pill active" data-diff="medium">中等</div>
+            <div class="diff-pill" data-diff="hard">困难</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider w-12">AI 强度</span>
+          <input type="range" min="1" max="100" value="60" class="ai-slider flex-1" id="ai-strength">
+          <span class="text-xs font-bold text-primary num w-8 text-right" id="ai-strength-val">60</span>
+        </div>
+      </div>
+
+      <!-- 中间：道具栏 -->
+      <div class="flex-1 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+        <div class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider mr-1 shrink-0">道具</div>
+        <!-- 道具-请客吃饭券 -->
+        <div class="item-chip shrink-0" id="item-dinner">
+          <div class="icon-wrap bg-warning/15">
+            <i data-lucide="utensils" class="w-4 h-4 text-warning"></i>
+          </div>
+          <div class="leading-tight">
+            <div class="text-xs font-semibold text-on-surface">请客吃饭券</div>
+            <div class="text-[10px] text-on-surface-variant">+15 关系值</div>
+          </div>
+          <span class="text-xs font-bold text-on-surface num bg-surface-container px-1.5 py-0.5 rounded">×3</span>
+        </div>
+        <!-- 道具-节日祝福卡 -->
+        <div class="item-chip shrink-0" id="item-greeting">
+          <div class="icon-wrap bg-error/15">
+            <i data-lucide="gift" class="w-4 h-4 text-error"></i>
+          </div>
+          <div class="leading-tight">
+            <div class="text-xs font-semibold text-on-surface">节日祝福卡</div>
+            <div class="text-[10px] text-on-surface-variant">+8 关系值</div>
+          </div>
+          <span class="text-xs font-bold text-on-surface num bg-surface-container px-1.5 py-0.5 rounded">×2</span>
+        </div>
+        <!-- 道具-视频会议道具 -->
+        <div class="item-chip shrink-0" id="item-video">
+          <div class="icon-wrap bg-primary/15">
+            <i data-lucide="video" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div class="leading-tight">
+            <div class="text-xs font-semibold text-on-surface">视频会议</div>
+            <div class="text-[10px] text-on-surface-variant">解锁远程博弈</div>
+          </div>
+          <span class="text-xs font-bold text-on-surface num bg-surface-container px-1.5 py-0.5 rounded">×1</span>
+        </div>
+        <!-- 道具-技术白皮书 -->
+        <div class="item-chip shrink-0" id="item-whitepaper">
+          <div class="icon-wrap bg-success/15">
+            <i data-lucide="book-open" class="w-4 h-4 text-success"></i>
+          </div>
+          <div class="leading-tight">
+            <div class="text-xs font-semibold text-on-surface">技术白皮书</div>
+            <div class="text-[10px] text-on-surface-variant">+20% 技术分</div>
+          </div>
+          <span class="text-xs font-bold text-on-surface num bg-surface-container px-1.5 py-0.5 rounded">×1</span>
+        </div>
+        <!-- 道具-价格让利券 -->
+        <div class="item-chip shrink-0" id="item-coupon">
+          <div class="icon-wrap bg-primary-container">
+            <i data-lucide="ticket-percent" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div class="leading-tight">
+            <div class="text-xs font-semibold text-on-surface">价格让利券</div>
+            <div class="text-[10px] text-on-surface-variant">触发议价解锁</div>
+          </div>
+          <span class="text-xs font-bold text-on-surface num bg-surface-container px-1.5 py-0.5 rounded">×1</span>
+        </div>
+      </div>
+
+      <!-- 右侧：主按钮 -->
+      <div class="flex items-center gap-3 shrink-0">
+        <div class="text-right leading-tight">
+          <div class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">当前目标</div>
+          <div class="text-sm font-bold text-on-surface" id="footer-target-name">未选择</div>
+        </div>
+        <button id="btn-start-game" class="btn-primary" disabled>
+          <i data-lucide="play" class="w-4 h-4"></i>
+          <span>开始博弈</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+  <script>
+    // ============== 地图加载进度 ==============
+    $(function() {
+      // 模拟加载进度（实际上 WebP 图片较小，加载很快）
+      let progress = 0;
+      const loadTimer = setInterval(function() {
+        progress += Math.floor(Math.random() * 18) + 8;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(loadTimer);
+          setTimeout(function() {
+            $('#map-loading').css('opacity', '0');
+            setTimeout(function() { $('#map-loading').hide(); }, 500);
+          }, 200);
+        }
+        $('#load-progress').css('width', progress + '%');
+        $('#load-percent').text(progress + '%');
+      }, 140);
+
+      // 真实图片加载完成时立即隐藏 loading
+      $('#map-img').on('load', function() {
+        progress = 100;
+        clearInterval(loadTimer);
+        $('#load-progress').css('width', '100%');
+        $('#load-percent').text('100%');
+        setTimeout(function() {
+          $('#map-loading').css('opacity', '0');
+          setTimeout(function() { $('#map-loading').hide(); }, 500);
+        }, 200);
+      });
+    });
+
+    // ============== Hotspot 数据 ==============
+    // 每栋建筑对应的详情数据
+    const HOTSPOT_DATA = {
+      'gov': {
+        title: '市政府', icon: 'landmark',
+        project: '智慧政务 v3.2 一期', budget: '¥580万', period: '12 个月',
+        stars: 5, starLabel: '极难',
+        tech: [
+          '日均 50W+ 高并发市民访问，需构建分布式微服务架构',
+          '涉及 12 个委办局数据互联互通，需统一数据中台',
+          '等保三级合规要求，安全审计与容灾备份双中心'
+        ],
+        demands: [
+          '"一网通办"覆盖率从 65% 提升至 95%',
+          '政务服务事项平均办理时间缩短 60%',
+          '系统支持国产化适配（麒麟/统信 OS）',
+          '提供 5 年期本地化运维与升级服务'
+        ],
+        dmName: '张明远', dmTitle: 'XX市人民政府 · 副市长', dmStyle: '稳健型',
+        dmInitial: '张',
+        aiTip: '推荐主打「国产化适配+等保三级」组合方案，强调清华系技术团队背景。第一轮报价 ¥520万，留出 8% 让利空间以应对后续议价。',
+        profit: '22%', diff: '4.8', winRate: '38%'
+      },
+      'planning': {
+        title: '区规划局', icon: 'building',
+        project: '国土空间规划一张图', budget: '¥85万', period: '4 个月',
+        stars: 2, starLabel: '简单',
+        tech: [
+          'GIS 矢量数据需兼容多坐标系转换',
+          '历史规划档案数字化 OCR 识别',
+          '移动端审批流程对接 OA 系统'
+        ],
+        demands: [
+          '业务模块 6 个：用地预审/规划许可/违法监察等',
+          '支持多端访问：PC + 平板 + 大屏',
+          '数据接入现有区级共享平台',
+          '提供 2 年期免费运维'
+        ],
+        dmName: '李建国', dmTitle: 'XX区规划局 · 副局长', dmStyle: '价格敏感',
+        dmInitial: '李',
+        aiTip: '主打性价比，建议标准 SaaS 化部署 + 适度定制。决策人重视预算控制，第一轮报价控制在 ¥75万。',
+        profit: '32%', diff: '2.1', winRate: '72%'
+      },
+      'health': {
+        title: '市卫健委', icon: 'building-2',
+        project: '区域卫生信息平台升级', budget: '¥120万', period: '6 个月',
+        stars: 3, starLabel: '中等',
+        tech: [
+          '医疗数据隐私合规（HIPAA 等同标准）',
+          '与 18 家医院 HIS 系统对接',
+          '电子健康档案 EHR 数据迁移'
+        ],
+        demands: [
+          '居民健康档案建档率 90% 以上',
+          '支持分级诊疗与双向转诊业务',
+          '对接省卫健委数据上报接口',
+          '提供应急预案与 7×24 响应'
+        ],
+        dmName: '王晓燕', dmTitle: '市卫健委 · 信息中心主任', dmStyle: '技术驱动',
+        dmInitial: '王',
+        aiTip: '强调医疗行业案例（特别是三甲医院落地经验）。决策人是技术出身，需要详细架构图与技术方案文档。',
+        profit: '28%', diff: '3.2', winRate: '55%'
+      },
+      'eco': {
+        title: '市生态环境局', icon: 'leaf',
+        project: '环境监测数据汇聚平台', budget: '¥95万', period: '5 个月',
+        stars: 2, starLabel: '简单',
+        tech: [
+          '对接 200+ 监测点 IoT 设备',
+          '空气质量/水质多源数据融合',
+          '历史监测数据清洗与建模'
+        ],
+        demands: [
+          '实现全市 5 类环境指标实时监测',
+          '异常事件自动预警与工单派发',
+          '支持环保执法移动端取证',
+          '对接国家环境监测总站接口'
+        ],
+        dmName: '陈志刚', dmTitle: '市生态环境局 · 处长', dmStyle: '稳健型',
+        dmInitial: '陈',
+        aiTip: '可重点呈现"绿色机房"低碳技术方案（与公司光伏办公楼呼应）。决策人重视可持续性，建议提供 ESG 报告。',
+        profit: '30%', diff: '2.4', winRate: '65%'
+      },
+      'traffic': {
+        title: '市交通局', icon: 'traffic-cone',
+        project: '智慧交通大脑一期', budget: '¥180万', period: '8 个月',
+        stars: 4, starLabel: '较难',
+        tech: [
+          '高峰期 10W+ 并发请求处理',
+          '卡口/信号灯/停车多系统联动',
+          'AI 视频分析算子部署'
+        ],
+        demands: [
+          '主城区拥堵指数降低 15%',
+          '信号灯智能配时优化',
+          '停车诱导系统覆盖 80% 商业区',
+          '与高德/百度地图数据互通'
+        ],
+        dmName: '赵明辉', dmTitle: '市交通局 · 副局长', dmStyle: '技术驱动',
+        dmInitial: '赵',
+        aiTip: '技术分占比最高，需要展示完整的 AI 算子模型库和性能压测报告。建议联合硬件厂商打包方案。',
+        profit: '24%', diff: '4.2', winRate: '42%'
+      },
+      'sasac': {
+        title: '市国资委', icon: 'briefcase',
+        project: '国资国企在线监管系统', budget: '¥150万', period: '7 个月',
+        stars: 3, starLabel: '中等',
+        tech: [
+          '对接 18 家市属国企 ERP 系统',
+          '国资大数据指标建模（150+ 指标）',
+          '国资监管事项三级预警'
+        ],
+        demands: [
+          '实现"三重一大"决策在线监管',
+          '国企财务/投资/产权数据归集',
+          '违规经营责任追究线索推送',
+          '对接省国资委监管平台'
+        ],
+        dmName: '孙立军', dmTitle: '市国资委 · 主任', dmStyle: '稳健型',
+        dmInitial: '孙',
+        aiTip: '决策人偏稳健，建议引用央企/省级国资委标杆案例。强调"数据不出域"安全方案，避免激进技术堆砌。',
+        profit: '26%', diff: '3.5', winRate: '52%'
+      },
+      'edu': {
+        title: '市教育局', icon: 'graduation-cap',
+        project: '教育大数据中心', budget: '¥200万', period: '9 个月',
+        stars: 4, starLabel: '较难',
+        tech: [
+          'K12 全学段数据治理（10 年历史）',
+          '5W+ 教师/50W+ 学生账号体系',
+          '教学行为 AI 分析模型'
+        ],
+        demands: [
+          '"双减"政策下教学评价系统重构',
+          '家校沟通与课后服务一体化',
+          '教育质量监测与督导评估',
+          '与省级教育云平台对接'
+        ],
+        dmName: '周慧敏', dmTitle: '市教育局 · 副局长', dmStyle: '关系导向',
+        dmInitial: '周',
+        aiTip: '决策人重视"教育情怀"与社会效益。建议准备 1-2 个乡村教育帮扶案例，第一轮见面侧重沟通非商务。',
+        profit: '20%', diff: '4.5', winRate: '40%'
+      },
+      'civil': {
+        title: '区民政局', icon: 'heart-handshake',
+        project: '智慧民政服务平台', budget: '¥60万', period: '3 个月',
+        stars: 1, starLabel: '入门',
+        tech: [
+          '婚姻/低保/养老等业务表单引擎',
+          '社区网格化管理移动端',
+          '与银行/医院数据共享核验'
+        ],
+        demands: [
+          '民生事项"一窗受理"',
+          '困难群体主动发现与救助',
+          '养老服务监管与补贴发放',
+          '社会救助家庭经济状况核对'
+        ],
+        dmName: '吴芳', dmTitle: '区民政局 · 局长', dmStyle: '关系导向',
+        dmInitial: '吴',
+        aiTip: '适合新人练手，决策周期短。准备好产品 Demo 视频和成功案例视频，30 分钟内可成单。',
+        profit: '35%', diff: '1.5', winRate: '82%'
+      },
+      'police': {
+        title: '市公安局', icon: 'shield',
+        project: '公安数据中台', budget: '¥140万', period: '6 个月',
+        stars: 3, starLabel: '中等',
+        tech: [
+          '等保三级 + 公安行业密评',
+          '8 大警种数据资源目录梳理',
+          'PGIS 警用地理信息系统对接'
+        ],
+        demands: [
+          '数据资产目录与血缘管理',
+          '数据共享服务申请审批流',
+          '警情预警模型与可视化',
+          '符合公安部大数据建设规范'
+        ],
+        dmName: '马强', dmTitle: '市公安局 · 科技信息化处处长', dmStyle: '技术驱动',
+        dmInitial: '马',
+        aiTip: '技术门槛高，需要熟悉公安行业"等保+密评"双重合规。决策人极度重视厂商安全资质，建议提供完整安全认证证书。',
+        profit: '25%', diff: '3.8', winRate: '48%'
+      },
+      'edu-branch': {
+        title: '区教育局分校', icon: 'sun',
+        project: '分校智慧校园一期', budget: '¥75万', period: '4 个月',
+        stars: 2, starLabel: '简单',
+        tech: [
+          '校园一卡通系统升级',
+          '智能班牌/电子书包对接',
+          '光伏绿色机房示范工程'
+        ],
+        demands: [
+          '实现家校共育平台全覆盖',
+          '校园安防 AI 视频分析',
+          '绿色低碳机房示范点',
+          '提供教师信息化培训'
+        ],
+        dmName: '林静', dmTitle: '区教育局分校 · 校长', dmStyle: '关系导向',
+        dmInitial: '林',
+        aiTip: '可作为"光伏办公楼"案例的延伸场景。决策周期短，重视现场考察和样板工程展示。',
+        profit: '30%', diff: '2.3', winRate: '68%'
+      }
+    };
+
+    // ============== 选中状态 ==============
+    let selectedTarget = null;  // {id, name, budget, difficulty}
+
+    // ============== 点击 Hotspot 打开详情面板 ==============
+    $('#map-stage').on('click', '.hotspot', function(e) {
+      e.stopPropagation();
+      const $h = $(this);
+      const id = $h.data('id');
+      const data = HOTSPOT_DATA[id];
+      if (!data) return;
+
+      // 激活态切换
+      $('.hotspot').removeClass('active');
+      $h.addClass('active');
+
+      // 填充详情面板
+      $('#panel-title').text(data.title);
+      $('#panel-icon').attr('data-lucide', data.icon);
+      $('#panel-project').text(data.project);
+      $('#panel-budget').text(data.budget);
+      $('#panel-period').text(data.period);
+      $('#panel-dm-name').text(data.dmName);
+      $('#panel-dm-title').text(data.dmTitle);
+      $('#panel-dm-style').text(data.dmStyle);
+      $('#panel-dm-avatar').text(data.dmInitial);
+      $('#panel-ai-tip').text(data.aiTip);
+      $('#panel-ai-profit').text(data.profit);
+      $('#panel-ai-diff').text(data.diff);
+      $('#panel-ai-win').text(data.winRate);
+
+      // 难度星
+      let starsHtml = '';
+      for (let i = 0; i < 5; i++) {
+        starsHtml += i < data.stars ? '★' : '<span class="diff-star empty">★</span>';
+      }
+      $('#panel-stars').html(starsHtml + '<span class="text-[10px] text-white/70 ml-1">' + data.starLabel + '</span>');
+
+      // 技术难点列表
+      let techHtml = '';
+      data.tech.forEach(function(t) { techHtml += '<li>' + t + '</li>'; });
+      $('#panel-tech-list').html(techHtml);
+
+      // 客户诉求列表
+      let demandHtml = '';
+      data.demands.forEach(function(d) { demandHtml += '<li>' + d + '</li>'; });
+      $('#panel-demand-list').html(demandHtml);
+
+      // 重新渲染 Lucide 图标
+      lucide.createIcons();
+
+      // 滑出面板
+      $('#detail-panel').addClass('show').attr('aria-hidden', 'false');
+
+      // 记录选中
+      selectedTarget = { id: id, name: data.title, budget: parseInt(data.budget.replace(/[^0-9]/g, '')), difficulty: data.stars };
+      updateStartButton();
+    });
+
+    // ============== 关闭详情面板 ==============
+    $('#btn-close-panel').on('click', function() {
+      $('#detail-panel').removeClass('show').attr('aria-hidden', 'true');
+      $('.hotspot').removeClass('active');
+      selectedTarget = null;
+      updateStartButton();
+    });
+
+    // 切换目标
+    $('#btn-switch-target').on('click', function() {
+      // 简单实现：关闭当前面板，自动选中下一个未访问的 hotspot
+      // 复杂交互-切换目标：
+      // 1. 维护 visited 列表记录已查看的目标
+      // 2. 点击时按 id 字母序或 budget 排序轮询下一个
+      // 3. 可加入"已收藏/已排除"标记
+      const allIds = Object.keys(HOTSPOT_DATA);
+      const currentId = selectedTarget ? selectedTarget.id : null;
+      const currentIdx = currentId ? allIds.indexOf(currentId) : -1;
+      const nextId = allIds[(currentIdx + 1) % allIds.length];
+      $('#hs-' + nextId.replace('-branch', '-branch')).trigger('click');
+    });
+
+    // 选中此目标 - 关闭面板并激活底部按钮
+    $('#btn-choose-target').on('click', function() {
+      if (!selectedTarget) return;
+      $('#detail-panel').removeClass('show').attr('aria-hidden', 'true');
+      $('#footer-target-name').text(selectedTarget.name);
+      updateStartButton();
+      // 顶部弹一个 toast 提示
+      showToast('已选择「' + selectedTarget.name + '」，可点击底部按钮开始博弈');
+    });
+
+    // ============== 更新开始博弈按钮状态 ==============
+    function updateStartButton() {
+      const $btn = $('#btn-start-game');
+      if (selectedTarget) {
+        $btn.prop('disabled', false);
+      } else {
+        $btn.prop('disabled', true);
+        $('#footer-target-name').text('未选择');
+      }
+    }
+
+    // ============== 开始博弈（跳转 game.html） ==============
+    $('#btn-start-game').on('click', function() {
+      if (!selectedTarget) return;
+      const loc = encodeURIComponent(selectedTarget.id);
+      const budget = selectedTarget.budget;
+      window.location.href = 'game.html?location=' + loc + '&budget=' + budget;
+    });
+
+    // ============== 折叠/展开 额外目标 ==============
+    let folded = false;
+    $('#fold-toggle').on('click', function() {
+      folded = !folded;
+      if (folded) {
+        $('.folded-hotspot').addClass('show');
+        $('#fold-text').text('收起额外目标');
+        $('#fold-icon').css('transform', 'rotate(180deg)');
+      } else {
+        $('.folded-hotspot').removeClass('show');
+        $('#fold-text').text('展开更多目标 (2)');
+        $('#fold-icon').css('transform', 'rotate(0)');
+      }
+    });
+
+    // ============== 项目背景信息卡片 切换 ==============
+    $('#btn-toggle-info').on('click', function() {
+      $('#project-info').toggleClass('collapsed');
+    });
+
+    // ============== 难度切换 ==============
+    $('#diff-group').on('click', '.diff-pill', function() {
+      $('#diff-group .diff-pill').removeClass('active');
+      $(this).addClass('active');
+      const diff = $(this).data('diff');
+      // 简单交互-难度切换：
+      // 1. 更新 AI 对手强度的默认值
+      // 2. 简单 → 30, 中等 → 60, 困难 → 90
+      // 3. 联动更新所有 hotspot 的视觉（高难度下显示红色脉冲）
+      const defaults = { easy: 30, medium: 60, hard: 90 };
+      const newVal = defaults[diff] || 60;
+      $('#ai-strength').val(newVal);
+      $('#ai-strength-val').text(newVal);
+    });
+
+    // ============== AI 强度滑条 ==============
+    $('#ai-strength').on('input', function() {
+      $('#ai-strength-val').text($(this).val());
+    });
+
+    // ============== 道具点击 ==============
+    // 简单交互-道具使用：
+    // 1. 数量 -1（如果 > 0）
+    // 2. 弹出 toast 确认使用
+    // 3. 数量为 0 时按钮置灰
+    $('#item-dinner').on('click', function() {
+      console.log('使用道具：请客吃饭券 → 在 game.html 博弈中使用，+15 关系值');
+    });
+    $('#item-greeting').on('click', function() {
+      console.log('使用道具：节日祝福卡 → 在 game.html 博弈中使用，+8 关系值');
+    });
+    $('#item-video').on('click', function() {
+      console.log('使用道具：视频会议 → 在 game.html 博弈中解锁远程博弈场景');
+    });
+    $('#item-whitepaper').on('click', function() {
+      console.log('使用道具：技术白皮书 → 在 game.html 博弈中使用，+20% 技术分');
+    });
+    $('#item-coupon').on('click', function() {
+      console.log('使用道具：价格让利券 → 在 game.html 博弈中触发议价解锁事件');
+    });
+
+    // ============== 地图缩放（简单交互） ==============
+    let zoomLevel = 1;
+    $('#btn-zoom-in').on('click', function() {
+      zoomLevel = Math.min(zoomLevel + 0.1, 1.5);
+      $('#map-img').css('transform', 'scale(' + zoomLevel + ')');
+    });
+    $('#btn-zoom-out').on('click', function() {
+      zoomLevel = Math.max(zoomLevel - 0.1, 0.7);
+      $('#map-img').css('transform', 'scale(' + zoomLevel + ')');
+    });
+    $('#btn-zoom-reset').on('click', function() {
+      zoomLevel = 1;
+      $('#map-img').css('transform', 'scale(1)');
+    });
+
+    // ============== 设置按钮 ==============
+    $('#btn-settings').on('click', function() {
+      // 简单交互-打开设置：
+      // 复杂交互-设置面板：
+      // 1. 从顶部滑出 settings 抽屉
+      // 2. 包含：音效开关/背景音乐/画质设置/账号退出
+      // 3. 使用 shadcn 风格的 sheet 组件
+      console.log('打开设置面板');
+    });
+
+    // ============== Toast 提示 ==============
+    function showToast(msg) {
+      const $t = $('<div class="fixed top-[88px] left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-success text-white text-sm font-medium rounded-lg shadow-dialog flex items-center gap-2" style="animation: slideDown .3s ease">' +
+        '<i data-lucide="check-circle-2" class="w-4 h-4"></i>' + msg + '</div>');
+      $('body').append($t);
+      lucide.createIcons();
+      setTimeout(function() {
+        $t.css({ opacity: 0, transition: 'opacity .3s' });
+        setTimeout(function() { $t.remove(); }, 300);
+      }, 2200);
+    }
+
+    // ============== 点击空白处关闭面板 ==============
+    $('#map-stage').on('click', function(e) {
+      if ($(e.target).closest('.hotspot').length === 0 &&
+          $(e.target).closest('#detail-panel').length === 0 &&
+          $(e.target).closest('.map-corner, .zoom-btn, #minimap, #map-legend, #fold-toggle, #btn-toggle-info, #project-info').length === 0) {
+        $('#detail-panel').removeClass('show').attr('aria-hidden', 'true');
+        $('.hotspot').removeClass('active');
+        selectedTarget = null;
+        updateStartButton();
+      }
+    });
+
+    // 阻止面板内点击冒泡
+    $('#detail-panel').on('click', function(e) { e.stopPropagation(); });
+  </script>
+</body>
+</html>

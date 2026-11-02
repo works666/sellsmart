@@ -1,0 +1,10 @@
+{
+  "selectedProvider": "deepseek",
+  "configuredModel": "deepseek-v4-flash",
+  "selectionRevision": 5,
+  "decisionProvider": "llm",
+  "persistedDecisionProvider": "jev",
+  "persistedDecisionRevision": 0,
+  "globalConfigMutated": false,
+  "responseEnvelopeNote": "llm-decision model and probability/confidence are adapter protocol values, not raw provider metadata or calibrated confidence."
+}

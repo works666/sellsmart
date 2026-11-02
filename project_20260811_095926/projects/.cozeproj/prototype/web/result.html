@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色 === */
+      --color-primary:              #2F6BFF;
+      --color-primary-container:    #E8EFFE;
+      --color-on-primary:           #FFFFFF;
+      /* === 背景 / 表面 === */
+      --color-background:                 #F6F8FB;
+      --color-surface-container-lowest:   #FAFBFD;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F1F4F9;
+      --color-surface-container-high:     #E6EAF2;
+      --color-surface-container-highest:  #DDE2EC;
+      /* === 文字 === */
+      --color-on-surface:           #152033;
+      --color-on-surface-variant:   #637089;
+      /* === 功能色 === */
+      --color-success:  #16A37B;
+      --color-warning:  #F59E0B;
+      --color-error:    #DC2626;
+      /* === 边框 === */
+      --color-outline:          #C8CFDC;
+      --color-outline-variant:  #E6EAF2;
+      /* === 圆角 === */
+      --radius-sm:   0.25rem;
+      --radius-md:   0.375rem;
+      --radius-lg:   0.5rem;
+      --radius-xl:   0.75rem;
+      --radius-2xl:  1rem;
+      --radius-full: 9999px;
+      /* === 阴影 === */
+      --shadow-card:   0 1px 2px rgba(15,32,51,0.04), 0 1px 3px rgba(15,32,51,0.06);
+      --shadow-float:  0 4px 6px rgba(15,32,51,0.05), 0 10px 15px rgba(15,32,51,0.08);
+      --shadow-dialog: 0 25px 50px rgba(15,32,51,0.15);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+    }
+  </style>
+
+  <style>
+    /* 数字字体使用等宽特征 */
+    .num { font-variant-numeric: tabular-nums; }
+    /* 隐藏滚动条但保留滚动 */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { scrollbar-width: none; }
+  </style>
+
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <header class="bg-surface border-b border-outline-variant/60 sticky top-0 z-40 h-14 flex items-center justify-between px-6">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
+          <i data-lucide="target" class="w-4 h-4 text-on-primary"></i>
+        </div>
+        <span class="font-bold text-base text-on-surface">竞标博弈 · 政企销售实训</span>
+      </div>
+      <nav class="flex items-center gap-1" id="top-nav">
+        <a href="home.html" id="nav-home" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">实训工作台</a>
+        <a href="setup.html" id="nav-setup" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">对局配置</a>
+        <a href="game.html" id="nav-game" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">博弈演练</a>
+        <a href="result.html" id="nav-result" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">复盘中心</a>
+        <a href="knowledge.html" id="nav-knowledge" class="px-3 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-md transition-colors">产品知识库</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+        <i data-lucide="circle-dot" class="w-3 h-3 text-success"></i>
+        <span class="text-xs font-medium text-on-surface-variant num">已连接 2 个对局</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+        <span class="text-sm font-semibold text-primary">初</span>
+      </div>
+    </div>
+  </header>
+  <!-- @nav:end 导航组件 -->
+
+  <!-- @main-content:start -->
+  <main class="bg-background min-h-[calc(100vh-3.5rem)]">
+    <div class="max-w-7xl mx-auto p-6 space-y-6">
+
+      <!-- ==================== Section 1 · 顶部结果横幅 ==================== -->
+      <section id="result-banner" class="rounded-2xl shadow-card overflow-hidden border border-primary/20">
+        <div class="bg-gradient-to-br from-primary-container/60 via-surface to-success/8 px-8 py-7">
+          <div class="flex items-center justify-between gap-6 flex-wrap">
+
+            <!-- 左侧：结果标题与项目信息 -->
+            <div class="flex-1 min-w-[300px]">
+              <div class="flex items-center gap-3 mb-3 flex-wrap">
+                <span class="text-4xl leading-none" aria-hidden="true">🏆</span>
+                <h1 class="text-3xl font-bold text-on-surface leading-tight">恭喜中标！</h1>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-sm font-semibold bg-success/15 text-success">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>已中标
+                </span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">本轮评级 · 优秀</span>
+              </div>
+              <div class="flex items-center gap-2.5 text-sm text-on-surface-variant flex-wrap">
+                <span class="font-medium text-on-surface">XX 市政务平台升级项目</span>
+                <span class="text-outline-variant">|</span>
+                <span class="inline-flex items-center gap-1">
+                  <i data-lucide="layers" class="w-3.5 h-3.5"></i>关卡 3
+                </span>
+                <span class="text-outline-variant">|</span>
+                <span class="inline-flex items-center gap-1">
+                  <i data-lucide="repeat" class="w-3.5 h-3.5"></i>历时 10 轮
+                </span>
+                <span class="text-outline-variant">|</span>
+                <span class="inline-flex items-center gap-1">
+                  <i data-lucide="swords" class="w-3.5 h-3.5"></i>对手：华耀科技
+                </span>
+                <span class="text-outline-variant">|</span>
+                <span class="inline-flex items-center gap-1">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5"></i>2024-05-18
+                </span>
+              </div>
+            </div>
+
+            <!-- 右侧：综合得分 -->
+            <div class="text-right">
+              <div class="text-xs font-medium text-on-surface-variant mb-1.5 tracking-wide uppercase">综合得分</div>
+              <div class="flex items-baseline gap-1 justify-end">
+                <span class="text-5xl font-bold text-primary num leading-none">78</span>
+                <span class="text-base text-on-surface-variant num">/ 100</span>
+              </div>
+              <div class="mt-2 flex items-center gap-1.5 justify-end">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-semibold bg-success/15 text-success">优秀</span>
+                <span class="text-xs text-on-surface-variant num">高于均值 +23</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 横幅底部：操作按钮区 -->
+        <div class="bg-surface-container/50 border-t border-outline-variant/40 px-8 py-4 flex items-center justify-between gap-3 flex-wrap">
+          <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+            <i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i>
+            <span>本报告基于 10 轮博弈数据自动生成，可作为下次实训的对照基线。</span>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button id="btn-download-report" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="download" class="w-4 h-4"></i>下载完整报告（PDF）
+            </button>
+            <button id="btn-restart" class="bg-surface text-on-surface border border-outline-variant/60 px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>重新开局
+            </button>
+            <button id="btn-view-ranking" class="bg-amber-50 text-amber-700 border border-amber-200 px-4 py-2 rounded-md text-sm font-medium hover:bg-amber-100 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="trophy" class="w-4 h-4"></i>查看排行榜
+            </button>
+            <button id="btn-back-home" class="text-on-surface-variant border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container hover:text-on-surface transition-all inline-flex items-center gap-2">
+              <i data-lucide="home" class="w-4 h-4"></i>回到首页
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== Section 2 · 中部双栏 ==================== -->
+      <section class="grid grid-cols-3 gap-6">
+
+        <!-- ====== 左栏（2/3 宽）====== -->
+        <div class="col-span-2 space-y-6">
+
+          <!-- 卡片 1 · 各决策人投票明细 -->
+          <div id="card-voters" class="bg-surface rounded-lg shadow-card overflow-hidden">
+            <!-- 卡片标题 -->
+            <div class="px-5 py-4 border-b border-outline-variant/40 flex items-center justify-between gap-3 flex-wrap">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+                  <i data-lucide="users" class="w-4 h-4 text-primary"></i>
+                </div>
+                <div>
+                  <h2 class="text-base font-semibold text-on-surface leading-tight">各决策人投票明细</h2>
+                  <p class="text-xs text-on-surface-variant mt-0.5">5 位决策人 · 权重合计 100%</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm bg-success/15 text-success">
+                  <i data-lucide="check" class="w-3 h-3"></i>3 票中标
+                </span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm bg-surface-container text-on-surface-variant">
+                  <i data-lucide="minus" class="w-3 h-3"></i>2 票弃权
+                </span>
+              </div>
+            </div>
+
+            <!-- 表格头 -->
+            <div class="grid grid-cols-6 gap-2 px-5 py-3 bg-surface-container/60 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
+              <span>角色</span>
+              <span>权重</span>
+              <span>我方好感</span>
+              <span>竞品好感</span>
+              <span>票数倾向</span>
+              <span>趋势</span>
+            </div>
+
+            <!-- 表格体：5 行决策人 -->
+            <div class="divide-y divide-outline-variant/50">
+
+              <!-- 列表-决策人1：王主任 -->
+              <div class="grid grid-cols-6 gap-2 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center">
+                <div>
+                  <div class="text-sm font-semibold text-on-surface">王主任</div>
+                  <div class="text-xs text-on-surface-variant mt-0.5">信息中心主任</div>
+                </div>
+                <span class="text-sm num font-medium text-on-surface">30%</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-sm num font-semibold text-success">75</span>
+                  <i data-lucide="thumbs-up" class="w-3 h-3 text-success/70"></i>
+                </div>
+                <span class="text-sm num text-on-surface-variant">60</span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-semibold bg-success/15 text-success w-fit">
+                  <i data-lucide="check-circle-2" class="w-3 h-3"></i>中标
+                </span>
+                <div class="flex items-center gap-1 num">
+                  <i data-lucide="trending-up" class="w-3.5 h-3.5 text-success"></i>
+                  <span class="text-sm font-semibold text-success">+15</span>
+                </div>
+              </div>
+
+              <!-- 列表-决策人2：李处长 -->
+              <div class="grid grid-cols-6 gap-2 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center">
+                <div>
+                  <div class="text-sm font-semibold text-on-surface">李处长</div>
+                  <div class="text-xs text-on-surface-variant mt-0.5">业务处处长</div>
+                </div>
+                <span class="text-sm num font-medium text-on-surface">25%</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-sm num font-semibold text-success">82</span>
+                  <i data-lucide="thumbs-up" class="w-3 h-3 text-success/70"></i>
+                </div>
+                <span class="text-sm num text-on-surface-variant">55</span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-semibold bg-success/15 text-success w-fit">
+                  <i data-lucide="check-circle-2" class="w-3 h-3"></i>中标
+                </span>
+                <div class="flex items-center gap-1 num">
+                  <i data-lucide="trending-up" class="w-3.5 h-3.5 text-success"></i>
+                  <span class="text-sm font-semibold text-success">+20</span>
+                </div>
+              </div>
+
+              <!-- 列表-决策人3：张专家 -->
+              <div class="grid grid-cols-6 gap-2 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center">
+                <div>
+                  <div class="text-sm font-semibold text-on-surface">张专家</div>
+                  <div class="text-xs text-on-surface-variant mt-0.5">技术评审专家</div>
+                </div>
+                <span class="text-sm num font-medium text-on-surface">20%</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-sm num font-semibold text-warning">68</span>
+                  <i data-lucide="equal" class="w-3 h-3 text-warning/70"></i>
+                </div>
+                <span class="text-sm num text-on-surface-variant">70</span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-semibold bg-surface-container-high text-on-surface-variant w-fit">
+                  <i data-lucide="minus-circle" class="w-3 h-3"></i>弃权
+                </span>
+                <div class="flex items-center gap-1 num">
+                  <i data-lucide="trending-down" class="w-3.5 h-3.5 text-error"></i>
+                  <span class="text-sm font-semibold text-error">-3</span>
+                </div>
+              </div>
+
+              <!-- 列表-决策人4：陈总 -->
+              <div class="grid grid-cols-6 gap-2 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center">
+                <div>
+                  <div class="text-sm font-semibold text-on-surface">陈总</div>
+                  <div class="text-xs text-on-surface-variant mt-0.5">分管副市长</div>
+                </div>
+                <span class="text-sm num font-medium text-on-surface">15%</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-sm num font-semibold text-success">80</span>
+                  <i data-lucide="thumbs-up" class="w-3 h-3 text-success/70"></i>
+                </div>
+                <span class="text-sm num text-on-surface-variant">50</span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-semibold bg-success/15 text-success w-fit">
+                  <i data-lucide="check-circle-2" class="w-3 h-3"></i>中标
+                </span>
+                <div class="flex items-center gap-1 num">
+                  <i data-lucide="trending-up" class="w-3.5 h-3.5 text-success"></i>
+                  <span class="text-sm font-semibold text-success">+18</span>
+                </div>
+              </div>
+
+              <!-- 列表-决策人5：刘主席 -->
+              <div class="grid grid-cols-6 gap-2 px-5 py-3.5 hover:bg-surface-container/40 transition-colors items-center">
+                <div>
+                  <div class="text-sm font-semibold text-on-surface">刘主席</div>
+                  <div class="text-xs text-on-surface-variant mt-0.5">评审委员会主席</div>
+                </div>
+                <span class="text-sm num font-medium text-on-surface">10%</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-sm num font-semibold text-on-surface-variant">65</span>
+                  <i data-lucide="equal" class="w-3 h-3 text-on-surface-variant/70"></i>
+                </div>
+                <span class="text-sm num text-on-surface-variant">65</span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-semibold bg-surface-container-high text-on-surface-variant w-fit">
+                  <i data-lucide="minus-circle" class="w-3 h-3"></i>弃权
+                </span>
+                <div class="flex items-center gap-1 num">
+                  <i data-lucide="minus" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+                  <span class="text-sm font-medium text-on-surface-variant">0</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 卡片 2 · 失分话术 Top 5 -->
+          <div id="card-lost-points" class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-md bg-error/10 flex items-center justify-center">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 text-error"></i>
+                </div>
+                <div>
+                  <h2 class="text-base font-semibold text-on-surface leading-tight">失分话术 Top 5</h2>
+                  <p class="text-xs text-on-surface-variant mt-0.5">按扣分严重度排序</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-semibold bg-error/10 text-error num">
+                累计失分 -22 分
+              </span>
+            </div>
+
+            <div class="space-y-2.5">
+
+              <!-- 失分点 1 -->
+              <div class="border-l-4 border-error bg-error/5 rounded-r-md pl-3 pr-3 py-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="text-sm text-on-surface flex-1 leading-relaxed">违反"禁止明令"规则，向王主任（信息中心主任）递送购物卡</p>
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-error/20 text-error shrink-0">严重</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5 num">
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="message-square" class="w-3 h-3"></i>第 5 轮
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold text-error">
+                    <i data-lucide="minus-circle" class="w-3 h-3"></i>扣 8 分
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="tag" class="w-3 h-3"></i>合规风险
+                  </span>
+                </div>
+              </div>
+
+              <!-- 失分点 2 -->
+              <div class="border-l-4 border-error bg-error/5 rounded-r-md pl-3 pr-3 py-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="text-sm text-on-surface flex-1 leading-relaxed">产品话术错误，将"国产化率"承诺为 100%（实际仅 85%）</p>
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-error/20 text-error shrink-0">严重</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5 num">
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="message-square" class="w-3 h-3"></i>第 3 轮
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold text-error">
+                    <i data-lucide="minus-circle" class="w-3 h-3"></i>扣 6 分
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="tag" class="w-3 h-3"></i>过度承诺
+                  </span>
+                </div>
+              </div>
+
+              <!-- 失分点 3 -->
+              <div class="border-l-4 border-warning bg-warning/5 rounded-r-md pl-3 pr-3 py-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="text-sm text-on-surface flex-1 leading-relaxed">竞品对比环节直接攻击"华耀科技"技术方案，激怒张专家</p>
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-warning/20 text-warning shrink-0">中度</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5 num">
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="message-square" class="w-3 h-3"></i>第 7 轮
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold text-warning">
+                    <i data-lucide="minus-circle" class="w-3 h-3"></i>扣 4 分
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="tag" class="w-3 h-3"></i>竞品应对
+                  </span>
+                </div>
+              </div>
+
+              <!-- 失分点 4 -->
+              <div class="border-l-4 border-warning bg-warning/5 rounded-r-md pl-3 pr-3 py-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="text-sm text-on-surface flex-1 leading-relaxed">未识别李处长的核心诉求（数据迁移能力），错失关键需求点</p>
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-warning/20 text-warning shrink-0">中度</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5 num">
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="message-square" class="w-3 h-3"></i>第 4 轮
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold text-warning">
+                    <i data-lucide="minus-circle" class="w-3 h-3"></i>扣 2 分
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="tag" class="w-3 h-3"></i>客户调研
+                  </span>
+                </div>
+              </div>
+
+              <!-- 失分点 5 -->
+              <div class="border-l-4 border-outline-variant bg-surface-container/40 rounded-r-md pl-3 pr-3 py-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="text-sm text-on-surface flex-1 leading-relaxed">报价环节过于激进，低于成本价导致陈总对履约能力产生疑虑</p>
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-surface-container-high text-on-surface-variant shrink-0">轻微</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5 num">
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="message-square" class="w-3 h-3"></i>第 8 轮
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold text-on-surface-variant">
+                    <i data-lucide="minus-circle" class="w-3 h-3"></i>扣 2 分
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="tag" class="w-3 h-3"></i>报价策略
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 卡片 3 · 高分亮点 Top 3 -->
+          <div id="card-highlights" class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-md bg-success/10 flex items-center justify-center">
+                  <i data-lucide="sparkles" class="w-4 h-4 text-success"></i>
+                </div>
+                <div>
+                  <h2 class="text-base font-semibold text-on-surface leading-tight">高分亮点 Top 3</h2>
+                  <p class="text-xs text-on-surface-variant mt-0.5">本局表现最出色的关键时刻</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-semibold bg-success/10 text-success num">
+                累计加分 +19 分
+              </span>
+            </div>
+
+            <div class="space-y-2.5">
+
+              <!-- 亮点 1 -->
+              <div class="border-l-4 border-success bg-success/5 rounded-r-md pl-3 pr-3 py-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="text-sm text-on-surface flex-1 leading-relaxed">精准识别"招标参数"中隐藏的国产化加分项，巧妙嵌入我方方案</p>
+                  <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-success/20 text-success shrink-0">
+                    <i data-lucide="star" class="w-3 h-3"></i>神来之笔
+                  </span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5 num">
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="message-square" class="w-3 h-3"></i>第 2 轮
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold text-success">
+                    <i data-lucide="plus-circle" class="w-3 h-3"></i>得 8 分
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="tag" class="w-3 h-3"></i>招投标认知
+                  </span>
+                </div>
+              </div>
+
+              <!-- 亮点 2 -->
+              <div class="border-l-4 border-success bg-success/5 rounded-r-md pl-3 pr-3 py-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="text-sm text-on-surface flex-1 leading-relaxed">分层博弈成功打动陈总（分管副市长），好感度从 35 提升至 80</p>
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-success/20 text-success shrink-0">关键转折</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5 num">
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="message-square" class="w-3 h-3"></i>第 6 轮
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold text-success">
+                    <i data-lucide="plus-circle" class="w-3 h-3"></i>得 6 分
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="tag" class="w-3 h-3"></i>分层博弈
+                  </span>
+                </div>
+              </div>
+
+              <!-- 亮点 3 -->
+              <div class="border-l-4 border-success bg-success/5 rounded-r-md pl-3 pr-3 py-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="text-sm text-on-surface flex-1 leading-relaxed">技术应答环节针对张专家质疑，现场输出完整技术白皮书文档</p>
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-success/20 text-success shrink-0">专业可信</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5 num">
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="message-square" class="w-3 h-3"></i>第 9 轮
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold text-success">
+                    <i data-lucide="plus-circle" class="w-3 h-3"></i>得 5 分
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                    <i data-lucide="tag" class="w-3 h-3"></i>产品知识
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ====== 右栏（1/3 宽）====== -->
+        <div class="col-span-1 space-y-6">
+
+          <!-- 卡片 1 · AI 销售能力诊断（六维雷达图） -->
+          <div id="card-ai-diagnosis" class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center gap-2.5 mb-3">
+              <div class="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+                <i data-lucide="radar" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div>
+                <h2 class="text-base font-semibold text-on-surface leading-tight">AI 销售能力诊断</h2>
+                <p class="text-xs text-on-surface-variant mt-0.5">六维能力雷达</p>
+              </div>
+            </div>
+
+            <!-- DISC 性格分类 -->
+            <div class="flex items-center gap-2 mb-3 px-3 py-2 bg-primary-container/40 rounded-md">
+              <i data-lucide="user-circle" class="w-4 h-4 text-primary shrink-0"></i>
+              <span class="text-xs text-on-surface-variant">性格分类（DISC）</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-semibold bg-primary/15 text-primary">I 型 · 影响力型</span>
+            </div>
+
+            <!-- 雷达图 SVG -->
+            <div class="flex justify-center">
+              <svg viewBox="0 0 480 400" class="w-full max-w-sm" role="img" aria-label="六维能力雷达图">
+
+                <!-- 同心六边形网格（5 圈） -->
+                <g class="text-outline-variant/50" fill="none" stroke="currentColor" stroke-width="1">
+                  <!-- 20% -->
+                  <polygon points="240,176 260.78,188 260.78,212 240,224 219.22,212 219.22,188" stroke-opacity="0.4"/>
+                  <!-- 40% -->
+                  <polygon points="240,152 281.57,176 281.57,224 240,248 198.43,224 198.43,176" stroke-opacity="0.4"/>
+                  <!-- 60% -->
+                  <polygon points="240,128 302.35,164 302.35,236 240,272 177.65,236 177.65,164" stroke-opacity="0.5"/>
+                  <!-- 80% -->
+                  <polygon points="240,104 323.14,152 323.14,248 240,296 156.86,248 156.86,152" stroke-opacity="0.6"/>
+                  <!-- 100% -->
+                  <polygon points="240,80 343.92,140 343.92,260 240,320 136.08,260 136.08,140" stroke-opacity="0.8"/>
+                </g>
+
+                <!-- 6 条轴线（中心到外圈顶点） -->
+                <g class="text-outline-variant/60" stroke="currentColor" stroke-width="1" stroke-opacity="0.5">
+                  <line x1="240" y1="200" x2="240" y2="80"/>
+                  <line x1="240" y1="200" x2="343.92" y2="140"/>
+                  <line x1="240" y1="200" x2="343.92" y2="260"/>
+                  <line x1="240" y1="200" x2="240" y2="320"/>
+                  <line x1="240" y1="200" x2="136.08" y2="260"/>
+                  <line x1="240" y1="200" x2="136.08" y2="140"/>
+                </g>
+
+                <!-- 能力基准线（6 分，灰色虚线） -->
+                <polygon points="240,128 302.35,164 302.35,236 240,272 177.65,236 177.65,164"
+                         fill="none" stroke="#C8CFDC" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.7"/>
+
+                <!-- 数据多边形（本次能力：8/9/7/8/9/6） -->
+                <polygon points="240,104 333.53,146 312.75,242 240,296 146.47,254 177.65,164"
+                         fill="#2F6BFF" fill-opacity="0.18" stroke="#2F6BFF" stroke-width="2"
+                         stroke-linejoin="round"/>
+
+                <!-- 数据点圆点 -->
+                <g fill="#2F6BFF">
+                  <circle cx="240" cy="104" r="4"/>
+                  <circle cx="333.53" cy="146" r="4"/>
+                  <circle cx="312.75" cy="242" r="4"/>
+                  <circle cx="240" cy="296" r="4"/>
+                  <circle cx="146.47" cy="254" r="4"/>
+                  <circle cx="177.65" cy="164" r="4"/>
+                </g>
+                <g fill="#FFFFFF" stroke="#2F6BFF" stroke-width="2">
+                  <circle cx="240" cy="104" r="2"/>
+                  <circle cx="333.53" cy="146" r="2"/>
+                  <circle cx="312.75" cy="242" r="2"/>
+                  <circle cx="240" cy="296" r="2"/>
+                  <circle cx="146.47" cy="254" r="2"/>
+                  <circle cx="177.65" cy="164" r="2"/>
+                </g>
+
+                <!-- 维度标签（外圈） -->
+                <g font-family="Inter, 'Noto Sans SC', system-ui, sans-serif">
+                  <!-- 客户调研（顶） -->
+                  <text x="240" y="60" text-anchor="middle" font-size="12" font-weight="600" fill="#152033">客户调研</text>
+                  <text x="240" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#2F6BFF">8</text>
+
+                  <!-- 分层博弈（右上） -->
+                  <text x="361" y="130" text-anchor="start" font-size="12" font-weight="600" fill="#152033">分层博弈</text>
+                  <text x="361" y="144" text-anchor="start" font-size="11" font-weight="700" fill="#2F6BFF">9</text>
+
+                  <!-- 话术专业（右下） -->
+                  <text x="361" y="272" text-anchor="start" font-size="12" font-weight="600" fill="#152033">话术专业</text>
+                  <text x="361" y="286" text-anchor="start" font-size="11" font-weight="700" fill="#2F6BFF">7</text>
+
+                  <!-- 竞品应对（底） -->
+                  <text x="240" y="345" text-anchor="middle" font-size="12" font-weight="600" fill="#152033">竞品应对</text>
+                  <text x="240" y="359" text-anchor="middle" font-size="11" font-weight="700" fill="#2F6BFF">8</text>
+
+                  <!-- 招投标认知（左下） -->
+                  <text x="119" y="272" text-anchor="end" font-size="12" font-weight="600" fill="#152033">招投标认知</text>
+                  <text x="119" y="286" text-anchor="end" font-size="11" font-weight="700" fill="#2F6BFF">9</text>
+
+                  <!-- 产品知识（左上） -->
+                  <text x="119" y="130" text-anchor="end" font-size="12" font-weight="600" fill="#152033">产品知识</text>
+                  <text x="119" y="144" text-anchor="end" font-size="11" font-weight="700" fill="#2F6BFF">6</text>
+                </g>
+
+              </svg>
+            </div>
+
+            <!-- 图例 -->
+            <div class="flex items-center justify-center gap-4 mt-3 text-xs">
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-sm bg-primary/30 border border-primary"></span>
+                <span class="text-on-surface-variant">本次能力</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-0.5 border-t border-dashed border-outline"></span>
+                <span class="text-on-surface-variant">基准线 6.0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 卡片 2 · 综合能力评分卡 -->
+          <div id="card-overall-score" class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center gap-2.5 mb-4">
+              <div class="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 text-primary"></i>
+              </div>
+              <h2 class="text-base font-semibold text-on-surface leading-tight">综合能力评分</h2>
+            </div>
+
+            <!-- 大数字 -->
+            <div class="text-center py-2 mb-4 rounded-lg bg-gradient-to-b from-primary-container/40 to-surface">
+              <div class="flex items-baseline justify-center gap-1">
+                <span class="text-5xl font-bold text-primary num leading-none">78</span>
+                <span class="text-base text-on-surface-variant num">/ 100</span>
+              </div>
+              <div class="mt-2 flex items-center justify-center gap-1.5">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-semibold bg-success/15 text-success">优秀</span>
+                <span class="text-xs text-on-surface-variant num">高于均值 +23%</span>
+              </div>
+            </div>
+
+            <!-- 7 项评分列表 -->
+            <div class="space-y-1.5">
+
+              <!-- 性格分类 -->
+              <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-surface-container/40 transition-colors">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i data-lucide="user-circle" class="w-3.5 h-3.5 text-primary shrink-0"></i>
+                  <span class="text-sm text-on-surface">性格分类</span>
+                </div>
+                <span class="text-sm font-semibold text-primary num shrink-0">I 型影响力</span>
+              </div>
+
+              <!-- 客户调研 8 -->
+              <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-surface-container/40 transition-colors gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i data-lucide="search" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                  <span class="text-sm text-on-surface">客户调研</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: 80%"></div>
+                  </div>
+                  <span class="text-sm num font-semibold text-on-surface w-6 text-right">8</span>
+                </div>
+              </div>
+
+              <!-- 分层博弈 9 -->
+              <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-surface-container/40 transition-colors gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i data-lucide="layers" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                  <span class="text-sm text-on-surface">分层博弈</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: 90%"></div>
+                  </div>
+                  <span class="text-sm num font-semibold text-on-surface w-6 text-right">9</span>
+                </div>
+              </div>
+
+              <!-- 话术专业 7 -->
+              <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-surface-container/40 transition-colors gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i data-lucide="mic" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                  <span class="text-sm text-on-surface">话术专业</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                    <div class="h-full bg-warning rounded-full" style="width: 70%"></div>
+                  </div>
+                  <span class="text-sm num font-semibold text-on-surface w-6 text-right">7</span>
+                </div>
+              </div>
+
+              <!-- 竞品应对 8 -->
+              <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-surface-container/40 transition-colors gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i data-lucide="shield" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                  <span class="text-sm text-on-surface">竞品应对</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: 80%"></div>
+                  </div>
+                  <span class="text-sm num font-semibold text-on-surface w-6 text-right">8</span>
+                </div>
+              </div>
+
+              <!-- 招投标认知 9 -->
+              <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-surface-container/40 transition-colors gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i data-lucide="scroll" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                  <span class="text-sm text-on-surface">招投标认知</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: 90%"></div>
+                  </div>
+                  <span class="text-sm num font-semibold text-on-surface w-6 text-right">9</span>
+                </div>
+              </div>
+
+              <!-- 产品知识 6 -->
+              <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-surface-container/40 transition-colors gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i data-lucide="package" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i>
+                  <span class="text-sm text-on-surface">产品知识</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="w-16 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                    <div class="h-full bg-error rounded-full" style="width: 60%"></div>
+                  </div>
+                  <span class="text-sm num font-semibold text-on-surface w-6 text-right">6</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 卡片 3 · 阶梯提升建议 -->
+          <div id="card-advice" class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center gap-2.5 mb-4">
+              <div class="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+                <i data-lucide="trending-up" class="w-4 h-4 text-primary"></i>
+              </div>
+              <h2 class="text-base font-semibold text-on-surface leading-tight">阶梯提升建议</h2>
+            </div>
+
+            <div class="space-y-3">
+
+              <!-- 建议 1 · 本周重点 -->
+              <div class="border border-outline-variant/40 rounded-md p-3 hover:border-primary/40 transition-colors">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-warning/15 text-warning">
+                    <i data-lucide="zap" class="w-3 h-3"></i>本周重点
+                  </span>
+                  <span class="text-xs text-on-surface-variant num">0-7 天</span>
+                </div>
+                <p class="text-sm text-on-surface leading-relaxed">话术专业（6→7）：规避"过度承诺"陷阱，所有技术指标改用"经评估"措辞。</p>
+              </div>
+
+              <!-- 建议 2 · 下月目标 -->
+              <div class="border border-outline-variant/40 rounded-md p-3 hover:border-primary/40 transition-colors">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-primary/15 text-primary">
+                    <i data-lucide="target" class="w-3 h-3"></i>下月目标
+                  </span>
+                  <span class="text-xs text-on-surface-variant num">8-30 天</span>
+                </div>
+                <p class="text-sm text-on-surface leading-relaxed">产品知识（6→8）：系统学习核心产品技术指标、参数手册与差异化优势文档。</p>
+              </div>
+
+              <!-- 建议 3 · 长期方向 -->
+              <div class="border border-outline-variant/40 rounded-md p-3 hover:border-primary/40 transition-colors">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-xs font-semibold bg-success/15 text-success">
+                    <i data-lucide="compass" class="w-3 h-3"></i>长期方向
+                  </span>
+                  <span class="text-xs text-on-surface-variant num">1-3 月</span>
+                </div>
+                <p class="text-sm text-on-surface leading-relaxed">向 D 型（支配型）拓展：提升谈判主导力、决策驱动力，弥补 I 型决策易受情绪影响的短板。</p>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ==================== Section 3 · 配套知识点跳转 ==================== -->
+      <section id="knowledge-points" class="bg-surface rounded-lg shadow-card p-5">
+        <div class="flex items-center justify-between mb-4 gap-3 flex-wrap">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+              <i data-lucide="book-open" class="w-4 h-4 text-primary"></i>
+            </div>
+            <div>
+              <h2 class="text-base font-semibold text-on-surface leading-tight">配套知识点 · 学完下次更稳</h2>
+              <p class="text-xs text-on-surface-variant mt-0.5">基于本次失分自动推荐 · 点击跳转学习卡片</p>
+            </div>
+          </div>
+          <a href="knowledge.html" class="text-primary text-xs font-medium hover:underline inline-flex items-center gap-1">
+            查看完整知识库<i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+          <!-- 知识点 1 · 产品知识 -->
+          <button id="btn-kp-product" class="group text-left flex items-start gap-3 p-3 bg-surface-container/40 border border-outline-variant/30 rounded-md hover:border-primary/40 hover:bg-primary-container/30 transition-all">
+            <div class="w-9 h-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+              <i data-lucide="package" class="w-4 h-4 text-primary"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-semibold text-on-surface leading-tight">产品知识</div>
+              <div class="text-xs text-on-surface-variant mt-1 leading-relaxed">错误话术规避</div>
+              <div class="flex items-center gap-1 mt-1.5 text-[10px] text-primary font-medium">
+                <i data-lucide="mouse-pointer-click" class="w-3 h-3"></i>开始学习
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </div>
+            </div>
+          </button>
+
+          <!-- 知识点 2 · 分层博弈 -->
+          <button id="btn-kp-strategy" class="group text-left flex items-start gap-3 p-3 bg-surface-container/40 border border-outline-variant/30 rounded-md hover:border-primary/40 hover:bg-primary-container/30 transition-all">
+            <div class="w-9 h-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+              <i data-lucide="layers" class="w-4 h-4 text-primary"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-semibold text-on-surface leading-tight">分层博弈</div>
+              <div class="text-xs text-on-surface-variant mt-1 leading-relaxed">中层突破技巧</div>
+              <div class="flex items-center gap-1 mt-1.5 text-[10px] text-primary font-medium">
+                <i data-lucide="mouse-pointer-click" class="w-3 h-3"></i>开始学习
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </div>
+            </div>
+          </button>
+
+          <!-- 知识点 3 · 竞品应对 -->
+          <button id="btn-kp-competitor" class="group text-left flex items-start gap-3 p-3 bg-surface-container/40 border border-outline-variant/30 rounded-md hover:border-primary/40 hover:bg-primary-container/30 transition-all">
+            <div class="w-9 h-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+              <i data-lucide="shield" class="w-4 h-4 text-primary"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-semibold text-on-surface leading-tight">竞品应对</div>
+              <div class="text-xs text-on-surface-variant mt-1 leading-relaxed">差异化话术</div>
+              <div class="flex items-center gap-1 mt-1.5 text-[10px] text-primary font-medium">
+                <i data-lucide="mouse-pointer-click" class="w-3 h-3"></i>开始学习
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </div>
+            </div>
+          </button>
+
+          <!-- 知识点 4 · 招投标认知 -->
+          <button id="btn-kp-bidding" class="group text-left flex items-start gap-3 p-3 bg-surface-container/40 border border-outline-variant/30 rounded-md hover:border-primary/40 hover:bg-primary-container/30 transition-all">
+            <div class="w-9 h-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+              <i data-lucide="scroll" class="w-4 h-4 text-primary"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-semibold text-on-surface leading-tight">招投标认知</div>
+              <div class="text-xs text-on-surface-variant mt-1 leading-relaxed">评审规则解读</div>
+              <div class="flex items-center gap-1 mt-1.5 text-[10px] text-primary font-medium">
+                <i data-lucide="mouse-pointer-click" class="w-3 h-3"></i>开始学习
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              </div>
+            </div>
+          </button>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+  <!-- @main-content:end -->
+
+  <script>lucide.createIcons();</script>
+  <script>
+    // 高亮当前页面导航（统一用 jQuery 实现）
+    $(function() {
+      const path = window.location.pathname.split('/').pop() || 'home.html';
+      const map = { 'home.html': 'nav-home', 'setup.html': 'nav-setup', 'game.html': 'nav-game', 'result.html': 'nav-result', 'knowledge.html': 'nav-knowledge' };
+      const id = map[path];
+      if (id) {
+        const $el = $('#' + id);
+        if ($el.length) {
+          $el.removeClass('text-on-surface-variant').addClass('text-primary bg-primary-container').attr('aria-current', 'page');
+        }
+      }
+    });
+  </script>
+  <script>
+    // ============ 结算复盘页交互逻辑 ============
+    $(function() {
+
+      // 下载完整报告（PDF）
+      // 后续应实现：
+      // 1. 调用后端接口 POST /api/report/generate，传当前对局 id
+      // 2. 后端返回 PDF 文件流，前端触发浏览器下载
+      // 3. 下载期间按钮显示 loading 状态（lucide-loader-2 旋转）
+      // 4. 下载完成后恢复按钮并弹 toast 提示
+      $('#btn-download-report').on('click', function() {
+        console.log('[复盘] 下载完整报告（PDF）—— 当前对局：XX市政务平台升级项目 / 关卡3');
+        alert('正在生成复盘 PDF 报告，请稍候...');
+      });
+
+      // 重新开局
+      // 后续应实现：
+      // 1. 弹确认弹窗："确定重新开始本关卡？当前进度将被清空"
+      // 2. 用户确认后重置 game 状态（localStorage / store）
+      // 3. 跳转到 setup.html 重新选关卡
+      $('#btn-restart').on('click', function() {
+        console.log('[复盘] 重新开局 —— 跳转到对局配置');
+        window.location.href = 'setup.html';
+      });
+
+      // 查看排行榜（新增）
+      // 后续应实现：
+      // 1. 跳转到 ranking.html 并携带本场对局 id 作为参数
+      // 2. ranking.html 默认 Tab 切到"当前房间玩家榜"，并高亮"我"行
+      $('#btn-view-ranking').on('click', function() {
+        console.log('[复盘] 查看排行榜 —— 跳转到 ranking.html');
+        const params = new URLSearchParams({ from: 'result', tab: 'room', gameId: 'g-' + Date.now() });
+        window.location.href = 'ranking.html?' + params.toString();
+      });
+
+      // 回到首页
+      $('#btn-back-home').on('click', function() {
+        console.log('[复盘] 回到首页');
+        window.location.href = 'home.html';
+      });
+
+      // 知识点 1 · 产品知识 · 错误话术规避
+      // 后续应实现：定位知识库中"产品知识 / 错误话术规避"卡片，滚到对应 anchor 并展开详情
+      $('#btn-kp-product').on('click', function() {
+        console.log('[知识点] 学习"产品知识：错误话术规避" —— 跳转 knowledge.html#kp-product-talk');
+        alert('正在打开学习卡片：产品知识 / 错误话术规避');
+      });
+
+      // 知识点 2 · 分层博弈 · 中层突破技巧
+      $('#btn-kp-strategy').on('click', function() {
+        console.log('[知识点] 学习"分层博弈：中层突破技巧" —— 跳转 knowledge.html#kp-strategy-mid');
+        alert('正在打开学习卡片：分层博弈 / 中层突破技巧');
+      });
+
+      // 知识点 3 · 竞品应对 · 差异化话术
+      $('#btn-kp-competitor').on('click', function() {
+        console.log('[知识点] 学习"竞品应对：差异化话术" —— 跳转 knowledge.html#kp-competitor-diff');
+        alert('正在打开学习卡片：竞品应对 / 差异化话术');
+      });
+
+      // 知识点 4 · 招投标认知 · 评审规则解读
+      $('#btn-kp-bidding').on('click', function() {
+        console.log('[知识点] 学习"招投标认知：评审规则解读" —— 跳转 knowledge.html#kp-bidding-rule');
+        alert('正在打开学习卡片：招投标认知 / 评审规则解读');
+      });
+
+    });
+  </script>
+</body>
+
+</html>
